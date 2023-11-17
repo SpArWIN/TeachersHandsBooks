@@ -16,7 +16,9 @@ namespace TeachersHandsBooks
 {
     public partial class MainForm : MaterialForm
     {
-       private DatabaseContext context = new DatabaseContext();
+        private readonly ThemeSettings ThemSet = new ThemeSettings();
+        readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
+        private DatabaseContext context = new DatabaseContext();
 
         public MainForm()
         {
@@ -25,9 +27,195 @@ namespace TeachersHandsBooks
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
             materialSkinManager.ColorScheme = new ColorScheme(Primary.Indigo500, Primary.Indigo700, Primary.Indigo100, Accent.Blue400, TextShade.WHITE);
+            LoadSettings();
+        }
+        private void SaveSettings()
+        {
+
+            Properties.Settings.Default.Theme = ThemeSkin.Theme.ToString();
+
+            // Сохраняем выбор пользователя по цветовой схеме
+            if (BtnBlueRad.Checked)
+            {
+
+                ThemSet.ColorTheme = "Blue";
+            }
+            else if (BtnRedRad.Checked)
+            {
+
+                ThemSet.ColorTheme = "Red";
+            }
+            else if (BtnOrangeRad.Checked)
+            {
+
+                ThemSet.ColorTheme = "Orange";
+            }
+            else if (BtnGreenRad.Checked)
+            {
+                ThemSet.ColorTheme = "Green";
+            }
+            else
+            {
+                ThemSet.ColorTheme = "Blue";
+            }
+
+            Properties.Settings.Default.ColorTheme = ThemSet.ColorTheme;
+           // SetBorderColorFromTheme(GroupAddBOx, ThemSet);
+            Properties.Settings.Default.Save();
+            MainTabControl.SelectedTab = HomePage;
+
+
+        }
+        private void LoadSettings()
+        {
+            string theme = Properties.Settings.Default.Theme;
+
+            //Сохраняем тему
+            if (!string.IsNullOrEmpty(theme))
+            {
+                ThemeSkin.Theme = (MaterialSkinManager.Themes)Enum.Parse(typeof(MaterialSkinManager.Themes), theme);
+            }
+            //Цвет
+            string colorScheme = Properties.Settings.Default.ColorTheme;
+            if (!string.IsNullOrEmpty(colorScheme))
+            {
+                if (colorScheme == "Blue")
+                {
+                    BtnBlueRad.Checked = true;
+
+                }
+                else if (colorScheme == "Red")
+                {
+                    BtnRedRad.Checked = true;
+                }
+                else if (colorScheme == "Orange")
+                {
+                    BtnOrangeRad.Checked = true;
+                }
+                else if (colorScheme == "Green")
+                {
+                    BtnGreenRad.Checked = true;
+                }
+
+            }
+
+            SwitchTheme.Checked = (ThemeSkin.Theme == MaterialSkinManager.Themes.DARK);
+            if (SwitchTheme.Checked)
+            {
+                GroupAddBOx.FillColor = Color.Transparent;
+
+            }
+            else
+            {
+                GroupAddBOx.FillColor = Color.WhiteSmoke;
+
+            }
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+       
+
+     
+
+        private void BtnSaveChangeTheme_Click_1(object sender, EventArgs e)
+        {
+            SaveSettings();
+        }
+
+        private void SwitchTheme_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SwitchTheme.Checked)
+            {
+                ThemeSkin.Theme = MaterialSkinManager.Themes.DARK;
+                LabelSmen.Text = " на светлую тему";
+
+            }
+            else
+            {
+                ThemeSkin.Theme = MaterialSkinManager.Themes.LIGHT;
+                LabelSmen.Text = " на тёмную тему";
+            }
+        }
+
+        private void BtnBlueRad_CheckedChanged(object sender, EventArgs e)
+        {
+            ThemeSkin.ColorScheme = new ColorScheme(Primary.Blue800, Primary.Blue700, Primary.Blue600, Accent.LightBlue700, TextShade.WHITE);
+        }
+
+        private void BtnRedRad_CheckedChanged(object sender, EventArgs e)
+        {
+            ThemeSkin.ColorScheme = new ColorScheme(Primary.Red700, Primary.Red600, Primary.Red500, Accent.Red200, TextShade.WHITE);
+        }
+
+        private void BtnOrangeRad_CheckedChanged(object sender, EventArgs e)
+        {
+            ThemeSkin.ColorScheme = new ColorScheme(Primary.Orange800, Primary.Orange700, Primary.Orange500, Accent.Orange200, TextShade.WHITE);
+        }
+
+        private void BtnGreenRad_CheckedChanged_1(object sender, EventArgs e)
+        {
+            ThemeSkin.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green700, Primary.Green500, Accent.Green200, TextShade.WHITE);
+        }
+
+        private void FormRasp_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FormRasp_MouseEnter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FormRasp_MouseLeave(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnDispAdd_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnDispAdd_MouseEnter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnDispAdd_MouseLeave(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnConnectionDispGroup_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnEditGrpoup_MouseEnter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnEditGrpoup_MouseLeave(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnAddGroup_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnAddGroup_MouseEnter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnAddGroup_MouseLeave(object sender, EventArgs e)
         {
 
         }
