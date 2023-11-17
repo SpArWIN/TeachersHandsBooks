@@ -13,7 +13,7 @@ namespace TeachersHandsBooks.Core
 {
     class DatabaseContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<Displine> Users { get; set; }
         public DatabaseContext() : base(new SQLiteConnection
         {
             ConnectionString = new SQLiteConnectionStringBuilder

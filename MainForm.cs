@@ -18,6 +18,7 @@ namespace TeachersHandsBooks
     {
         private readonly ThemeSettings ThemSet = new ThemeSettings();
         readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
+        EdingFormValue editingForm = new EdingFormValue();
         private DatabaseContext context = new DatabaseContext();
 
         public MainForm()
@@ -60,7 +61,7 @@ namespace TeachersHandsBooks
             }
 
             Properties.Settings.Default.ColorTheme = ThemSet.ColorTheme;
-           // SetBorderColorFromTheme(GroupAddBOx, ThemSet);
+           editingForm.SetBorderColorFromTheme(GroupAddBOx, ThemSet);
             Properties.Settings.Default.Save();
             MainTabControl.SelectedTab = HomePage;
 
@@ -113,7 +114,7 @@ namespace TeachersHandsBooks
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            SaveSettings();
         }
 
        
@@ -167,12 +168,12 @@ namespace TeachersHandsBooks
 
         private void FormRasp_MouseEnter(object sender, EventArgs e)
         {
-
+            editingForm.SetBorderColorFromTheme(FormRasp, ThemSet);
         }
 
         private void FormRasp_MouseLeave(object sender, EventArgs e)
         {
-
+            FormRasp.BackColor = Color.Transparent;
         }
 
         private void BtnDispAdd_Click(object sender, EventArgs e)
@@ -182,12 +183,12 @@ namespace TeachersHandsBooks
 
         private void BtnDispAdd_MouseEnter(object sender, EventArgs e)
         {
-
+            editingForm.SetBorderColorFromTheme(BtnDispAdd, ThemSet);
         }
 
         private void BtnDispAdd_MouseLeave(object sender, EventArgs e)
         {
-
+            BtnDispAdd.BackColor = Color.Transparent;
         }
 
         private void BtnConnectionDispGroup_Click(object sender, EventArgs e)
@@ -195,15 +196,9 @@ namespace TeachersHandsBooks
 
         }
 
-        private void BtnEditGrpoup_MouseEnter(object sender, EventArgs e)
-        {
+        
 
-        }
-
-        private void BtnEditGrpoup_MouseLeave(object sender, EventArgs e)
-        {
-
-        }
+      
 
         private void BtnAddGroup_Click(object sender, EventArgs e)
         {
@@ -212,10 +207,25 @@ namespace TeachersHandsBooks
 
         private void BtnAddGroup_MouseEnter(object sender, EventArgs e)
         {
-
+            editingForm.SetBorderColorFromTheme(BtnAddGroup, ThemSet);
         }
 
         private void BtnAddGroup_MouseLeave(object sender, EventArgs e)
+        {
+            BtnAddGroup.BackColor = Color.Transparent;
+        }
+
+        private void BtnConnectionDispGroup_MouseEnter(object sender, EventArgs e)
+        {
+            editingForm.SetBorderColorFromTheme(BtnConnectionDispGroup, ThemSet);
+        }
+
+        private void BtnConnectionDispGroup_MouseLeave(object sender, EventArgs e)
+        {
+            BtnConnectionDispGroup.BackColor = Color.Transparent;
+        }
+
+        private void BtnAddGroup_Click_1(object sender, EventArgs e)
         {
 
         }

@@ -33,6 +33,11 @@ namespace TeachersHandsBooks
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainTabControl = new MaterialSkin.Controls.MaterialTabControl();
             this.HomePage = new System.Windows.Forms.TabPage();
+            this.GroupAddBOx = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.FormRasp = new System.Windows.Forms.PictureBox();
+            this.BtnDispAdd = new System.Windows.Forms.PictureBox();
+            this.BtnConnectionDispGroup = new System.Windows.Forms.PictureBox();
+            this.BtnAddGroup = new System.Windows.Forms.PictureBox();
             this.Theory = new System.Windows.Forms.TabPage();
             this.Practice = new System.Windows.Forms.TabPage();
             this.KTpPages = new System.Windows.Forms.TabPage();
@@ -49,20 +54,15 @@ namespace TeachersHandsBooks
             this.SwitchTheme = new MaterialSkin.Controls.MaterialSwitch();
             this.AboutProgramm = new System.Windows.Forms.TabPage();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.FormRasp = new System.Windows.Forms.PictureBox();
-            this.BtnDispAdd = new System.Windows.Forms.PictureBox();
-            this.BtnConnectionDispGroup = new System.Windows.Forms.PictureBox();
-            this.BtnAddGroup = new System.Windows.Forms.PictureBox();
-            this.GroupAddBOx = new Guna.UI2.WinForms.Guna2GroupBox();
             this.MainTabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
-            this.PageSettings.SuspendLayout();
-            this.materialCard1.SuspendLayout();
+            this.GroupAddBOx.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FormRasp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDispAdd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnConnectionDispGroup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnAddGroup)).BeginInit();
-            this.GroupAddBOx.SuspendLayout();
+            this.PageSettings.SuspendLayout();
+            this.materialCard1.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainTabControl
@@ -96,6 +96,86 @@ namespace TeachersHandsBooks
             this.HomePage.TabIndex = 0;
             this.HomePage.Text = "Главная";
             this.HomePage.UseVisualStyleBackColor = true;
+            // 
+            // GroupAddBOx
+            // 
+            this.GroupAddBOx.BackColor = System.Drawing.Color.Transparent;
+            this.GroupAddBOx.BorderColor = System.Drawing.Color.DarkGray;
+            this.GroupAddBOx.BorderRadius = 6;
+            this.GroupAddBOx.BorderThickness = 2;
+            this.GroupAddBOx.Controls.Add(this.FormRasp);
+            this.GroupAddBOx.Controls.Add(this.BtnDispAdd);
+            this.GroupAddBOx.Controls.Add(this.BtnConnectionDispGroup);
+            this.GroupAddBOx.Controls.Add(this.BtnAddGroup);
+            this.GroupAddBOx.CustomBorderColor = System.Drawing.Color.Silver;
+            this.GroupAddBOx.Dock = System.Windows.Forms.DockStyle.Top;
+            this.GroupAddBOx.FillColor = System.Drawing.SystemColors.ControlLight;
+            this.GroupAddBOx.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.GroupAddBOx.ForeColor = System.Drawing.Color.Transparent;
+            this.GroupAddBOx.Location = new System.Drawing.Point(0, 0);
+            this.GroupAddBOx.Name = "GroupAddBOx";
+            this.GroupAddBOx.ShadowDecoration.Parent = this.GroupAddBOx;
+            this.GroupAddBOx.Size = new System.Drawing.Size(1123, 105);
+            this.GroupAddBOx.TabIndex = 1;
+            this.GroupAddBOx.Text = "Формирование учебного процесса";
+            this.GroupAddBOx.UseTransparentBackground = true;
+            // 
+            // FormRasp
+            // 
+            this.FormRasp.BackColor = System.Drawing.Color.Transparent;
+            this.FormRasp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.FormRasp.Image = ((System.Drawing.Image)(resources.GetObject("FormRasp.Image")));
+            this.FormRasp.Location = new System.Drawing.Point(212, 54);
+            this.FormRasp.Name = "FormRasp";
+            this.FormRasp.Size = new System.Drawing.Size(51, 37);
+            this.FormRasp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.FormRasp.TabIndex = 4;
+            this.FormRasp.TabStop = false;
+            this.FormRasp.MouseEnter += new System.EventHandler(this.FormRasp_MouseEnter);
+            this.FormRasp.MouseLeave += new System.EventHandler(this.FormRasp_MouseLeave);
+            // 
+            // BtnDispAdd
+            // 
+            this.BtnDispAdd.BackColor = System.Drawing.Color.Transparent;
+            this.BtnDispAdd.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnDispAdd.Image = ((System.Drawing.Image)(resources.GetObject("BtnDispAdd.Image")));
+            this.BtnDispAdd.Location = new System.Drawing.Point(87, 54);
+            this.BtnDispAdd.Name = "BtnDispAdd";
+            this.BtnDispAdd.Size = new System.Drawing.Size(51, 37);
+            this.BtnDispAdd.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.BtnDispAdd.TabIndex = 3;
+            this.BtnDispAdd.TabStop = false;
+            this.BtnDispAdd.MouseEnter += new System.EventHandler(this.BtnDispAdd_MouseEnter);
+            this.BtnDispAdd.MouseLeave += new System.EventHandler(this.BtnDispAdd_MouseLeave);
+            // 
+            // BtnConnectionDispGroup
+            // 
+            this.BtnConnectionDispGroup.BackColor = System.Drawing.Color.Transparent;
+            this.BtnConnectionDispGroup.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnConnectionDispGroup.Image = ((System.Drawing.Image)(resources.GetObject("BtnConnectionDispGroup.Image")));
+            this.BtnConnectionDispGroup.Location = new System.Drawing.Point(144, 54);
+            this.BtnConnectionDispGroup.Name = "BtnConnectionDispGroup";
+            this.BtnConnectionDispGroup.Size = new System.Drawing.Size(51, 37);
+            this.BtnConnectionDispGroup.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.BtnConnectionDispGroup.TabIndex = 2;
+            this.BtnConnectionDispGroup.TabStop = false;
+            this.BtnConnectionDispGroup.MouseEnter += new System.EventHandler(this.BtnConnectionDispGroup_MouseEnter);
+            this.BtnConnectionDispGroup.MouseLeave += new System.EventHandler(this.BtnConnectionDispGroup_MouseLeave);
+            // 
+            // BtnAddGroup
+            // 
+            this.BtnAddGroup.BackColor = System.Drawing.Color.Transparent;
+            this.BtnAddGroup.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnAddGroup.Image = ((System.Drawing.Image)(resources.GetObject("BtnAddGroup.Image")));
+            this.BtnAddGroup.Location = new System.Drawing.Point(20, 54);
+            this.BtnAddGroup.Name = "BtnAddGroup";
+            this.BtnAddGroup.Size = new System.Drawing.Size(51, 37);
+            this.BtnAddGroup.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.BtnAddGroup.TabIndex = 1;
+            this.BtnAddGroup.TabStop = false;
+            this.BtnAddGroup.Click += new System.EventHandler(this.BtnAddGroup_Click_1);
+            this.BtnAddGroup.MouseEnter += new System.EventHandler(this.BtnAddGroup_MouseEnter);
+            this.BtnAddGroup.MouseLeave += new System.EventHandler(this.BtnAddGroup_MouseLeave);
             // 
             // Theory
             // 
@@ -302,6 +382,7 @@ namespace TeachersHandsBooks
             // 
             // AboutProgramm
             // 
+            this.AboutProgramm.ImageKey = "block.png";
             this.AboutProgramm.Location = new System.Drawing.Point(4, 30);
             this.AboutProgramm.Name = "AboutProgramm";
             this.AboutProgramm.Size = new System.Drawing.Size(1123, 563);
@@ -319,77 +400,7 @@ namespace TeachersHandsBooks
             this.imageList1.Images.SetKeyName(3, "application-detail.png");
             this.imageList1.Images.SetKeyName(4, "plus-button.png");
             this.imageList1.Images.SetKeyName(5, "setting_tools.png");
-            // 
-            // FormRasp
-            // 
-            this.FormRasp.BackColor = System.Drawing.SystemColors.Control;
-            this.FormRasp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.FormRasp.Image = ((System.Drawing.Image)(resources.GetObject("FormRasp.Image")));
-            this.FormRasp.Location = new System.Drawing.Point(212, 54);
-            this.FormRasp.Name = "FormRasp";
-            this.FormRasp.Size = new System.Drawing.Size(51, 37);
-            this.FormRasp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.FormRasp.TabIndex = 4;
-            this.FormRasp.TabStop = false;
-            // 
-            // BtnDispAdd
-            // 
-            this.BtnDispAdd.BackColor = System.Drawing.SystemColors.Control;
-            this.BtnDispAdd.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BtnDispAdd.Image = ((System.Drawing.Image)(resources.GetObject("BtnDispAdd.Image")));
-            this.BtnDispAdd.Location = new System.Drawing.Point(87, 54);
-            this.BtnDispAdd.Name = "BtnDispAdd";
-            this.BtnDispAdd.Size = new System.Drawing.Size(51, 37);
-            this.BtnDispAdd.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.BtnDispAdd.TabIndex = 3;
-            this.BtnDispAdd.TabStop = false;
-            // 
-            // BtnConnectionDispGroup
-            // 
-            this.BtnConnectionDispGroup.BackColor = System.Drawing.SystemColors.Control;
-            this.BtnConnectionDispGroup.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BtnConnectionDispGroup.Image = ((System.Drawing.Image)(resources.GetObject("BtnConnectionDispGroup.Image")));
-            this.BtnConnectionDispGroup.Location = new System.Drawing.Point(144, 54);
-            this.BtnConnectionDispGroup.Name = "BtnConnectionDispGroup";
-            this.BtnConnectionDispGroup.Size = new System.Drawing.Size(51, 37);
-            this.BtnConnectionDispGroup.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.BtnConnectionDispGroup.TabIndex = 2;
-            this.BtnConnectionDispGroup.TabStop = false;
-            // 
-            // BtnAddGroup
-            // 
-            this.BtnAddGroup.BackColor = System.Drawing.Color.Transparent;
-            this.BtnAddGroup.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BtnAddGroup.Image = ((System.Drawing.Image)(resources.GetObject("BtnAddGroup.Image")));
-            this.BtnAddGroup.Location = new System.Drawing.Point(20, 54);
-            this.BtnAddGroup.Name = "BtnAddGroup";
-            this.BtnAddGroup.Size = new System.Drawing.Size(51, 37);
-            this.BtnAddGroup.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.BtnAddGroup.TabIndex = 1;
-            this.BtnAddGroup.TabStop = false;
-            // 
-            // GroupAddBOx
-            // 
-            this.GroupAddBOx.BackColor = System.Drawing.Color.Transparent;
-            this.GroupAddBOx.BorderColor = System.Drawing.Color.DarkGray;
-            this.GroupAddBOx.BorderRadius = 6;
-            this.GroupAddBOx.BorderThickness = 2;
-            this.GroupAddBOx.Controls.Add(this.FormRasp);
-            this.GroupAddBOx.Controls.Add(this.BtnDispAdd);
-            this.GroupAddBOx.Controls.Add(this.BtnConnectionDispGroup);
-            this.GroupAddBOx.Controls.Add(this.BtnAddGroup);
-            this.GroupAddBOx.CustomBorderColor = System.Drawing.Color.Silver;
-            this.GroupAddBOx.Dock = System.Windows.Forms.DockStyle.Top;
-            this.GroupAddBOx.FillColor = System.Drawing.SystemColors.ControlLight;
-            this.GroupAddBOx.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.GroupAddBOx.ForeColor = System.Drawing.Color.Transparent;
-            this.GroupAddBOx.Location = new System.Drawing.Point(0, 0);
-            this.GroupAddBOx.Name = "GroupAddBOx";
-            this.GroupAddBOx.ShadowDecoration.Parent = this.GroupAddBOx;
-            this.GroupAddBOx.Size = new System.Drawing.Size(1123, 105);
-            this.GroupAddBOx.TabIndex = 1;
-            this.GroupAddBOx.Text = "Формирование учебного процесса";
-            this.GroupAddBOx.UseTransparentBackground = true;
+            this.imageList1.Images.SetKeyName(6, "block.png");
             // 
             // MainForm
             // 
@@ -405,14 +416,14 @@ namespace TeachersHandsBooks
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MainTabControl.ResumeLayout(false);
             this.HomePage.ResumeLayout(false);
-            this.PageSettings.ResumeLayout(false);
-            this.materialCard1.ResumeLayout(false);
-            this.materialCard1.PerformLayout();
+            this.GroupAddBOx.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.FormRasp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDispAdd)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnConnectionDispGroup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnAddGroup)).EndInit();
-            this.GroupAddBOx.ResumeLayout(false);
+            this.PageSettings.ResumeLayout(false);
+            this.materialCard1.ResumeLayout(false);
+            this.materialCard1.PerformLayout();
             this.ResumeLayout(false);
 
         }

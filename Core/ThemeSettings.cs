@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TeachersHandsBooks.Core
 {
-    class ThemeSettings
+    public class ThemeSettings
     {
         public string ColorTheme { get; set; }
     }
