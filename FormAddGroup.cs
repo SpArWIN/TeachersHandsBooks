@@ -8,10 +8,12 @@ using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
 using TeachersHandsBooks.Core.Tables;
+using Group = TeachersHandsBooks.Core.Tables.Group;
 
 namespace TeachersHandsBooks
 {
@@ -19,7 +21,7 @@ namespace TeachersHandsBooks
     {
         DatabaseContext context = new DatabaseContext();
         private readonly ThemeSettings themeSettings;
-     
+
 
         public FormAddGroup(ThemeSettings theme)
         {
@@ -29,7 +31,21 @@ namespace TeachersHandsBooks
             this.themeSettings = theme;
 
         }
+        private void RefreshGroupDisplay()
+        {
+            GroupPanel.Controls.Clear(); 
 
+            
+            var groups = context.Groups.ToList();
+
+            foreach (var group in groups)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    CreateMaterialCard(group.NameGroup);
+                });
+            }
+        }
         private MaterialCard CreateMaterialCard(string groupName)
         {
             MaterialCard card = new MaterialCard();
@@ -52,8 +68,8 @@ namespace TeachersHandsBooks
         private void Grouplabel_Click(object sender, EventArgs e)
         {
             Label lbl = (Label)sender;
-            BoxAddGroups.Text = lbl.Text;
-            BoxAddGroups.Hint = "Редактирование группы";
+            BoxAddGroup.Text = lbl.Text;
+            BoxAddGroup.Hint = "Редактирование группы";
 
             BtnDeleteGroup.Visible = true;
             BtnDeleteGroup.Enabled = true;
@@ -79,5 +95,77 @@ namespace TeachersHandsBooks
                 VisGroup();
             });
         }
+        private bool Validations()
+        {
+            string InputGroup = BoxAddGroup.Text;
+            bool isValid = Regex.IsMatch(InputGroup, @"^[а-яА-Яa-zA-Z0-9\\\^]+$");
+            if (!isValid)
+            {
+                MaterialMessageBox.Show("Некорректный ввод", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, false, FlexibleMaterialForm.ButtonsPosition.Center); ;
+                //MessageBox.Show("Некорректный ввод. Разрешены только символы, тире и цифры.");
+                BoxAddGroup.Text = Regex.Replace(BoxAddGroup.Text, @"^[а-яА-Яa-zA-Z0-9\-]+$", "");
+                BoxAddGroup.SelectionStart = BoxAddGroup.Text.Length;
+                BoxAddGroup.Clear();
+            }
+            return isValid;
+        }
+        private bool IsGroupExists(string GroupName)
+        {
+            var existingGroup = context.Groups.FirstOrDefault(g => g.NameGroup == GroupName);
+
+            return existingGroup != null;
+        }
+
+        
+
+
+        private void BtnSaveGroup_Click(object sender, EventArgs e)
+        {
+            string InputTextBox = BoxAddGroup.Text;
+            if (string.IsNullOrWhiteSpace(InputTextBox))
+            {
+                MessageBox.Show("Поле не может быть пустым", "Ошибка заполнения", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            InputTextBox = InputTextBox.Trim();
+
+            bool Correct = Validations();
+            if (!Correct)
+            {
+                return;
+            }
+            else if (IsGroupExists(InputTextBox))
+            {
+                MessageBox.Show("Группа с наименованием '" + InputTextBox + "' уже существует.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            }
+            else
+            {
+                Group.AddGroupToDatabase(InputTextBox);
+                MessageBox.Show("Группа " + InputTextBox + " была успешно добавлена в базу данных","Добавление",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                RefreshGroupDisplay();
+
+            }
+
+        }
+
+        private void BtnDeleteGroup_Click(object sender, EventArgs e)
+        {
+            string GrN = BoxAddGroup.Text;
+            DialogResult res = MessageBox.Show("Вы действительно хотите удалить эту группу?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if(res == DialogResult.Yes)
+            {
+                Group.RemoveToDatabase(GrN);
+                RefreshGroupDisplay();
+                BoxAddGroup.Clear();
+                MessageBox.Show("Группа успешно удалена.", "Удаление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                return;
+            }
+
+        }
     }
+
 }

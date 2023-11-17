@@ -29,53 +29,53 @@ namespace TeachersHandsBooks
         /// </summary>
         private void InitializeComponent()
         {
-            this.BoxAddGroups = new MaterialSkin.Controls.MaterialMaskedTextBox();
+            this.BoxAddGroup = new MaterialSkin.Controls.MaterialMaskedTextBox();
             this.GroupPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.BtnDeleteGroup = new MaterialSkin.Controls.MaterialButton();
             this.BtnSaveGroup = new MaterialSkin.Controls.MaterialButton();
             this.SuspendLayout();
             // 
-            // BoxAddGroups
+            // BoxAddGroup
             // 
-            this.BoxAddGroups.AllowPromptAsInput = false;
-            this.BoxAddGroups.AnimateReadOnly = true;
-            this.BoxAddGroups.AsciiOnly = false;
-            this.BoxAddGroups.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.BoxAddGroups.BeepOnError = false;
-            this.BoxAddGroups.CutCopyMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
-            this.BoxAddGroups.Depth = 0;
-            this.BoxAddGroups.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.BoxAddGroups.HidePromptOnLeave = false;
-            this.BoxAddGroups.HideSelection = true;
-            this.BoxAddGroups.Hint = "Введите группу";
-            this.BoxAddGroups.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Default;
-            this.BoxAddGroups.LeadingIcon = null;
-            this.BoxAddGroups.Location = new System.Drawing.Point(174, 83);
-            this.BoxAddGroups.Mask = "";
-            this.BoxAddGroups.MaxLength = 32767;
-            this.BoxAddGroups.MouseState = MaterialSkin.MouseState.OUT;
-            this.BoxAddGroups.Name = "BoxAddGroups";
-            this.BoxAddGroups.PasswordChar = '\0';
-            this.BoxAddGroups.PrefixSuffixText = null;
-            this.BoxAddGroups.PromptChar = '_';
-            this.BoxAddGroups.ReadOnly = false;
-            this.BoxAddGroups.RejectInputOnFirstFailure = false;
-            this.BoxAddGroups.ResetOnPrompt = true;
-            this.BoxAddGroups.ResetOnSpace = true;
-            this.BoxAddGroups.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.BoxAddGroups.SelectedText = "";
-            this.BoxAddGroups.SelectionLength = 0;
-            this.BoxAddGroups.SelectionStart = 0;
-            this.BoxAddGroups.ShortcutsEnabled = true;
-            this.BoxAddGroups.Size = new System.Drawing.Size(331, 48);
-            this.BoxAddGroups.SkipLiterals = true;
-            this.BoxAddGroups.TabIndex = 4;
-            this.BoxAddGroups.TabStop = false;
-            this.BoxAddGroups.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.BoxAddGroups.TextMaskFormat = System.Windows.Forms.MaskFormat.IncludeLiterals;
-            this.BoxAddGroups.TrailingIcon = null;
-            this.BoxAddGroups.UseSystemPasswordChar = false;
-            this.BoxAddGroups.ValidatingType = null;
+            this.BoxAddGroup.AllowPromptAsInput = false;
+            this.BoxAddGroup.AnimateReadOnly = true;
+            this.BoxAddGroup.AsciiOnly = false;
+            this.BoxAddGroup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.BoxAddGroup.BeepOnError = false;
+            this.BoxAddGroup.CutCopyMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
+            this.BoxAddGroup.Depth = 0;
+            this.BoxAddGroup.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.BoxAddGroup.HidePromptOnLeave = false;
+            this.BoxAddGroup.HideSelection = true;
+            this.BoxAddGroup.Hint = "Введите группу";
+            this.BoxAddGroup.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Default;
+            this.BoxAddGroup.LeadingIcon = null;
+            this.BoxAddGroup.Location = new System.Drawing.Point(174, 83);
+            this.BoxAddGroup.Mask = "";
+            this.BoxAddGroup.MaxLength = 32767;
+            this.BoxAddGroup.MouseState = MaterialSkin.MouseState.OUT;
+            this.BoxAddGroup.Name = "BoxAddGroup";
+            this.BoxAddGroup.PasswordChar = '\0';
+            this.BoxAddGroup.PrefixSuffixText = null;
+            this.BoxAddGroup.PromptChar = '_';
+            this.BoxAddGroup.ReadOnly = false;
+            this.BoxAddGroup.RejectInputOnFirstFailure = false;
+            this.BoxAddGroup.ResetOnPrompt = true;
+            this.BoxAddGroup.ResetOnSpace = true;
+            this.BoxAddGroup.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.BoxAddGroup.SelectedText = "";
+            this.BoxAddGroup.SelectionLength = 0;
+            this.BoxAddGroup.SelectionStart = 0;
+            this.BoxAddGroup.ShortcutsEnabled = true;
+            this.BoxAddGroup.Size = new System.Drawing.Size(331, 48);
+            this.BoxAddGroup.SkipLiterals = true;
+            this.BoxAddGroup.TabIndex = 4;
+            this.BoxAddGroup.TabStop = false;
+            this.BoxAddGroup.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.BoxAddGroup.TextMaskFormat = System.Windows.Forms.MaskFormat.IncludeLiterals;
+            this.BoxAddGroup.TrailingIcon = null;
+            this.BoxAddGroup.UseSystemPasswordChar = false;
+            this.BoxAddGroup.ValidatingType = null;
             // 
             // GroupPanel
             // 
@@ -94,7 +94,7 @@ namespace TeachersHandsBooks
             this.BtnDeleteGroup.Depth = 0;
             this.BtnDeleteGroup.HighEmphasis = true;
             this.BtnDeleteGroup.Icon = null;
-            this.BtnDeleteGroup.Location = new System.Drawing.Point(275, 397);
+            this.BtnDeleteGroup.Location = new System.Drawing.Point(373, 397);
             this.BtnDeleteGroup.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.BtnDeleteGroup.MouseState = MaterialSkin.MouseState.HOVER;
             this.BtnDeleteGroup.Name = "BtnDeleteGroup";
@@ -106,6 +106,7 @@ namespace TeachersHandsBooks
             this.BtnDeleteGroup.UseAccentColor = false;
             this.BtnDeleteGroup.UseVisualStyleBackColor = false;
             this.BtnDeleteGroup.Visible = false;
+            this.BtnDeleteGroup.Click += new System.EventHandler(this.BtnDeleteGroup_Click);
             // 
             // BtnSaveGroup
             // 
@@ -116,7 +117,7 @@ namespace TeachersHandsBooks
             this.BtnSaveGroup.Depth = 0;
             this.BtnSaveGroup.HighEmphasis = true;
             this.BtnSaveGroup.Icon = null;
-            this.BtnSaveGroup.Location = new System.Drawing.Point(158, 397);
+            this.BtnSaveGroup.Location = new System.Drawing.Point(218, 397);
             this.BtnSaveGroup.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.BtnSaveGroup.MouseState = MaterialSkin.MouseState.HOVER;
             this.BtnSaveGroup.Name = "BtnSaveGroup";
@@ -127,6 +128,7 @@ namespace TeachersHandsBooks
             this.BtnSaveGroup.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.BtnSaveGroup.UseAccentColor = false;
             this.BtnSaveGroup.UseVisualStyleBackColor = false;
+            this.BtnSaveGroup.Click += new System.EventHandler(this.BtnSaveGroup_Click);
             // 
             // FormAddGroup
             // 
@@ -136,7 +138,7 @@ namespace TeachersHandsBooks
             this.Controls.Add(this.BtnDeleteGroup);
             this.Controls.Add(this.BtnSaveGroup);
             this.Controls.Add(this.GroupPanel);
-            this.Controls.Add(this.BoxAddGroups);
+            this.Controls.Add(this.BoxAddGroup);
             this.Name = "FormAddGroup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Добавление групп";
@@ -148,7 +150,7 @@ namespace TeachersHandsBooks
 
         #endregion
 
-        private MaterialSkin.Controls.MaterialMaskedTextBox BoxAddGroups;
+        private MaterialSkin.Controls.MaterialMaskedTextBox BoxAddGroup;
         private System.Windows.Forms.FlowLayoutPanel GroupPanel;
         private MaterialSkin.Controls.MaterialButton BtnDeleteGroup;
         private MaterialSkin.Controls.MaterialButton BtnSaveGroup;
