@@ -13,12 +13,13 @@ namespace TeachersHandsBooks.Core
 {
     class DatabaseContext : DbContext
     {
-        public DbSet<Displine> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
+
         public DatabaseContext() : base(new SQLiteConnection
         {
             ConnectionString = new SQLiteConnectionStringBuilder
             {
-                DataSource = Application.StartupPath + "\\Users.db",
+                DataSource = Application.StartupPath + "\\TeachersHandBookBd.db",
                 //ForeignKeys = true
             }.ConnectionString
         }, true)

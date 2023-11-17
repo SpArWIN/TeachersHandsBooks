@@ -227,7 +227,8 @@ namespace TeachersHandsBooks
 
         private void BtnAddGroup_Click_1(object sender, EventArgs e)
         {
-
+            FormAddGroup Group = new FormAddGroup(ThemSet);
+            Group.ShowDialog();
         }
     }
 }
