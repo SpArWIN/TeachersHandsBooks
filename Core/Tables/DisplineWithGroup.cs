@@ -20,6 +20,37 @@ namespace TeachersHandsBooks.Core.Tables
 
 
         public virtual KTP KTP { get; set; }
+
+
+        public static void DeleteFolders(string groupName, string disciplineName)
+        {
+            string RootFolderPath = "Folderess";
+            string GroupFolderPath = Path.Combine(RootFolderPath, groupName);
+            string DisciplineFolderPath = Path.Combine(GroupFolderPath, disciplineName);
+
+            // Проверяем существование папки дисциплины внутри папки группы
+            if (Directory.Exists(DisciplineFolderPath))
+            {
+                // Удаляем папку дисциплины
+                Directory.Delete(DisciplineFolderPath, true);
+            }
+
+            // Проверяем существование папки группы
+            if (Directory.Exists(GroupFolderPath))
+            {
+                // Проверяем пуста ли папка группы после удаления папки дисциплины
+                if (Directory.GetDirectories(GroupFolderPath).Length == 0 &&
+                    Directory.GetFiles(GroupFolderPath).Length == 0)
+                {
+                    // Удаляем папку группы, если она пуста
+                    Directory.Delete(GroupFolderPath);
+                }
+            }
+        }
+
+
+
+
         public static void CreateFolders(string NameGroup,string NameDispline,string KtpPath)
         {
             using(var context =  new DatabaseContext())

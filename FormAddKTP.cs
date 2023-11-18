@@ -18,6 +18,9 @@ namespace TeachersHandsBooks
     {
         private ThemeSettings themeSettings;
         DatabaseContext context = new DatabaseContext();
+        private Timer progressTimer;
+        private int currentProgress = 0;
+      
         public FormAddKTP(ThemeSettings theme)
         {
             InitializeComponent();
@@ -26,7 +29,25 @@ namespace TeachersHandsBooks
             this.themeSettings = theme;
             DataGridViewComboBoxColumn comboBoxColumn = (DataGridViewComboBoxColumn)GridKTPControll.Columns["Displines"];
             Displine.FillDisciplinesComboBoxColumn(comboBoxColumn);
+            progressTimer = new Timer();
+            progressTimer.Interval = 100; // Интервал обновления анимации (в миллисекундах)
+            progressTimer.Tick += ProgressTimer_Tick;
 
+        }
+
+        private void ProgressTimer_Tick(object sender, EventArgs e)
+        {
+            currentProgress += 10;
+            if (currentProgress > guna2CircleProgressBar1.Maximum)
+            {
+                // Если достигнут максимум, останавливаем анимацию
+                progressTimer.Stop();
+                guna2CircleProgressBar1.Visible = false;
+            }
+            else
+            {
+                guna2CircleProgressBar1.Value = currentProgress;
+            }
         }
 
         private void GetNamesFromIds(int groupId, int disciplineId, int ktpId)
@@ -42,6 +63,40 @@ namespace TeachersHandsBooks
             }
         }
         private bool IsKTPLoaded = false;
+        private void ShowConnection(int ktpId)
+        {
+            using (var context = new DatabaseContext())
+            {
+                var allDisplines = context.Displines.ToList();
+
+                // Получение ID дисциплин, связанных с выбранным КТП
+                var connectedDisciplines = context.ConnectWithGroup
+                    .Where(c => c.KTP.ID == ktpId)
+                    .Select(c => c.Displine.ID)
+                    .ToList();
+
+                // Удаление из списка всех дисциплин тех, которые уже связаны с выбранным КТП
+                foreach (var connectedDisciplineId in connectedDisciplines)
+                {
+                    var connectedDiscipline = allDisplines.FirstOrDefault(d => d.ID == connectedDisciplineId);
+                    if (connectedDiscipline != null)
+                    {
+                        allDisplines.Remove(connectedDiscipline);
+                    }
+                }
+
+                DataGridViewComboBoxColumn comboBoxColumn = (DataGridViewComboBoxColumn)GridKTPControll.Columns["Displines"];
+
+                // Очистка и обновление ComboBoxColumn
+                comboBoxColumn.DataSource = null;
+                comboBoxColumn.Items.Clear();
+                comboBoxColumn.DataSource = allDisplines;
+                comboBoxColumn.DisplayMember = "NameDispline";
+                comboBoxColumn.ValueMember = "ID";
+            }
+        }
+    
+    
         private void ShowsConnect()
         {
 
@@ -63,12 +118,19 @@ namespace TeachersHandsBooks
                             connection.KTP.NameKTP, // KTPS - название КТП
                             connection.Displine.NameDispline // Displines - название дисциплины
                         );
+
+
+                       
                     }
+
                 }
+                
+                
                 IsKTPLoaded = true;
                 GridKTPControll.ReadOnly = IsKTPLoaded;
             }
         }
+        
         private void FormAddKTP_Load(object sender, EventArgs e)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -85,11 +147,19 @@ namespace TeachersHandsBooks
             openFileDialog1.Filter = "Файлы Excel|*.xlsx;*.xls|Все файлы|*.*";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                Label ktplabel = new Label();
+                // Проверяем, существует ли метка ktplabel, если нет, то создаем новую
+                Label ktplabel = KTPPath.Controls.OfType<Label>().FirstOrDefault();
+                if (ktplabel == null)
+                {
+                    ktplabel = new Label();
+                    ktplabel.Width = 300;
+                    KTPPath.Controls.Add(ktplabel);
+                  
+                }
+        
                 SelectedPath = openFileDialog1.FileName;
                 ktplabel.Text = SelectedPath;
-                ktplabel.Width = 300;
-                KTPPath.Controls.Add(ktplabel);
+                BtnCreateAdd.Enabled = true;
             }
             using (var excel = new ExcelPackage(openFileDialog1.FileName))
             {
@@ -137,11 +207,24 @@ namespace TeachersHandsBooks
                                     {
                                         // Находим связанные записи DisplineWithGroup, которые содержат этот KTP
                                         var relatedDisplineWithGroup = context.ConnectWithGroup
-                                            .Where(dwg => dwg.KTP.ID == ktpToDelete.ID)
-                                            .ToList();
+            .Where(dwg => dwg.KTP.ID == ktpToDelete.ID)
+            .ToList();
 
-                                        // Удаляем найденные связи из контекста данных
-                                        context.ConnectWithGroup.RemoveRange(relatedDisplineWithGroup);
+                                        foreach (var connection in relatedDisplineWithGroup)
+                                        {
+                                            // Получаем информацию о дисциплине по ID
+                                            var discipline = context.Displines.FirstOrDefault(d => d.ID == connection.Displine.ID);
+
+                                            // Проверяем, что дисциплина найдена
+                                            if (discipline != null)
+                                            {
+                                                // Удаление папок, связанных с дисциплиной
+                                                DisplineWithGroup.DeleteFolders(groupName, discipline.NameDispline);
+                                            }
+
+                                            // Удаляем найденные связи из контекста данных
+                                            context.ConnectWithGroup.Remove(connection);
+                                        }
 
                                         // Теперь удаляем сам KTP
                                         context.kTPs.Remove(ktpToDelete);
@@ -150,7 +233,20 @@ namespace TeachersHandsBooks
                                         context.SaveChanges();
                                     }
                                 }
+                                else
+                                {
+                                    var IDktp = context.kTPs.FirstOrDefault(b => b.NameKTP == NameFile);
+                                    if (IDktp != null)
+                                    {
+                                        int ktpId = IDktp.ID;
+                                        ShowConnection(ktpId);
+                                    }
+                                  
+                                }
                             }
+
+                        
+                    
 
                             if (existingKtp != null)
                             {
@@ -230,9 +326,12 @@ namespace TeachersHandsBooks
                     }
 
                 }
-                MessageBox.Show("Связь успешно установлена");
 
-            
+
+                guna2CircleProgressBar1.Visible = true;
+                currentProgress = 0;
+                guna2CircleProgressBar1.Value = currentProgress;
+                progressTimer.Start();
 
 
 
@@ -241,6 +340,7 @@ namespace TeachersHandsBooks
             {
                 MessageBox.Show("Дисциплина не выбрана", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+           
         }
 
         private void GridKTPControll_DataError(object sender, DataGridViewDataErrorEventArgs e)
