@@ -150,7 +150,7 @@ namespace TeachersHandsBooks
 
         private void BtnGreenRad_CheckedChanged_1(object sender, EventArgs e)
         {
-            ThemeSkin.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green700, Primary.Green500, Accent.Green200, TextShade.WHITE);
+            ThemeSkin.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green500, Primary.LightGreen700, Accent.Green700, TextShade.WHITE);
         }
 
         private void FormRasp_Click(object sender, EventArgs e)

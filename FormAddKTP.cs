@@ -1,8 +1,10 @@
-﻿using MaterialSkin;
+﻿using Guna.UI2.WinForms;
+using MaterialSkin;
 using MaterialSkin.Controls;
 using OfficeOpenXml;
 using System;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -130,11 +132,61 @@ namespace TeachersHandsBooks
                 GridKTPControll.ReadOnly = IsKTPLoaded;
             }
         }
-        
+        private Color GetColorFromTheme(ThemeSettings setting)
+        {
+            Color selectedColor = Color.White; // Устанавливаем белый цвет по умолчанию
+
+            if (!string.IsNullOrEmpty(setting.ColorTheme) && setting.ColorTheme != "Transparent")
+            {
+                try
+                {
+                    selectedColor = Color.FromName(setting.ColorTheme);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    // Если возникла ошибка, установим цвет по умолчанию
+                    selectedColor = Color.White;
+                }
+            }
+
+            return selectedColor;
+        }
+        private DataGridViewCellStyle SetDataGridViewStyleFromTheme(DataGridView dataGridView, ThemeSettings setting)
+        {
+            DataGridViewCellStyle headerStyle = new DataGridViewCellStyle();
+            if (!string.IsNullOrEmpty(setting.ColorTheme) && setting.ColorTheme != "Transparent")
+            {
+                Color selectedColor;
+                try
+                {
+                    selectedColor = ColorTranslator.FromHtml(setting.ColorTheme); // Преобразование цвета из HTML/HEX в Color
+
+                    // Создание нового стиля для заголовков столбцов
+                   
+                    headerStyle.BackColor = selectedColor;
+
+                    // Применение стиля к заголовкам столбцов
+                    dataGridView.ColumnHeadersDefaultCellStyle = headerStyle;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    // Обработка ошибки, если есть
+                }
+               
+            }
+            return headerStyle;
+        }
+       
         private void FormAddKTP_Load(object sender, EventArgs e)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             ShowsConnect();
+            GridKTPControll.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridKTPControll, themeSettings);
+            GridKTPControll.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(themeSettings);
+           
+       
 
 
         }
