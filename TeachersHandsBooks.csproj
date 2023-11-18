@@ -92,6 +92,12 @@
     <Compile Include="FormAddGroup.Designer.cs">
       <DependentUpon>FormAddGroup.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormDisplineAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDisplineAdd.Designer.cs">
+      <DependentUpon>FormDisplineAdd.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +108,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormAddGroup.resx">
       <DependentUpon>FormAddGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDisplineAdd.resx">
+      <DependentUpon>FormDisplineAdd.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

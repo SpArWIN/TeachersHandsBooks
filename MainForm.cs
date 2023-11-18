@@ -191,19 +191,7 @@ namespace TeachersHandsBooks
             BtnDispAdd.BackColor = Color.Transparent;
         }
 
-        private void BtnConnectionDispGroup_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        
-
-      
-
-        private void BtnAddGroup_Click(object sender, EventArgs e)
-        {
-
-        }
+       
 
         private void BtnAddGroup_MouseEnter(object sender, EventArgs e)
         {
@@ -229,6 +217,12 @@ namespace TeachersHandsBooks
         {
             FormAddGroup Group = new FormAddGroup(ThemSet);
             Group.ShowDialog();
+        }
+
+        private void BtnDispAdd_Click_1(object sender, EventArgs e)
+        {
+            FormDisplineAdd AddDispline = new FormDisplineAdd(ThemSet);
+            AddDispline.ShowDialog();
         }
     }
 }

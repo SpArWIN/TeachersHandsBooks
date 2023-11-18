@@ -116,8 +116,6 @@ namespace TeachersHandsBooks
             return existingGroup != null;
         }
 
-        
-
 
         private void BtnSaveGroup_Click(object sender, EventArgs e)
         {
@@ -137,6 +135,8 @@ namespace TeachersHandsBooks
             else if (IsGroupExists(InputTextBox))
             {
                 MessageBox.Show("Группа с наименованием '" + InputTextBox + "' уже существует.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                BoxAddGroup.Clear();
+                BtnDeleteGroup.Enabled = false;
 
             }
             else
@@ -148,7 +148,6 @@ namespace TeachersHandsBooks
             }
 
         }
-
         private void BtnDeleteGroup_Click(object sender, EventArgs e)
         {
             string GrN = BoxAddGroup.Text;
@@ -166,6 +165,10 @@ namespace TeachersHandsBooks
             }
 
         }
+       
+        
+
+       
     }
 
 }

@@ -94,7 +94,7 @@ namespace TeachersHandsBooks
             this.BtnDeleteGroup.Depth = 0;
             this.BtnDeleteGroup.HighEmphasis = true;
             this.BtnDeleteGroup.Icon = null;
-            this.BtnDeleteGroup.Location = new System.Drawing.Point(373, 397);
+            this.BtnDeleteGroup.Location = new System.Drawing.Point(356, 397);
             this.BtnDeleteGroup.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.BtnDeleteGroup.MouseState = MaterialSkin.MouseState.HOVER;
             this.BtnDeleteGroup.Name = "BtnDeleteGroup";
@@ -117,7 +117,7 @@ namespace TeachersHandsBooks
             this.BtnSaveGroup.Depth = 0;
             this.BtnSaveGroup.HighEmphasis = true;
             this.BtnSaveGroup.Icon = null;
-            this.BtnSaveGroup.Location = new System.Drawing.Point(218, 397);
+            this.BtnSaveGroup.Location = new System.Drawing.Point(174, 397);
             this.BtnSaveGroup.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.BtnSaveGroup.MouseState = MaterialSkin.MouseState.HOVER;
             this.BtnSaveGroup.Name = "BtnSaveGroup";
