@@ -222,5 +222,10 @@ namespace TeachersHandsBooks
             FormAddKTP Ktp = new FormAddKTP(ThemSet);
             Ktp.ShowDialog();
         }
+
+        private void FormRasp_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -131,6 +131,7 @@ namespace TeachersHandsBooks
             this.FormRasp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.FormRasp.TabIndex = 4;
             this.FormRasp.TabStop = false;
+            this.FormRasp.Click += new System.EventHandler(this.FormRasp_Click_1);
             this.FormRasp.MouseEnter += new System.EventHandler(this.FormRasp_MouseEnter);
             this.FormRasp.MouseLeave += new System.EventHandler(this.FormRasp_MouseLeave);
             // 

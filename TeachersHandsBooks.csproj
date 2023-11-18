@@ -104,6 +104,12 @@
     <Compile Include="FormAddKTP.Designer.cs">
       <DependentUpon>FormAddKTP.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormationRasp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormationRasp.Designer.cs">
+      <DependentUpon>FormationRasp.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormDisplineAdd.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +129,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormAddKTP.resx">
       <DependentUpon>FormAddKTP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormationRasp.resx">
+      <DependentUpon>FormationRasp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormDisplineAdd.resx">
       <DependentUpon>FormDisplineAdd.cs</DependentUpon>
