@@ -10,19 +10,43 @@ namespace TeachersHandsBooks.Core.Tables
 {
  public   class DisplineWithGroup
     {
-        [Key]
-        public int IDW { get; set; }
 
-        [ForeignKey("Group")]
-        public int ID_Group { get; set; }
-        public Group Group { get; set; }
+        [Key] public int IDW { get; set; }
+       
 
-        [ForeignKey("Displine")]
-        public int ID_Displine { get; set; }
-        public Displine Displine { get; set; }
+     
+        public virtual Group Group { get; set; }
 
-        [ForeignKey("KTP")]
-        public int ID_KTP { get; set; }
-        public KTP KTP { get; set; }
+     
+ 
+        public  virtual Displine Displine { get; set; }
+
+     
+  
+        public virtual KTP KTP { get; set; }
+
+        public static void AddCon(int IDGroup,int IdDispline,int IDKTP)
+        {
+            using(var context = new DatabaseContext())
+            {
+
+                var group = context.Groups.FirstOrDefault(g => g.ID == IDGroup);
+                var discipline = context.Displines.FirstOrDefault(d => d.ID == IdDispline);
+                var ktp = context.kTPs.FirstOrDefault(k => k.ID == IDKTP);
+
+
+
+                var newDisplineWithGroup = new DisplineWithGroup
+                {
+                    Group = group,
+                    Displine = discipline,
+                    KTP = ktp
+                };
+
+                context.ConnectWithGroup.Add(newDisplineWithGroup);
+                context.SaveChanges();
+            }
+        }
+
     }
 }

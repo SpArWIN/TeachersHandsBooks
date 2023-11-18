@@ -224,5 +224,11 @@ namespace TeachersHandsBooks
             FormDisplineAdd AddDispline = new FormDisplineAdd(ThemSet);
             AddDispline.ShowDialog();
         }
+
+        private void BtnConnectionDispGroup_Click(object sender, EventArgs e)
+        {
+            FormAddKTP Ktp = new FormAddKTP(ThemSet);
+            Ktp.ShowDialog();
+        }
     }
 }

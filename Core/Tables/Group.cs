@@ -10,7 +10,7 @@ namespace TeachersHandsBooks.Core.Tables
   public  class Group
     {
         DatabaseContext context = new DatabaseContext();
-        [Key] public int ID_Group { get; set; }
+        [Key] public int ID { get; set; }
         public string NameGroup { get; set; }
 
         public static void RemoveToDatabase(string groupName)

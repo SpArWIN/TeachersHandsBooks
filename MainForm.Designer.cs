@@ -160,6 +160,7 @@ namespace TeachersHandsBooks
             this.BtnConnectionDispGroup.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.BtnConnectionDispGroup.TabIndex = 2;
             this.BtnConnectionDispGroup.TabStop = false;
+            this.BtnConnectionDispGroup.Click += new System.EventHandler(this.BtnConnectionDispGroup_Click);
             this.BtnConnectionDispGroup.MouseEnter += new System.EventHandler(this.BtnConnectionDispGroup_MouseEnter);
             this.BtnConnectionDispGroup.MouseLeave += new System.EventHandler(this.BtnConnectionDispGroup_MouseLeave);
             // 

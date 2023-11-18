@@ -15,7 +15,8 @@ namespace TeachersHandsBooks.Core
     {
         public DbSet<Group> Groups { get; set; }
         public DbSet<Displine> Displines { get; set; }
-        public DbSet <KTP> kTPs { get; set; }
+        public DbSet<KTP> kTPs { get; set; }
+        public DbSet<DisplineWithGroup> ConnectWithGroup { get; set; }
 
         public DatabaseContext() : base(new SQLiteConnection
         {
