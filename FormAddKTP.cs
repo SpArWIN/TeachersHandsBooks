@@ -102,19 +102,16 @@ namespace TeachersHandsBooks
                 ExcelWorksheet worksheet = excel.Workbook.Worksheets[0];
                 string NameFile = Path.GetFileName(SelectedPath);
 
-
                 string groupCellValue = worksheet.Cells["B6"].Text;
                 string[] parts = groupCellValue.Split('-');
                 if (parts.Length > 0)
                 {
-                   
                     string groupName = parts[0].Trim();
 
                     using (var context = new DatabaseContext())
                     {
                         var group = context.Groups.FirstOrDefault(g => g.NameGroup == groupName);
 
-                        var Ktp = context.kTPs.FirstOrDefault(b => b.NameKTP == NameFile);
                         if (group != null)
                         {
                             BtnCreateAdd.Enabled = true;
@@ -122,102 +119,121 @@ namespace TeachersHandsBooks
                             // Очистить данные в DataGridView перед отображением новой группы
                             GridKTPControll.Rows.Clear();
 
-                            // Добавить данные группы в DataGridView
-                            
+                            // Получить существующий КТП по имени
                             var existingKtp = context.kTPs.FirstOrDefault(k => k.NameKTP == NameFile);
-                         
+
                             if (existingKtp == null)
                             {
-                                var KTP = new KTP
+                                var newKTP = new KTP
                                 {
                                     NameKTP = NameFile
                                 };
-                                context.kTPs.Add(KTP);
+                                context.kTPs.Add(newKTP);
                                 context.SaveChanges();
-                                existingKtp = KTP;
+                                existingKtp = newKTP;
                             }
+                            else
+                            {
+                                var result = MessageBox.Show("КТП уже существует. Желаете перезаписать?", "Подтверждение", MessageBoxButtons.YesNo);
+
+                                if (result == DialogResult.Yes)
+                                {
+                                    var ktpToDelete = context.kTPs.FirstOrDefault(b => b.NameKTP == NameFile);
+                                    if (ktpToDelete != null)
+                                    {
+                                        // Находим связанные записи DisplineWithGroup, которые содержат этот KTP
+                                        var relatedDisplineWithGroup = context.ConnectWithGroup
+                                            .Where(dwg => dwg.KTP.ID == ktpToDelete.ID)
+                                            .ToList();
+
+                                        // Удаляем найденные связи из контекста данных
+                                        context.ConnectWithGroup.RemoveRange(relatedDisplineWithGroup);
+
+                                        // Теперь удаляем сам KTP
+                                        context.kTPs.Remove(ktpToDelete);
+
+                                        // Сохраняем изменения в базе данных
+                                        context.SaveChanges();
+                                    }
+                                }
+                            }
+
                             if (existingKtp != null)
                             {
+                                // Добавить данные группы и КТП в DataGridView
                                 GridKTPControll.Rows.Add(group.ID, group.NameGroup, existingKtp.NameKTP);
                             }
                             else
                             {
-                                MessageBox.Show("КТП уже существует ");
+                                MessageBox.Show("Группа не найдена в документе базы данных!", "Поиск не удался", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
-                           
-
-
                         }
-                        else
-                        {
-                            MessageBox.Show("Группа не найдена в документе базы данных!", "Поиск не удался", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
-                       
                     }
-
-
                 }
             }
         }
+
         private bool AreAllDisciplinesSelected(DataGridView dataGridView)
-        {
-            bool allDisciplinesSelected = true;
-
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                DataGridViewComboBoxCell comboBoxCell = row.Cells["Displines"] as DataGridViewComboBoxCell;
-
-                if (comboBoxCell != null)
-                {
-                    if (comboBoxCell.Value == null || comboBoxCell.Value.ToString() == "")
                     {
-                        allDisciplinesSelected = false;
-                        break;
-                    }
-                }
-            }
+                        bool allDisciplinesSelected = true;
 
-            return allDisciplinesSelected;
-        }
-        private void BtnCreateAdd_Click(object sender, EventArgs e)
-        {
-            if (AreAllDisciplinesSelected(GridKTPControll))
-            {
-                foreach (DataGridViewRow row in GridKTPControll.Rows)
-                {
-                    // Получение значений из ячеек DataGridView
-                    if (row.Cells["Column1"].Value != null &&
-                        row.Cells["Displines"].Value != null &&
-                        row.Cells["KTPs"].Value != null)
-                    {
-                        int groupId = Convert.ToInt32(row.Cells["Column1"].Value);
-                        int DisplineID =  Convert.ToInt32(row.Cells["Displines"].Value.ToString());
-                        string ktpName = row.Cells["KTPs"].Value.ToString();
+                        foreach (DataGridViewRow row in dataGridView.Rows)
+                        {
+                            DataGridViewComboBoxCell comboBoxCell = row.Cells["Displines"] as DataGridViewComboBoxCell;
 
-                        
+                            if (comboBoxCell != null)
+                            {
+                                if (comboBoxCell.Value == null || comboBoxCell.Value.ToString() == "")
+                                {
+                                    allDisciplinesSelected = false;
+                                    break;
+                                }
+                            }
+                        }
 
-                        // Получаем ID КТП из базы данных по имени
-                        int ktpId = context.kTPs
-                                         .Where(k => k.NameKTP == ktpName)
-                                         .Select(k => k.ID)
-                                         .FirstOrDefault();
-
-                        // Вызов метода AddCon для создания объекта DisplineWithGroup
-                        DisplineWithGroup.AddCon(groupId, DisplineID, ktpId);
+                        return allDisciplinesSelected;
                     }
 
-                }
-                MessageBox.Show("Связь успешно установлена");
-            }
-            else
-            {
-                MessageBox.Show("Дисциплина не выбрана", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
+                        private void BtnCreateAdd_Click(object sender, EventArgs e)
+                        {
+                            if (AreAllDisciplinesSelected(GridKTPControll))
+                            {
+                                foreach (DataGridViewRow row in GridKTPControll.Rows)
+                                {
+                                    // Получение значений из ячеек DataGridView
+                                    if (row.Cells["Column1"].Value != null &&
+                                        row.Cells["Displines"].Value != null &&
+                                        row.Cells["KTPs"].Value != null)
+                                    {
+                                        int groupId = Convert.ToInt32(row.Cells["Column1"].Value);
+                                        int DisplineID = Convert.ToInt32(row.Cells["Displines"].Value.ToString());
+                                        string ktpName = row.Cells["KTPs"].Value.ToString();
 
-        private void GridKTPControll_DataError(object sender, DataGridViewDataErrorEventArgs e)
-        {
-            //ignore
-        }
-    }
-}
+
+
+                                        // Получаем ID КТП из базы данных по имени
+                                        int ktpId = context.kTPs
+                                                         .Where(k => k.NameKTP == ktpName)
+                                                         .Select(k => k.ID)
+                                                         .FirstOrDefault();
+
+                                        // Вызов метода AddCon для создания объекта DisplineWithGroup
+                                        DisplineWithGroup.AddCon(groupId, DisplineID, ktpId);
+                                    }
+
+                                }
+                                MessageBox.Show("Связь успешно установлена");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Дисциплина не выбрана", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+
+                        private void GridKTPControll_DataError(object sender, DataGridViewDataErrorEventArgs e)
+                        {
+                            //ignore
+                        }
+                    }
+                }
+   
