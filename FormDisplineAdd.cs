@@ -7,9 +7,11 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
+using Displine = TeachersHandsBooks.Core.Tables.Displine;
 
 namespace TeachersHandsBooks
 {
@@ -72,6 +74,95 @@ namespace TeachersHandsBooks
             {
                 VisDispline();
             });
+        }
+        private bool Validations()
+        {
+            string InputGroup = DispBoxAdd.Text;
+            bool isValid = Regex.IsMatch(InputGroup, @"^[а-яА-Яa-zA-Z0-9\\\^]+$");
+            if (!isValid)
+            {
+                MaterialMessageBox.Show("Некорректный ввод", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, false, FlexibleMaterialForm.ButtonsPosition.Center); ;
+                //MessageBox.Show("Некорректный ввод. Разрешены только символы, тире и цифры.");
+                DispBoxAdd.Text = Regex.Replace(DispBoxAdd.Text, @"^[а-яА-Яa-zA-Z0-9\-]+$", "");
+                DispBoxAdd.SelectionStart = DispBoxAdd.Text.Length;
+                DispBoxAdd.Clear();
+            }
+            return isValid;
+        }
+        private bool IsGroupExists(string DisplineName)
+        {
+            var existingGroup = context.Displines.FirstOrDefault(g => g.NameDispline == DisplineName);
+
+            return existingGroup != null;
+        }
+
+        private void RefreshGroupDisplay()
+        {
+            flowLayoutPanel1.Controls.Clear();
+
+
+            var Displine = context.Displines.ToList();
+
+            foreach (var Disp in Displine)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    CreateMaterialCard(Disp.NameDispline);
+                });
+            }
+        }
+
+
+        private void BtnAddDisp_Click(object sender, EventArgs e)
+        {
+            string InputTextBox = DispBoxAdd.Text;
+            if (string.IsNullOrWhiteSpace(InputTextBox))
+            {
+                MessageBox.Show("Поле не может быть пустым", "Ошибка заполнения", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            InputTextBox = InputTextBox.Trim();
+
+            bool Correct = Validations();
+            if (!Correct)
+            {
+                return;
+            }
+            else if (IsGroupExists(InputTextBox))
+            {
+                MessageBox.Show("Дисциплина с наименованием '" + InputTextBox + "' уже существует.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                DispBoxAdd.Clear();
+                DispBoxAdd.Enabled = false;
+               
+
+
+            }
+            else
+            {
+               
+                MessageBox.Show("Группа " + InputTextBox + " была успешно добавлена в базу данных", "Добавление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Displine.AddDispline(InputTextBox);
+                RefreshGroupDisplay();
+
+
+            }
+        }
+
+        private void BtnDeleteDispline_Click(object sender, EventArgs e)
+        {
+            string GrN = DispBoxAdd.Text;
+            DialogResult res = MessageBox.Show("Вы действительно хотите удалить эту дисциплину?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (res == DialogResult.Yes)
+            {
+                Displine.RemoveDispline(GrN);
+                RefreshGroupDisplay();
+                DispBoxAdd.Clear();
+                MessageBox.Show("Дисциплина успешно удалена.", "Удаление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }

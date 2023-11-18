@@ -92,6 +92,7 @@ namespace TeachersHandsBooks
             this.BtnDeleteDispline.UseAccentColor = false;
             this.BtnDeleteDispline.UseVisualStyleBackColor = true;
             this.BtnDeleteDispline.Visible = false;
+            this.BtnDeleteDispline.Click += new System.EventHandler(this.BtnDeleteDispline_Click);
             // 
             // BtnAddDisp
             // 
@@ -112,6 +113,7 @@ namespace TeachersHandsBooks
             this.BtnAddDisp.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.BtnAddDisp.UseAccentColor = false;
             this.BtnAddDisp.UseVisualStyleBackColor = true;
+            this.BtnAddDisp.Click += new System.EventHandler(this.BtnAddDisp_Click);
             // 
             // FormDisplineAdd
             // 
@@ -124,6 +126,7 @@ namespace TeachersHandsBooks
             this.Controls.Add(this.label1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "FormDisplineAdd";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Добавление дисциплин";
             this.Load += new System.EventHandler(this.FormDisplineAdd_Load);
             this.ResumeLayout(false);

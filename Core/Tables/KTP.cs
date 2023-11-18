@@ -13,6 +13,12 @@ namespace TeachersHandsBooks.Core.Tables
         public string NameKTP { get; set; }
         public string Subject { get; set; }
         public string TypeOccupation { get; set; }
+        public static void AddKTP (string KTP)
+        {
+            using(var context = new DatabaseContext())
+            {
 
+            }
+        }
     }
 }
