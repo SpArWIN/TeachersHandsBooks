@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TeachersHandsBooks.Core.Tables
 {
-  public  class Group
+    public class Group
     {
         DatabaseContext context = new DatabaseContext();
         [Key] public int ID { get; set; }
@@ -15,7 +11,7 @@ namespace TeachersHandsBooks.Core.Tables
 
         public static void RemoveToDatabase(string groupName)
         {
-            using( var context = new DatabaseContext())
+            using (var context = new DatabaseContext())
             {
                 var groupToRemove = context.Groups.FirstOrDefault(g => g.NameGroup == groupName);
 
@@ -27,7 +23,7 @@ namespace TeachersHandsBooks.Core.Tables
                 else
                 {
                     return;
-                 
+
                 }
             }
         }

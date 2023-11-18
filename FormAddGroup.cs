@@ -1,18 +1,12 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
-using TeachersHandsBooks.Core.Tables;
 using Group = TeachersHandsBooks.Core.Tables.Group;
 
 namespace TeachersHandsBooks
@@ -33,9 +27,9 @@ namespace TeachersHandsBooks
         }
         private void RefreshGroupDisplay()
         {
-            GroupPanel.Controls.Clear(); 
+            GroupPanel.Controls.Clear();
 
-            
+
             var groups = context.Groups.ToList();
 
             foreach (var group in groups)
@@ -142,7 +136,7 @@ namespace TeachersHandsBooks
             else
             {
                 Group.AddGroupToDatabase(InputTextBox);
-                MessageBox.Show("Группа " + InputTextBox + " была успешно добавлена в базу данных","Добавление",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("Группа " + InputTextBox + " была успешно добавлена в базу данных", "Добавление", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 RefreshGroupDisplay();
 
             }
@@ -152,7 +146,7 @@ namespace TeachersHandsBooks
         {
             string GrN = BoxAddGroup.Text;
             DialogResult res = MessageBox.Show("Вы действительно хотите удалить эту группу?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-            if(res == DialogResult.Yes)
+            if (res == DialogResult.Yes)
             {
                 Group.RemoveToDatabase(GrN);
                 RefreshGroupDisplay();
@@ -165,10 +159,10 @@ namespace TeachersHandsBooks
             }
 
         }
-       
-        
 
-       
+
+
+
     }
 
 }

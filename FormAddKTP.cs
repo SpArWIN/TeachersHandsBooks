@@ -1,22 +1,16 @@
-﻿using Guna.UI2.WinForms;
-using MaterialSkin;
+﻿using MaterialSkin;
 using MaterialSkin.Controls;
 using OfficeOpenXml;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
-using LicenseContext = OfficeOpenXml.LicenseContext;
+using TeachersHandsBooks.Core.Tables;
 using Displine = TeachersHandsBooks.Core.Tables.Displine;
 using KTP = TeachersHandsBooks.Core.Tables.KTP;
-using System.IO;
-using TeachersHandsBooks.Core.Tables;
+using LicenseContext = OfficeOpenXml.LicenseContext;
 
 namespace TeachersHandsBooks
 {
@@ -49,10 +43,10 @@ namespace TeachersHandsBooks
         }
         private bool IsKTPLoaded = false;
         private void ShowsConnect()
-            {
+        {
 
-                if (SelectedPath == null)
-                {
+            if (SelectedPath == null)
+            {
                 using (var context = new DatabaseContext())
                 {
                     var allDisplineWithGroup = context.ConnectWithGroup.ToList();
@@ -174,66 +168,85 @@ namespace TeachersHandsBooks
         }
 
         private bool AreAllDisciplinesSelected(DataGridView dataGridView)
+        {
+            bool allDisciplinesSelected = true;
+
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                DataGridViewComboBoxCell comboBoxCell = row.Cells["Displines"] as DataGridViewComboBoxCell;
+
+                if (comboBoxCell != null)
+                {
+                    if (comboBoxCell.Value == null || comboBoxCell.Value.ToString() == "")
                     {
-                        bool allDisciplinesSelected = true;
-
-                        foreach (DataGridViewRow row in dataGridView.Rows)
-                        {
-                            DataGridViewComboBoxCell comboBoxCell = row.Cells["Displines"] as DataGridViewComboBoxCell;
-
-                            if (comboBoxCell != null)
-                            {
-                                if (comboBoxCell.Value == null || comboBoxCell.Value.ToString() == "")
-                                {
-                                    allDisciplinesSelected = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        return allDisciplinesSelected;
-                    }
-
-                        private void BtnCreateAdd_Click(object sender, EventArgs e)
-                        {
-                            if (AreAllDisciplinesSelected(GridKTPControll))
-                            {
-                                foreach (DataGridViewRow row in GridKTPControll.Rows)
-                                {
-                                    // Получение значений из ячеек DataGridView
-                                    if (row.Cells["Column1"].Value != null &&
-                                        row.Cells["Displines"].Value != null &&
-                                        row.Cells["KTPs"].Value != null)
-                                    {
-                                        int groupId = Convert.ToInt32(row.Cells["Column1"].Value);
-                                        int DisplineID = Convert.ToInt32(row.Cells["Displines"].Value.ToString());
-                                        string ktpName = row.Cells["KTPs"].Value.ToString();
-
-
-
-                                        // Получаем ID КТП из базы данных по имени
-                                        int ktpId = context.kTPs
-                                                         .Where(k => k.NameKTP == ktpName)
-                                                         .Select(k => k.ID)
-                                                         .FirstOrDefault();
-
-                                        // Вызов метода AddCon для создания объекта DisplineWithGroup
-                                        DisplineWithGroup.AddCon(groupId, DisplineID, ktpId);
-                                    }
-
-                                }
-                                MessageBox.Show("Связь успешно установлена");
-                            }
-                            else
-                            {
-                                MessageBox.Show("Дисциплина не выбрана", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            }
-                        }
-
-                        private void GridKTPControll_DataError(object sender, DataGridViewDataErrorEventArgs e)
-                        {
-                            //ignore
-                        }
+                        allDisciplinesSelected = false;
+                        break;
                     }
                 }
-   
+            }
+
+            return allDisciplinesSelected;
+        }
+
+        private void BtnCreateAdd_Click(object sender, EventArgs e)
+        {
+            if (AreAllDisciplinesSelected(GridKTPControll))
+            {
+                foreach (DataGridViewRow row in GridKTPControll.Rows)
+                {
+                    // Получение значений из ячеек DataGridView
+                    if (row.Cells["Column1"].Value != null &&
+                        row.Cells["Displines"].Value != null &&
+                        row.Cells["KTPs"].Value != null)
+                    {
+                        int groupId = Convert.ToInt32(row.Cells["Column1"].Value);
+                        int DisplineID = Convert.ToInt32(row.Cells["Displines"].Value.ToString());
+                        string ktpName = row.Cells["KTPs"].Value.ToString();
+
+
+
+                        // Получаем ID КТП из базы данных по имени
+                        int ktpId = context.kTPs
+                                         .Where(k => k.NameKTP == ktpName)
+                                         .Select(k => k.ID)
+                                         .FirstOrDefault();
+
+                        // Получаем название группы и дисциплины по их идентификаторам
+                        var groupName = context.Groups
+                                              .Where(g => g.ID == groupId)
+                                              .Select(g => g.NameGroup)
+                                              .FirstOrDefault();
+
+                        var disciplineName = context.Displines
+                                                   .Where(d => d.ID == DisplineID)
+                                                   .Select(d => d.NameDispline)
+                                                   .FirstOrDefault();
+
+
+                        // Вызов метода AddCon для создания объекта DisplineWithGroup
+                        DisplineWithGroup.AddCon(groupId, DisplineID, ktpId);
+
+                        DisplineWithGroup.CreateFolders(groupName, disciplineName, SelectedPath);
+                    }
+
+                }
+                MessageBox.Show("Связь успешно установлена");
+
+            
+
+
+
+            }
+            else
+            {
+                MessageBox.Show("Дисциплина не выбрана", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void GridKTPControll_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            //ignore
+        }
+    }
+}
+

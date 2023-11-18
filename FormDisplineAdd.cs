@@ -1,12 +1,8 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -133,13 +129,13 @@ namespace TeachersHandsBooks
                 MessageBox.Show("Дисциплина с наименованием '" + InputTextBox + "' уже существует.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 DispBoxAdd.Clear();
                 DispBoxAdd.Enabled = false;
-               
+
 
 
             }
             else
             {
-               
+
                 MessageBox.Show("Группа " + InputTextBox + " была успешно добавлена в базу данных", "Добавление", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Displine.AddDispline(InputTextBox);
                 RefreshGroupDisplay();
