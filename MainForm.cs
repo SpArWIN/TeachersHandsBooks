@@ -225,7 +225,8 @@ namespace TeachersHandsBooks
 
         private void FormRasp_Click_1(object sender, EventArgs e)
         {
-
+            FormationRasp Rasp = new FormationRasp(ThemSet);
+            Rasp.ShowDialog();
         }
     }
 }
