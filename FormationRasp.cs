@@ -171,7 +171,17 @@ namespace TeachersHandsBooks
 
         private void BtnFormRasp_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            bool isAnyColumnSelected = false;
+
+            foreach (DataGridViewColumn column in GridRasp.Columns)
+            {
+                // Проверка, выбран ли хотя бы один столбец
+                if (column is DataGridViewComboBoxColumn comboBoxColumn && comboBoxColumn.Selected)
+                {
+                    isAnyColumnSelected = true;
+                    break;
+                }
+            }
         }
 
         private void FormationRasp_Load(object sender, EventArgs e)
