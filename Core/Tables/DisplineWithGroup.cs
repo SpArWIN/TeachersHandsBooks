@@ -51,9 +51,9 @@ namespace TeachersHandsBooks.Core.Tables
 
 
 
-        public static void CreateFolders(string NameGroup,string NameDispline,string KtpPath)
+        public static void CreateFolders(string NameGroup, string NameDispline, string KtpPath)
         {
-            using(var context =  new DatabaseContext())
+            using (var context = new DatabaseContext())
             {
                 string RootFolderPath = "Folderess";
                 string GroupFolderPath = Path.Combine(RootFolderPath, NameGroup);
@@ -63,7 +63,7 @@ namespace TeachersHandsBooks.Core.Tables
                 }
 
                 // Создание папки дисциплины внутри папки группы, если она не существует
-                string DisciplineFolderPath = Path.Combine(GroupFolderPath,NameDispline);
+                string DisciplineFolderPath = Path.Combine(GroupFolderPath, NameDispline);
                 if (!Directory.Exists(DisciplineFolderPath))
                 {
                     Directory.CreateDirectory(DisciplineFolderPath);
@@ -82,7 +82,7 @@ namespace TeachersHandsBooks.Core.Tables
             }
 
         }
-        
+
         public static void AddCon(int IDGroup, int IdDispline, int IDKTP)
         {
             using (var context = new DatabaseContext())

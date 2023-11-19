@@ -1,5 +1,4 @@
-﻿using Guna.UI2.WinForms;
-using MaterialSkin;
+﻿using MaterialSkin;
 using MaterialSkin.Controls;
 using OfficeOpenXml;
 using System;
@@ -22,7 +21,7 @@ namespace TeachersHandsBooks
         DatabaseContext context = new DatabaseContext();
         private Timer progressTimer;
         private int currentProgress = 0;
-      
+
         public FormAddKTP(ThemeSettings theme)
         {
             InitializeComponent();
@@ -97,8 +96,8 @@ namespace TeachersHandsBooks
                 comboBoxColumn.ValueMember = "ID";
             }
         }
-    
-    
+
+
         private void ShowsConnect()
         {
 
@@ -122,12 +121,12 @@ namespace TeachersHandsBooks
                         );
 
 
-                       
+
                     }
 
                 }
-                
-                
+
+
                 IsKTPLoaded = true;
                 GridKTPControll.ReadOnly = IsKTPLoaded;
             }
@@ -163,7 +162,7 @@ namespace TeachersHandsBooks
                     selectedColor = ColorTranslator.FromHtml(setting.ColorTheme); // Преобразование цвета из HTML/HEX в Color
 
                     // Создание нового стиля для заголовков столбцов
-                   
+
                     headerStyle.BackColor = selectedColor;
 
                     // Применение стиля к заголовкам столбцов
@@ -174,19 +173,19 @@ namespace TeachersHandsBooks
                     MessageBox.Show(ex.Message);
                     // Обработка ошибки, если есть
                 }
-               
+
             }
             return headerStyle;
         }
-       
+
         private void FormAddKTP_Load(object sender, EventArgs e)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             ShowsConnect();
             GridKTPControll.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridKTPControll, themeSettings);
             GridKTPControll.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(themeSettings);
-           
-       
+
+
 
 
         }
@@ -206,9 +205,9 @@ namespace TeachersHandsBooks
                     ktplabel = new Label();
                     ktplabel.Width = 300;
                     KTPPath.Controls.Add(ktplabel);
-                  
+
                 }
-        
+
                 SelectedPath = openFileDialog1.FileName;
                 ktplabel.Text = SelectedPath;
                 BtnCreateAdd.Enabled = true;
@@ -293,12 +292,12 @@ namespace TeachersHandsBooks
                                         int ktpId = IDktp.ID;
                                         ShowConnection(ktpId);
                                     }
-                                  
+
                                 }
                             }
 
-                        
-                    
+
+
 
                             if (existingKtp != null)
                             {
@@ -392,7 +391,7 @@ namespace TeachersHandsBooks
             {
                 MessageBox.Show("Дисциплина не выбрана", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-           
+
         }
 
         private void GridKTPControll_DataError(object sender, DataGridViewDataErrorEventArgs e)

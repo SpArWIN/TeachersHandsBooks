@@ -1,7 +1,10 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.Linq;
 using TeachersHandsBooks.Core;
 
 namespace TeachersHandsBooks
@@ -21,6 +24,19 @@ namespace TeachersHandsBooks
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
             materialSkinManager.ColorScheme = new ColorScheme(Primary.Indigo500, Primary.Indigo700, Primary.Indigo100, Accent.Blue400, TextShade.WHITE);
             LoadSettings();
+            Dictionary<string, string> dayOfWeekTranslations = new Dictionary<string, string>
+        {
+            { "Monday", "Понедельник" },
+            { "Tuesday", "Вторник" },
+            { "Wednesday", "Среда" },
+            { "Thursday", "Четверг" },
+            { "Friday", "Пятница" },
+            { "Saturday", "Суббота" },
+
+        };
+
+
+
         }
         private void SaveSettings()
         {
@@ -104,8 +120,34 @@ namespace TeachersHandsBooks
 
             }
         }
+        private  void TodayDay()
+        {
+            DateTime currentDate = DateTime.Now;
+            string dayOfWeekRussian = currentDate.ToString("dddd", new CultureInfo("ru-RU"));
+            var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
+            if (dayId != null)
+            {
+                var todayEntries = context.TimeTables
+                           .Where(entry => entry.Day.ID == dayId)
+                           .Select(entry => new
+                           {
+                               Group = entry.DisplineWithGroup.Group.NameGroup, // Предположим, что внешний ключ Teacher_ID ссылается на группу
+                                Discipline = entry.DisplineWithGroup.Displine.NameDispline, // Поле с дисциплиной в таблице TimeTables
+                                Pair = entry.Pair.Pair // Поле с парой в таблице TimeTables
+                            })
+                           .ToList();
+
+                // Привязываем результаты к DataGridView
+                GridRaspisanie.DataSource = todayEntries;
+
+            }
+
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
+            TodayDay();
+
+
             SaveSettings();
         }
 
@@ -222,7 +264,7 @@ namespace TeachersHandsBooks
             FormAddKTP Ktp = new FormAddKTP(ThemSet);
             Ktp.ShowDialog();
         }
-        
+
         private void FormRasp_Click_1(object sender, EventArgs e)
         {
             FormationRasp Rasp = new FormationRasp(ThemSet);
