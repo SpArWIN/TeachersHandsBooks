@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
@@ -81,18 +82,14 @@ namespace TeachersHandsBooks
             var pairs = context.Pairs.Select(p => p.Pair).ToList();
 
             // Получаем дни недели из базы данных
+            //  var daysOfWeek = context.DayTables.Select(d => d.Day).ToList();
             var daysOfWeek = context.DayTables.Select(d => d.Day).ToList();
-
+            
             // Очистить все предыдущие столбцы и строки, если нужно
             GridRasp.Columns.Clear();
             GridRasp.Rows.Clear();
 
-            //А это ниже для заполнения  Combox дисциплин, связанных
-            /*     var selectedGroupDisciplines = context.ConnectWithGroup
-             .Where(dwg => dwg.Group.ID == selectedGroupId)
-             .Select(dwg => dwg.Displine.NameDispline)
-             .ToList();
-            */
+            
 
             DataGridViewTextBoxColumn pairsColumn = new DataGridViewTextBoxColumn();
             pairsColumn.HeaderText = "Пары";
@@ -104,9 +101,10 @@ namespace TeachersHandsBooks
             {
                 DataGridViewTextBoxColumn dayColumn = new DataGridViewTextBoxColumn();
                 dayColumn.HeaderText = day; // Установка заголовка как имя дня недели
-                dayColumn.Name = $"{day}Column"; // Имя для обращения к столбцу по дню недели
+                dayColumn.Name = "Columnes"; // Имя для обращения к столбцу по дню недели
                 GridRasp.Columns.Add(dayColumn);
             }
+
 
             // Добавление строк (ячеек) в DataGridView для всех пар
             foreach (var pair in pairs)
@@ -219,7 +217,7 @@ namespace TeachersHandsBooks
             // Добавление кнопки на форму
             this.Controls.Add(btnFormRasp);
         }
-
+       
         private void BtnFormRasp_Click(object sender, EventArgs e)
         {
 
@@ -246,6 +244,8 @@ namespace TeachersHandsBooks
             if (isAnyCellFilled)
             {
                 CollectDataGridViewData(GridRasp);
+                MainForm Main = new MainForm();
+                Main.TodayDay();
                 MessageBox.Show("Возможно, расписание было сформировано успешно");
             }
         }
@@ -285,7 +285,7 @@ namespace TeachersHandsBooks
             return daysOfWeek;
         }
 
-
+        private List<(string DayOfWeek, string Discipline, string Pair)> previouslySelectedEntries = new List<(string, string, string)>();
         private void CollectDataGridViewData(DataGridView datagrid)
         {
             List<int> disciplineIds = new List<int>();
@@ -330,13 +330,16 @@ namespace TeachersHandsBooks
                     
                 }
 
+               
+
+
+
             }
             AddTimeTableRecords(disciplineIds, daysOfWeek, pairs);
         }
+     
 
-
-
-        private int GetDisciplineIdByName(string disciplines)
+            private int GetDisciplineIdByName(string disciplines)
         {
             var discipline = context.Displines
      .Where(d => d.NameDispline == disciplines)
@@ -354,35 +357,33 @@ namespace TeachersHandsBooks
 
         public void AddTimeTableRecords(List<int> disciplineIds, List<string> daysOfWeek, List<string> pairs)
         {
-            foreach (var disciplineId in disciplineIds)
+            for (int i = 0; i < disciplineIds.Count; i++)
             {
+                var disciplineId = disciplineIds[i];
                 var disciplineWithGroup = GetDisplineWithGroupById(disciplineId);
-                var dayTable = GetDayTableByName(daysOfWeek);
-                var numberPair = GetNumberPairByName(pairs);
-
+                var dayTable = GetDayTableByName(new List<string> { daysOfWeek[i] });
+                var numberPair = GetNumberPairByName(new List<string> { pairs[i] });
                 foreach (var disciplineGroup in disciplineWithGroup)
                 {
-                    foreach (var day in dayTable)
+                    foreach (var pair in numberPair)
                     {
-                        foreach (var pair in numberPair)
+                        TimeTable newRecord = new TimeTable
                         {
-                            // Создаем новую запись в таблице TimeTable
-                            TimeTable newRecord = new TimeTable
-                            {
-                                // Связываем с DisplineWithGroup по IDW
-                                DisplineWithGroup = disciplineGroup,
-                                Day = day,
-                                Pair = pair
-                            };
+                            DisplineWithGroup = disciplineGroup,
+                            Day = dayTable.FirstOrDefault(), // Получите соответствующий день из dayTable
+                            Pair = pair
+                        };
 
-                            context.TimeTables.Add(newRecord);
-                        }
+                        context.TimeTables.Add(newRecord);
                     }
                 }
             }
 
-            // Сохраняем все изменения в базе данных
             context.SaveChanges();
+        
+
+            // Сохраняем все изменения в базе данных
+
         }
         private void FormationRasp_Load(object sender, EventArgs e)
         {
@@ -409,6 +410,9 @@ namespace TeachersHandsBooks
             // Сохранение выбранного ID группы
             selectedGroupId = groupId;
             ShowsPairsANDDay();
+        
+
+
         }
 
         private void GridRasp_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

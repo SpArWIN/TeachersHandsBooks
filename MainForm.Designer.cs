@@ -30,13 +30,14 @@ namespace TeachersHandsBooks
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainTabControl = new MaterialSkin.Controls.MaterialTabControl();
             this.HomePage = new System.Windows.Forms.TabPage();
+            this.GridRaspisanie = new Guna.UI2.WinForms.Guna2DataGridView();
             this.GroupAddBOx = new Guna.UI2.WinForms.Guna2GroupBox();
             this.FormRasp = new System.Windows.Forms.PictureBox();
             this.BtnDispAdd = new System.Windows.Forms.PictureBox();
@@ -58,9 +59,10 @@ namespace TeachersHandsBooks
             this.SwitchTheme = new MaterialSkin.Controls.MaterialSwitch();
             this.AboutProgramm = new System.Windows.Forms.TabPage();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.GridRaspisanie = new Guna.UI2.WinForms.Guna2DataGridView();
+            this.label1 = new System.Windows.Forms.Label();
             this.MainTabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).BeginInit();
             this.GroupAddBOx.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FormRasp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDispAdd)).BeginInit();
@@ -68,7 +70,6 @@ namespace TeachersHandsBooks
             ((System.ComponentModel.ISupportInitialize)(this.BtnAddGroup)).BeginInit();
             this.PageSettings.SuspendLayout();
             this.materialCard1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).BeginInit();
             this.SuspendLayout();
             // 
             // MainTabControl
@@ -104,12 +105,90 @@ namespace TeachersHandsBooks
             this.HomePage.Text = "Главная";
             this.HomePage.UseVisualStyleBackColor = true;
             // 
+            // GridRaspisanie
+            // 
+            this.GridRaspisanie.AllowUserToAddRows = false;
+            this.GridRaspisanie.AllowUserToDeleteRows = false;
+            this.GridRaspisanie.AllowUserToOrderColumns = true;
+            this.GridRaspisanie.AllowUserToResizeColumns = false;
+            this.GridRaspisanie.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.GridRaspisanie.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.GridRaspisanie.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.GridRaspisanie.BackgroundColor = System.Drawing.Color.White;
+            this.GridRaspisanie.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.GridRaspisanie.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.GridRaspisanie.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.GridRaspisanie.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.GridRaspisanie.ColumnHeadersHeight = 29;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.GridRaspisanie.DefaultCellStyle = dataGridViewCellStyle3;
+            this.GridRaspisanie.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GridRaspisanie.EnableHeadersVisualStyles = false;
+            this.GridRaspisanie.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this.GridRaspisanie.Location = new System.Drawing.Point(0, 105);
+            this.GridRaspisanie.Name = "GridRaspisanie";
+            this.GridRaspisanie.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.GridRaspisanie.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.GridRaspisanie.RowHeadersVisible = false;
+            this.GridRaspisanie.RowTemplate.Height = 35;
+            this.GridRaspisanie.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.GridRaspisanie.Size = new System.Drawing.Size(1123, 458);
+            this.GridRaspisanie.TabIndex = 2;
+            this.GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
+            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
+            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.GridRaspisanie.ThemeStyle.BackColor = System.Drawing.Color.White;
+            this.GridRaspisanie.ThemeStyle.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this.GridRaspisanie.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            this.GridRaspisanie.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.GridRaspisanie.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.GridRaspisanie.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
+            this.GridRaspisanie.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            this.GridRaspisanie.ThemeStyle.HeaderStyle.Height = 29;
+            this.GridRaspisanie.ThemeStyle.ReadOnly = false;
+            this.GridRaspisanie.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
+            this.GridRaspisanie.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.GridRaspisanie.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.GridRaspisanie.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.GridRaspisanie.ThemeStyle.RowsStyle.Height = 35;
+            this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            // 
             // GroupAddBOx
             // 
             this.GroupAddBOx.BackColor = System.Drawing.Color.Transparent;
             this.GroupAddBOx.BorderColor = System.Drawing.Color.DarkGray;
             this.GroupAddBOx.BorderRadius = 6;
             this.GroupAddBOx.BorderThickness = 2;
+            this.GroupAddBOx.Controls.Add(this.label1);
             this.GroupAddBOx.Controls.Add(this.FormRasp);
             this.GroupAddBOx.Controls.Add(this.BtnDispAdd);
             this.GroupAddBOx.Controls.Add(this.BtnConnectionDispGroup);
@@ -412,77 +491,15 @@ namespace TeachersHandsBooks
             this.imageList1.Images.SetKeyName(5, "setting_tools.png");
             this.imageList1.Images.SetKeyName(6, "block.png");
             // 
-            // GridRaspisanie
+            // label1
             // 
-            this.GridRaspisanie.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            this.GridRaspisanie.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.GridRaspisanie.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.GridRaspisanie.BackgroundColor = System.Drawing.Color.White;
-            this.GridRaspisanie.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.GridRaspisanie.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.GridRaspisanie.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.GridRaspisanie.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.GridRaspisanie.ColumnHeadersHeight = 29;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.GridRaspisanie.DefaultCellStyle = dataGridViewCellStyle3;
-            this.GridRaspisanie.EnableHeadersVisualStyles = false;
-            this.GridRaspisanie.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.GridRaspisanie.Location = new System.Drawing.Point(577, 111);
-            this.GridRaspisanie.Name = "GridRaspisanie";
-            this.GridRaspisanie.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.GridRaspisanie.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            this.GridRaspisanie.RowHeadersVisible = false;
-            this.GridRaspisanie.RowTemplate.Height = 35;
-            this.GridRaspisanie.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.GridRaspisanie.Size = new System.Drawing.Size(492, 404);
-            this.GridRaspisanie.TabIndex = 2;
-            this.GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
-            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
-            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            this.GridRaspisanie.ThemeStyle.BackColor = System.Drawing.Color.White;
-            this.GridRaspisanie.ThemeStyle.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.GridRaspisanie.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            this.GridRaspisanie.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.GridRaspisanie.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.GridRaspisanie.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
-            this.GridRaspisanie.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            this.GridRaspisanie.ThemeStyle.HeaderStyle.Height = 29;
-            this.GridRaspisanie.ThemeStyle.ReadOnly = false;
-            this.GridRaspisanie.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
-            this.GridRaspisanie.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.GridRaspisanie.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.GridRaspisanie.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            this.GridRaspisanie.ThemeStyle.RowsStyle.Height = 35;
-            this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(463, 66);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(61, 25);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "label1";
             // 
             // MainForm
             // 
@@ -498,7 +515,9 @@ namespace TeachersHandsBooks
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MainTabControl.ResumeLayout(false);
             this.HomePage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).EndInit();
             this.GroupAddBOx.ResumeLayout(false);
+            this.GroupAddBOx.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FormRasp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDispAdd)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnConnectionDispGroup)).EndInit();
@@ -506,7 +525,6 @@ namespace TeachersHandsBooks
             this.PageSettings.ResumeLayout(false);
             this.materialCard1.ResumeLayout(false);
             this.materialCard1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -537,6 +555,7 @@ namespace TeachersHandsBooks
         private System.Windows.Forms.PictureBox BtnConnectionDispGroup;
         private System.Windows.Forms.PictureBox BtnAddGroup;
         private Guna.UI2.WinForms.Guna2DataGridView GridRaspisanie;
+        private System.Windows.Forms.Label label1;
     }
 }
 

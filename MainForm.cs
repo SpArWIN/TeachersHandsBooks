@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Forms;
 using TeachersHandsBooks.Core;
 
 namespace TeachersHandsBooks
@@ -120,33 +121,104 @@ namespace TeachersHandsBooks
 
             }
         }
-        private  void TodayDay()
+        public  void TodayDay()
         {
             DateTime currentDate = DateTime.Now;
-            string dayOfWeekRussian = currentDate.ToString("dddd", new CultureInfo("ru-RU"));
+            string dayOfWeekRussian =  currentDate.ToString("dddd", new CultureInfo("ru-RU"));
+       
             var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
             if (dayId != null)
             {
+                
                 var todayEntries = context.TimeTables
-                           .Where(entry => entry.Day.ID == dayId)
-                           .Select(entry => new
-                           {
-                               Group = entry.DisplineWithGroup.Group.NameGroup, // Предположим, что внешний ключ Teacher_ID ссылается на группу
-                                Discipline = entry.DisplineWithGroup.Displine.NameDispline, // Поле с дисциплиной в таблице TimeTables
-                                Pair = entry.Pair.Pair // Поле с парой в таблице TimeTables
-                            })
-                           .ToList();
+        .Where(entry => entry.Day.ID == dayId)
+        .Select(entry => new
+        {
+            Group = entry.DisplineWithGroup.Group.NameGroup,
+            Discipline = entry.DisplineWithGroup.Displine.NameDispline,
+            Pair = entry.Pair.Pair
+        })
+         // Выбрать уникальные записи
+         .Distinct()
+        .ToList();
+
+                DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
+                groupColumn.HeaderText = "Группа"; // Название столбца
+                groupColumn.DataPropertyName = "Group"; // Указание свойства объекта данных для этого столбца
+                GridRaspisanie.Columns.Add(groupColumn); // Добавление столбца в DataGridView
+
+                DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
+                disciplineColumn.HeaderText = "Дисциплина";
+                disciplineColumn.DataPropertyName = "Discipline";
+                GridRaspisanie.Columns.Add(disciplineColumn);
+
+                DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                pairColumn.HeaderText = "Пары";
+                pairColumn.DataPropertyName = "Pair";
+                GridRaspisanie.Columns.Add(pairColumn);
 
                 // Привязываем результаты к DataGridView
+                GridRaspisanie.AutoGenerateColumns = false;
                 GridRaspisanie.DataSource = todayEntries;
-
+                label1.Text = dayOfWeekRussian;
+                label1.Font = new Font("Segui UI", 14);
+                label1.BackColor = Color.Transparent;
             }
 
         }
+        private Color GetColorFromTheme(ThemeSettings setting)
+        {
+            Color selectedColor = Color.White; // Устанавливаем белый цвет по умолчанию
+
+            if (!string.IsNullOrEmpty(setting.ColorTheme) && setting.ColorTheme != "Transparent")
+            {
+                try
+                {
+                    selectedColor = Color.FromName(setting.ColorTheme);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    // Если возникла ошибка, установим цвет по умолчанию
+                    selectedColor = Color.White;
+                }
+            }
+
+            return selectedColor;
+        }
+        private DataGridViewCellStyle SetDataGridViewStyleFromTheme(DataGridView dataGridView, ThemeSettings setting)
+        {
+            DataGridViewCellStyle headerStyle = new DataGridViewCellStyle();
+            if (!string.IsNullOrEmpty(setting.ColorTheme) && setting.ColorTheme != "Transparent")
+            {
+                Color selectedColor;
+                try
+                {
+                    selectedColor = ColorTranslator.FromHtml(setting.ColorTheme); // Преобразование цвета из HTML/HEX в Color
+
+                    // Создание нового стиля для заголовков столбцов
+
+                    headerStyle.BackColor = selectedColor;
+
+                    // Применение стиля к заголовкам столбцов
+                    dataGridView.ColumnHeadersDefaultCellStyle = headerStyle;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    // Обработка ошибки, если есть
+                }
+
+            }
+            return headerStyle;
+        }
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
             TodayDay();
-
+            GridRaspisanie.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridRaspisanie, ThemSet);
+            GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(ThemSet);
 
             SaveSettings();
         }
