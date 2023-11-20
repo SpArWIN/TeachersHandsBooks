@@ -3,6 +3,7 @@ using MaterialSkin.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -17,6 +18,9 @@ namespace TeachersHandsBooks
         readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
         EdingFormValue editingForm = new EdingFormValue();
         private DatabaseContext context = new DatabaseContext();
+        // для гифки
+        private Image gifImage;
+      
 
         public MainForm()
         {
@@ -26,17 +30,11 @@ namespace TeachersHandsBooks
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
             materialSkinManager.ColorScheme = new ColorScheme(Primary.Indigo500, Primary.Indigo700, Primary.Indigo100, Accent.Blue400, TextShade.WHITE);
             LoadSettings();
-            Dictionary<string, string> dayOfWeekTranslations = new Dictionary<string, string>
-        {
-            { "Monday", "Понедельник" },
-            { "Tuesday", "Вторник" },
-            { "Wednesday", "Среда" },
-            { "Thursday", "Четверг" },
-            { "Friday", "Пятница" },
-            { "Saturday", "Суббота" },
-
-        };
-
+            gifImage = Properties.Resources.dsds;
+            toolTip1.SetToolTip(BtnAddGroup, "Добавление групп");
+            toolTip1.SetToolTip(BtnDispAdd, "Добавление дисциплин");
+            toolTip1.SetToolTip(BtnConnectionDispGroup, "Добавление КТП");
+            toolTip1.SetToolTip(FormRasp, "Формирование расписания ");
 
 
         }
@@ -69,6 +67,25 @@ namespace TeachersHandsBooks
             {
                 ThemSet.ColorTheme = "Blue";
             }
+            SwitchTheme.Checked = (ThemeSkin.Theme == MaterialSkinManager.Themes.DARK);
+            if (SwitchTheme.Checked)
+            {
+                GroupAddBOx.FillColor = Color.Transparent;
+                GridRaspisanie.BackgroundColor = Color.FromArgb(50, 50, 50);
+                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
+
+
+
+
+            }
+            else if (!SwitchTheme.Checked)
+            {
+                GroupAddBOx.FillColor = Color.WhiteSmoke;
+                GridRaspisanie.BackgroundColor = Color.WhiteSmoke;
+                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Teal;
+            }
+
+
 
             Properties.Settings.Default.ColorTheme = ThemSet.ColorTheme;
             editingForm.SetBorderColorFromTheme(GroupAddBOx, ThemSet);
@@ -134,7 +151,7 @@ namespace TeachersHandsBooks
 
 
             }
-            else
+            else if(!SwitchTheme.Checked)
             {
                 GroupAddBOx.FillColor = Color.WhiteSmoke;
                 GridRaspisanie.BackgroundColor = Color.WhiteSmoke;
@@ -143,6 +160,7 @@ namespace TeachersHandsBooks
         }
         public void TodayDay()
         {
+          
             DateTime currentDate = DateTime.Now;
             DateTime Data = currentDate.Date;
             label2.Text = Data.ToString("d", new CultureInfo("ru-RU"));
@@ -151,7 +169,7 @@ namespace TeachersHandsBooks
             var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
             if (dayId != null)
             {
-
+                GridRaspisanie.Columns.Clear();
                 var todayEntries = context.TimeTables
         .Where(entry => entry.Day.ID == dayId)
         .Select(entry => new
@@ -239,7 +257,8 @@ namespace TeachersHandsBooks
         private void Form1_Load(object sender, EventArgs e)
         {
             TodayDay();
-          
+            gifImage = Properties.Resources.LoadPicture;
+            BoxUpdate.Image = gifImage;
             SetFontStyleForAllCells(GridRaspisanie, FontStyle.Regular);
             label1.Font = new Font("Arial", 12, FontStyle.Bold);
             label2.Font = new Font("Arial", 10, FontStyle.Bold);
@@ -384,5 +403,33 @@ namespace TeachersHandsBooks
         {
 
         }
+        private void StartAnimate()
+        {
+            if (BoxUpdate.Image == gifImage)
+            {
+                Timer timer = new Timer();
+                timer.Interval = 5000; // 5000 миллисекунд = 5 секунд
+
+                // Воспроизводим анимацию в течение 5 секунд
+                BoxUpdate.Image = Properties.Resources.dsds; // Очищаем изображение
+                timer.Tick += (s, args) =>
+                {
+                    BoxUpdate.Image = gifImage; // Останавливаем анимацию
+                    timer.Stop(); // Останавливаем таймер
+                    timer.Dispose(); // Освобождаем ресурсы таймера
+                };
+                timer.Start(); // Запускаем таймер
+            }
+        }
+        private void BoxUpdate_Click(object sender, EventArgs e)
+        {
+            StartAnimate();
+            TodayDay();
+        }
+
     }
-}
+
+       
+    }
+    
+

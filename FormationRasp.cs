@@ -155,7 +155,7 @@ namespace TeachersHandsBooks
                 }
             }
 
-          //  DisableOccupiedCells(GridRasp);
+            DisableOccupiedCells(GridRasp);
 
             GridRasp.Columns["PairsColumn"].ReadOnly = true;
            
@@ -203,35 +203,41 @@ namespace TeachersHandsBooks
         {
 
 
-            bool isAnyCellFilled = false;
+            bool isAnyCellFilled = true; // Предполагаем, что хотя бы одна ячейка заполнена
 
-            foreach (DataGridViewRow row in GridRasp.Rows)
+            foreach (DataGridViewColumn column in GridRasp.Columns)
             {
-                foreach (DataGridViewCell cell in row.Cells)
+                bool isColumnFilled = false; // Проверка для каждого столбца
+
+                foreach (DataGridViewRow row in GridRasp.Rows)
                 {
+                    DataGridViewCell cell = row.Cells[column.Index];
+
                     if (cell.Value != null && !string.IsNullOrEmpty(cell.Value.ToString()))
                     {
-                        isAnyCellFilled = true;
+                        isColumnFilled = true; // Если хотя бы одна ячейка в столбце заполнена, устанавливаем флаг
                         break;
                     }
+                }
+
+                if (!isColumnFilled) // Если столбец не заполнен, устанавливаем флаг, что нет заполненных ячеек в каждом столбце
+                {
+                    isAnyCellFilled = false;
+                    break;
                 }
             }
 
             if (!isAnyCellFilled)
             {
-                MessageBox.Show("Расписание вообще никак не заполненно", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Расписание вообще никак не заполнено", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            if (isAnyCellFilled)
+            else
             {
-
                 CollectDataGridViewData(GridRasp);
-
-
-
                 MessageBox.Show("Возможно, расписание было сформировано успешно");
             }
         }
+    
         private List<DisplineWithGroup> GetDisplineWithGroupById(int disciplineId)
         {
             var disciplineWithGroupList = context.ConnectWithGroup
