@@ -113,12 +113,19 @@ namespace TeachersHandsBooks
             if (SwitchTheme.Checked)
             {
                 GroupAddBOx.FillColor = Color.Transparent;
+                GridRaspisanie.BackgroundColor = Color.FromArgb(50, 50, 50);
+                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
+                GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.Transparent;
+                GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.ControlText;
+
+
 
             }
             else
             {
                 GroupAddBOx.FillColor = Color.WhiteSmoke;
-
+                GridRaspisanie.BackgroundColor = Color.WhiteSmoke;
+                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.WetAsphalt;
             }
         }
         public  void TodayDay()
@@ -219,6 +226,8 @@ namespace TeachersHandsBooks
             TodayDay();
             GridRaspisanie.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridRaspisanie, ThemSet);
             GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(ThemSet);
+            GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.Transparent;
+            GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.GrayText;
 
             SaveSettings();
         }
@@ -341,6 +350,16 @@ namespace TeachersHandsBooks
         {
             FormationRasp Rasp = new FormationRasp(ThemSet);
             Rasp.ShowDialog();
+        }
+
+        private void GridRaspisanie_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+           
+        }
+
+        private void GroupAddBOx_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

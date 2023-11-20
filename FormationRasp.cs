@@ -102,6 +102,8 @@ namespace TeachersHandsBooks
                 DataGridViewTextBoxColumn dayColumn = new DataGridViewTextBoxColumn();
                 dayColumn.HeaderText = day; // Установка заголовка как имя дня недели
                 dayColumn.Name = "Columnes"; // Имя для обращения к столбцу по дню недели
+                dayColumn.Width = 120;
+
                 GridRasp.Columns.Add(dayColumn);
             }
 
@@ -109,35 +111,62 @@ namespace TeachersHandsBooks
             // Добавление строк (ячеек) в DataGridView для всех пар
             foreach (var pair in pairs)
             {
-                int rowIndex = GridRasp.Rows.Add(); // Добавление новой строки
+                int OutRowIndex  = GridRasp.Rows.Add(); // Добавление новой строки
 
                 // Задание имени строки для обращения к ней
-                GridRasp.Rows[rowIndex].HeaderCell.Value = $"Pair {pair}";
+                GridRasp.Rows[OutRowIndex ].HeaderCell.Value = $"Pair {pair}";
 
                 // Добавление пары в столбец "Пары" для соответствующей строки
-                GridRasp.Rows[rowIndex].Cells["PairsColumn"].Value = pair;
+                GridRasp.Rows[OutRowIndex ].Cells["PairsColumn"].Value = pair;
 
                 // Добавление комбо-боксов в ячейки соответствующих дней недели
-                for (int i = 1; i < GridRasp.Columns.Count; i++)
+                for (int columnIndex = 1; columnIndex < GridRasp.Columns.Count; columnIndex++)
                 {
-
-                    var cell = new DataGridViewComboBoxCell();
-                    cell.DropDownWidth = 100;
-
-                    // Получение списка значений из базы данных для данного дня недели (selectedGroupDisciplines)
-                    var selectedGroupDisciplines = context.ConnectWithGroup
-                        .Where(dwg => dwg.Group.ID == selectedGroupId)
-                        .Select(dwg => dwg.Displine.NameDispline)
-                        .ToList();
-                    cell.FlatStyle = FlatStyle.Popup;
-                    // Установка элементов для комбо-бокса напрямую из запроса
-                    cell.Items.AddRange(selectedGroupDisciplines.ToArray());
-                    //  GridRasp.Rows[rowIndex].Cells["DisplineS"].Value = cell;
-
-                    cell.Tag = "DisplineS";
-                    GridRasp[i, rowIndex] = cell;
+                    for (int innerRowIndex = 0; innerRowIndex < GridRasp.Rows.Count; innerRowIndex++)
+                    {
+                        var cell = new DataGridViewComboBoxCell();
+                       
+                        // Получение списка значений из базы данных для данного дня недели (selectedGroupDisciplines)
+                        var selectedGroupDisciplines = context.ConnectWithGroup
+                            .Where(dwg => dwg.Group.ID == selectedGroupId)
+                            .Select(dwg => dwg.Displine.NameDispline)
+                            .ToList();
+                        cell.FlatStyle = FlatStyle.Popup;
+                        // Установка элементов для комбо-бокса напрямую из запроса
+                        cell.Items.AddRange(selectedGroupDisciplines.ToArray());
+                        //  GridRasp.Rows[innerRowIndex].Cells["DisplineS"].Value = cell;
+                        cell.DropDownWidth = 120;
+                        cell.Tag = "DisplineS";
+                        GridRasp[columnIndex, innerRowIndex] = cell;
+                    }
                 }
             }
+
+
+            //    for (int i = 1; i < GridRasp.Columns.Count; i++)
+            //    {
+            //        for (int innerRowIndex = 0; innerRowIndex < GridRasp.Rows.Count; innerRowIndex++)
+            //        {
+            //            var cell = new DataGridViewComboBoxCell();
+
+            //            cell.DropDownWidth = 120;
+
+
+            //            // Получение списка значений из базы данных для данного дня недели (selectedGroupDisciplines)
+            //            var selectedGroupDisciplines = context.ConnectWithGroup
+            //                .Where(dwg => dwg.Group.ID == selectedGroupId)
+            //                .Select(dwg => dwg.Displine.NameDispline)
+            //                .ToList();
+            //            cell.FlatStyle = FlatStyle.Popup;
+            //            // Установка элементов для комбо-бокса напрямую из запроса
+            //            cell.Items.AddRange(selectedGroupDisciplines.ToArray());
+            //            //  GridRasp.Rows[rowIndex].Cells["DisplineS"].Value = cell;
+
+            //            cell.Tag = "DisplineS";
+            //            GridRasp[i, OutRowIndex ] = cell;
+            //        }
+            //    }
+            //}
 
 
 
@@ -391,7 +420,7 @@ namespace TeachersHandsBooks
             BtnDinamicAdd();
             ShowsPairsANDDay();
             GridRasp.AllowUserToAddRows = false;
-            GridRasp.Font = new Font("Arial", 12);
+          //  GridRasp.Font = new Font("Arial", 12);
             GridRasp.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridRasp, themeSettings);
             GridRasp.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(themeSettings);
 

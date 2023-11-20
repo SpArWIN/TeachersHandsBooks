@@ -39,6 +39,7 @@ namespace TeachersHandsBooks
             this.HomePage = new System.Windows.Forms.TabPage();
             this.GridRaspisanie = new Guna.UI2.WinForms.Guna2DataGridView();
             this.GroupAddBOx = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.FormRasp = new System.Windows.Forms.PictureBox();
             this.BtnDispAdd = new System.Windows.Forms.PictureBox();
             this.BtnConnectionDispGroup = new System.Windows.Forms.PictureBox();
@@ -59,7 +60,6 @@ namespace TeachersHandsBooks
             this.SwitchTheme = new MaterialSkin.Controls.MaterialSwitch();
             this.AboutProgramm = new System.Windows.Forms.TabPage();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.label1 = new System.Windows.Forms.Label();
             this.MainTabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).BeginInit();
@@ -120,7 +120,6 @@ namespace TeachersHandsBooks
             this.GridRaspisanie.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.GridRaspisanie.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.GridRaspisanie.BackgroundColor = System.Drawing.Color.White;
-            this.GridRaspisanie.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.GridRaspisanie.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.GridRaspisanie.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -140,10 +139,9 @@ namespace TeachersHandsBooks
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.GridRaspisanie.DefaultCellStyle = dataGridViewCellStyle3;
-            this.GridRaspisanie.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GridRaspisanie.EnableHeadersVisualStyles = false;
             this.GridRaspisanie.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.GridRaspisanie.Location = new System.Drawing.Point(0, 105);
+            this.GridRaspisanie.Location = new System.Drawing.Point(3, 111);
             this.GridRaspisanie.Name = "GridRaspisanie";
             this.GridRaspisanie.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -157,7 +155,7 @@ namespace TeachersHandsBooks
             this.GridRaspisanie.RowHeadersVisible = false;
             this.GridRaspisanie.RowTemplate.Height = 35;
             this.GridRaspisanie.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.GridRaspisanie.Size = new System.Drawing.Size(1123, 458);
+            this.GridRaspisanie.Size = new System.Drawing.Size(1117, 438);
             this.GridRaspisanie.TabIndex = 2;
             this.GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
             this.GridRaspisanie.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
@@ -181,6 +179,7 @@ namespace TeachersHandsBooks
             this.GridRaspisanie.ThemeStyle.RowsStyle.Height = 35;
             this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.GridRaspisanie.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.GridRaspisanie_RowPrePaint);
             // 
             // GroupAddBOx
             // 
@@ -205,6 +204,17 @@ namespace TeachersHandsBooks
             this.GroupAddBOx.TabIndex = 1;
             this.GroupAddBOx.Text = "Формирование учебного процесса";
             this.GroupAddBOx.UseTransparentBackground = true;
+            this.GroupAddBOx.Click += new System.EventHandler(this.GroupAddBOx_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(463, 66);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(61, 25);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "label1";
             // 
             // FormRasp
             // 
@@ -490,16 +500,6 @@ namespace TeachersHandsBooks
             this.imageList1.Images.SetKeyName(4, "plus-button.png");
             this.imageList1.Images.SetKeyName(5, "setting_tools.png");
             this.imageList1.Images.SetKeyName(6, "block.png");
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(463, 66);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 25);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "label1";
             // 
             // MainForm
             // 
