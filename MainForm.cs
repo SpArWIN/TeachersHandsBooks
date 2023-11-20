@@ -12,6 +12,7 @@ namespace TeachersHandsBooks
 {
     public partial class MainForm : MaterialForm
     {
+
         private readonly ThemeSettings ThemSet = new ThemeSettings();
         readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
         EdingFormValue editingForm = new EdingFormValue();
@@ -76,6 +77,19 @@ namespace TeachersHandsBooks
 
 
         }
+        private void SetFontStyleForAllCells(DataGridView dataGridView, FontStyle fontStyle)
+        {
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    if (cell is DataGridViewTextBoxCell || cell is DataGridViewComboBoxCell)
+                    {
+                        cell.Style.Font = new Font("Arial", 12, fontStyle);
+                    }
+                }
+            }
+        }
         private void LoadSettings()
         {
             string theme = Properties.Settings.Default.Theme;
@@ -115,8 +129,7 @@ namespace TeachersHandsBooks
                 GroupAddBOx.FillColor = Color.Transparent;
                 GridRaspisanie.BackgroundColor = Color.FromArgb(50, 50, 50);
                 GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
-                GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.Transparent;
-                GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.ControlText;
+                
 
 
 
@@ -125,18 +138,20 @@ namespace TeachersHandsBooks
             {
                 GroupAddBOx.FillColor = Color.WhiteSmoke;
                 GridRaspisanie.BackgroundColor = Color.WhiteSmoke;
-                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.WetAsphalt;
+                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Teal;
             }
         }
-        public  void TodayDay()
+        public void TodayDay()
         {
             DateTime currentDate = DateTime.Now;
-            string dayOfWeekRussian =  currentDate.ToString("dddd", new CultureInfo("ru-RU"));
-       
+            DateTime Data = currentDate.Date;
+            label2.Text = Data.ToString("d", new CultureInfo("ru-RU"));
+            string dayOfWeekRussian = currentDate.ToString("dddd", new CultureInfo("ru-RU"));
+
             var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
             if (dayId != null)
             {
-                
+
                 var todayEntries = context.TimeTables
         .Where(entry => entry.Day.ID == dayId)
         .Select(entry => new
@@ -224,10 +239,17 @@ namespace TeachersHandsBooks
         private void Form1_Load(object sender, EventArgs e)
         {
             TodayDay();
-            GridRaspisanie.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridRaspisanie, ThemSet);
-            GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(ThemSet);
-            GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.Transparent;
-            GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.GrayText;
+          
+            SetFontStyleForAllCells(GridRaspisanie, FontStyle.Regular);
+            label1.Font = new Font("Arial", 12, FontStyle.Bold);
+            label2.Font = new Font("Arial", 10, FontStyle.Bold);
+            label1.Text = label1.Text.ToUpper();
+            //GridRaspisanie.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridRaspisanie, ThemSet);
+            //GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(ThemSet);
+            //GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.Transparent;
+            //GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.GrayText;
+
+
 
             SaveSettings();
         }
@@ -348,13 +370,14 @@ namespace TeachersHandsBooks
 
         private void FormRasp_Click_1(object sender, EventArgs e)
         {
-            FormationRasp Rasp = new FormationRasp(ThemSet);
-            Rasp.ShowDialog();
+            MainForm mainFormInstance = new MainForm();
+            FormationRasp Rasp = new FormationRasp(ThemSet, mainFormInstance);
+            Rasp.Show();
         }
 
         private void GridRaspisanie_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
         {
-           
+
         }
 
         private void GroupAddBOx_Click(object sender, EventArgs e)

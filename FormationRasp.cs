@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
@@ -14,16 +13,19 @@ namespace TeachersHandsBooks
 {
     public partial class FormationRasp : MaterialForm
     {
+        private MainForm _mainFormInstance;
         private ThemeSettings themeSettings;
 
         DatabaseContext context = new DatabaseContext();
         private int selectedGroupId = -1;
-        public FormationRasp(ThemeSettings theme)
+        public FormationRasp(ThemeSettings theme,MainForm Main)
         {
             InitializeComponent();
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             this.themeSettings = theme;
+            _mainFormInstance = Main;
+
 
         }
 
@@ -84,12 +86,12 @@ namespace TeachersHandsBooks
             // Получаем дни недели из базы данных
             //  var daysOfWeek = context.DayTables.Select(d => d.Day).ToList();
             var daysOfWeek = context.DayTables.Select(d => d.Day).ToList();
-            
+
             // Очистить все предыдущие столбцы и строки, если нужно
             GridRasp.Columns.Clear();
             GridRasp.Rows.Clear();
 
-            
+
 
             DataGridViewTextBoxColumn pairsColumn = new DataGridViewTextBoxColumn();
             pairsColumn.HeaderText = "Пары";
@@ -106,18 +108,27 @@ namespace TeachersHandsBooks
 
                 GridRasp.Columns.Add(dayColumn);
             }
+            // Установка шрифта для заголовков столбцов
+            foreach (DataGridViewColumn column in GridRasp.Columns)
+            {
+                column.HeaderCell.Style.Font = new Font("Arial", 12, FontStyle.Bold);
+                column.HeaderCell.Style.ForeColor = Color.White; // Установка белого цвета шрифта для заголовков столбцов
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+
+            GridRasp.AllowUserToOrderColumns = false;
 
 
             // Добавление строк (ячеек) в DataGridView для всех пар
             foreach (var pair in pairs)
             {
-                int OutRowIndex  = GridRasp.Rows.Add(); // Добавление новой строки
+                int OutRowIndex = GridRasp.Rows.Add(); // Добавление новой строки
 
                 // Задание имени строки для обращения к ней
-                GridRasp.Rows[OutRowIndex ].HeaderCell.Value = $"Pair {pair}";
+                GridRasp.Rows[OutRowIndex].HeaderCell.Value = $"Pair {pair}";
 
                 // Добавление пары в столбец "Пары" для соответствующей строки
-                GridRasp.Rows[OutRowIndex ].Cells["PairsColumn"].Value = pair;
+                GridRasp.Rows[OutRowIndex].Cells["PairsColumn"].Value = pair;
 
                 // Добавление комбо-боксов в ячейки соответствующих дней недели
                 for (int columnIndex = 1; columnIndex < GridRasp.Columns.Count; columnIndex++)
@@ -125,97 +136,30 @@ namespace TeachersHandsBooks
                     for (int innerRowIndex = 0; innerRowIndex < GridRasp.Rows.Count; innerRowIndex++)
                     {
                         var cell = new DataGridViewComboBoxCell();
-                       
+                        cell.Style.Font = new Font("Arial", 12, FontStyle.Regular);
                         // Получение списка значений из базы данных для данного дня недели (selectedGroupDisciplines)
                         var selectedGroupDisciplines = context.ConnectWithGroup
                             .Where(dwg => dwg.Group.ID == selectedGroupId)
                             .Select(dwg => dwg.Displine.NameDispline)
                             .ToList();
-                        cell.FlatStyle = FlatStyle.Popup;
+
                         // Установка элементов для комбо-бокса напрямую из запроса
                         cell.Items.AddRange(selectedGroupDisciplines.ToArray());
+                        cell.FlatStyle = FlatStyle.Popup;
                         //  GridRasp.Rows[innerRowIndex].Cells["DisplineS"].Value = cell;
                         cell.DropDownWidth = 120;
+
                         cell.Tag = "DisplineS";
                         GridRasp[columnIndex, innerRowIndex] = cell;
                     }
                 }
             }
 
+          //  DisableOccupiedCells(GridRasp);
 
-            //    for (int i = 1; i < GridRasp.Columns.Count; i++)
-            //    {
-            //        for (int innerRowIndex = 0; innerRowIndex < GridRasp.Rows.Count; innerRowIndex++)
-            //        {
-            //            var cell = new DataGridViewComboBoxCell();
-
-            //            cell.DropDownWidth = 120;
-
-
-            //            // Получение списка значений из базы данных для данного дня недели (selectedGroupDisciplines)
-            //            var selectedGroupDisciplines = context.ConnectWithGroup
-            //                .Where(dwg => dwg.Group.ID == selectedGroupId)
-            //                .Select(dwg => dwg.Displine.NameDispline)
-            //                .ToList();
-            //            cell.FlatStyle = FlatStyle.Popup;
-            //            // Установка элементов для комбо-бокса напрямую из запроса
-            //            cell.Items.AddRange(selectedGroupDisciplines.ToArray());
-            //            //  GridRasp.Rows[rowIndex].Cells["DisplineS"].Value = cell;
-
-            //            cell.Tag = "DisplineS";
-            //            GridRasp[i, OutRowIndex ] = cell;
-            //        }
-            //    }
-            //}
-
-
-
-
-
-
-
-
-            //// Добавляем заголовки дней недели как столбцы
-            //foreach (var day in daysOfWeek)
-            //{
-            //    DataGridViewComboBoxCell cel = new DataGridViewComboBoxCell();
-
-            //    foreach (var discipline in selectedGroupDisciplines)
-            //    {
-            //        cel.Items.Add(discipline);
-            //        cel.FlatStyle = FlatStyle.Popup;
-            //        cel.Tag = discipline;
-
-            //    }
-
-
-            //    DataGridViewColumn column = new DataGridViewColumn();
-
-            //    column.CellTemplate = cel;
-            //    column.Name = "Displine";
-            //    column.HeaderText = day;
-            //    column.Visible = true;
-            //    cel.DropDownWidth = 100;
-            //    GridRasp.Columns.Add(column);
-
-            //}
-
-
-
-
-
-
-
-
-            //// Добавляем пары в столбец "Пары"
-            //foreach (var pair in pairs)
-            //{
-            //     int rowIndex = GridRasp.Rows.Add(pair);
-            //  //  GridRasp.Rows.Add(pair);
-            //    GridRasp.Rows[rowIndex].Cells["PairsColumn"].Value = pair;
-
-            //}
             GridRasp.Columns["PairsColumn"].ReadOnly = true;
+           
+
         }
         private void FillCombox()
         {
@@ -223,9 +167,17 @@ namespace TeachersHandsBooks
             {
                 // Получение уникальных групп из таблицы DisplineWithGroup
                 var uniqueGroups = context.ConnectWithGroup.Select(d => d.Group.NameGroup).Distinct().ToList();
-
+                if (uniqueGroups.Count == 0)
+                {
+                    btnFormRasp.Enabled = false;
+                }
+                else
+                {
+                    btnFormRasp.Enabled = true;
+                    BoxGroup.DataSource = uniqueGroups;
+                }
                 // Заполнение ComboBox уникальными группами
-                BoxGroup.DataSource = uniqueGroups;
+               
             }
             catch (Exception ex)
             {
@@ -246,7 +198,7 @@ namespace TeachersHandsBooks
             // Добавление кнопки на форму
             this.Controls.Add(btnFormRasp);
         }
-       
+
         private void BtnFormRasp_Click(object sender, EventArgs e)
         {
 
@@ -272,9 +224,11 @@ namespace TeachersHandsBooks
 
             if (isAnyCellFilled)
             {
+
                 CollectDataGridViewData(GridRasp);
-                MainForm Main = new MainForm();
-                Main.TodayDay();
+
+
+
                 MessageBox.Show("Возможно, расписание было сформировано успешно");
             }
         }
@@ -293,27 +247,37 @@ namespace TeachersHandsBooks
             return days;
         }
 
+
         /// <summary>
-        /// Получение дня недели из таблицы DataGridView
+        /// Метод проверки доступности, возвращает истину, если для конкретной и в конкретный день не было записано пары
         /// </summary>
-        /// <param name="dataGridView"></param>
+        
+        /// <param name="dayOfWeek"></param>
+        /// <param name="pair"></param>
         /// <returns></returns>
-        private List<string> GetDaysOfWeekFromDataGridView(DataGridView dataGridView)
+        private bool CheckIfSlotIsOccupied(string dayOfWeek, string pair)
         {
-            List<string> daysOfWeek = new List<string>();
+         
+                // Получаем все уникальные ID групп из базы данных
+                var groupIds = context.ConnectWithGroup.Select(g => g.Group.ID).Distinct().ToList();
 
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                if (column.Index > 0) // Пропустить первый столбец, если это необходимо
+                // Проверяем, существует ли запись для любой группы с указанными параметрами
+                foreach (var groupId in groupIds)
                 {
-                    string dayOfWeek = column.HeaderText; // Получаем текст заголовка столбца
-                    daysOfWeek.Add(dayOfWeek);
+                    bool isSlotOccupied = context.TimeTables
+                        .Any(c => c.DisplineWithGroup.Group.ID == groupId &&
+                                  c.Day.Day == dayOfWeek &&
+                                  c.Pair.Pair == pair);
+
+                    if (isSlotOccupied)
+                    {
+                        return true; // Если хотя бы для одной группы есть запись, возвращаем true
+                    }
                 }
-            }
 
-            return daysOfWeek;
+                return false; // Если запись не найдена для ни одной группы, возвращаем false
+            
         }
-
         private List<(string DayOfWeek, string Discipline, string Pair)> previouslySelectedEntries = new List<(string, string, string)>();
         private void CollectDataGridViewData(DataGridView datagrid)
         {
@@ -356,19 +320,19 @@ namespace TeachersHandsBooks
                         }
                     }
 
-                    
+
                 }
 
-               
+
 
 
 
             }
             AddTimeTableRecords(disciplineIds, daysOfWeek, pairs);
         }
-     
 
-            private int GetDisciplineIdByName(string disciplines)
+
+        private int GetDisciplineIdByName(string disciplines)
         {
             var discipline = context.Displines
      .Where(d => d.NameDispline == disciplines)
@@ -399,7 +363,7 @@ namespace TeachersHandsBooks
                         TimeTable newRecord = new TimeTable
                         {
                             DisplineWithGroup = disciplineGroup,
-                            Day = dayTable.FirstOrDefault(), // Получите соответствующий день из dayTable
+                            Day = dayTable.FirstOrDefault(), 
                             Pair = pair
                         };
 
@@ -409,18 +373,59 @@ namespace TeachersHandsBooks
             }
 
             context.SaveChanges();
-        
+
 
             // Сохраняем все изменения в базе данных
 
         }
+
+        /// <summary>
+        /// Метод отключения занятых ячеек, в качестве параметра ID группы, и DataGrid
+        /// </summary>
+
+        /// <param name="dataGridView"></param>
+        private void DisableOccupiedCells(DataGridView dataGridView)
+        {
+            Color occupiedColor = Color.Brown;
+
+            for (int columnIndex = 1; columnIndex < dataGridView.Columns.Count; columnIndex++)
+            {
+                for (int rowIndex = 0; rowIndex < dataGridView.Rows.Count; rowIndex++)
+                {
+                    string pair = dataGridView.Rows[rowIndex].Cells["PairsColumn"].Value?.ToString();
+                    string dayOfWeek = dataGridView.Columns[columnIndex].HeaderText;
+
+                    bool isSlotOccupied = false;
+
+                    // Проверяем занятость ячейки для любой группы
+                    foreach (var group in context.ConnectWithGroup)
+                    {
+                        int GroupDID = group.Group.ID;
+                        isSlotOccupied |= CheckIfSlotIsOccupied( dayOfWeek, pair);
+                    }
+
+                    dataGridView.Rows[rowIndex].Cells[columnIndex].ReadOnly = isSlotOccupied;
+
+                    // Устанавливаем цвет фона для занятых ячеек
+                    if (isSlotOccupied)
+                    {
+                        dataGridView.Rows[rowIndex].Cells[columnIndex].Style.BackColor = occupiedColor;
+                    }
+                }
+            }
+        }
+
         private void FormationRasp_Load(object sender, EventArgs e)
         {
+           
             FillCombox();
+           
             BtnDinamicAdd();
             ShowsPairsANDDay();
             GridRasp.AllowUserToAddRows = false;
-          //  GridRasp.Font = new Font("Arial", 12);
+            GridRasp.AllowUserToOrderColumns = false;
+            GridRasp.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            //  GridRasp.Font = new Font("Arial", 12);
             GridRasp.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridRasp, themeSettings);
             GridRasp.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(themeSettings);
 
@@ -439,7 +444,7 @@ namespace TeachersHandsBooks
             // Сохранение выбранного ID группы
             selectedGroupId = groupId;
             ShowsPairsANDDay();
-        
+            DisableOccupiedCells(GridRasp);
 
 
         }
