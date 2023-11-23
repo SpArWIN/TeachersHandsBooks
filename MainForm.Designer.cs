@@ -123,6 +123,9 @@ namespace TeachersHandsBooks
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.GridRaspisanie.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.GridRaspisanie.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.GridRaspisanie.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.GridRaspisanie.BackgroundColor = System.Drawing.Color.White;
             this.GridRaspisanie.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -203,7 +206,7 @@ namespace TeachersHandsBooks
             this.GroupAddBOx.CustomBorderColor = System.Drawing.Color.Silver;
             this.GroupAddBOx.Dock = System.Windows.Forms.DockStyle.Top;
             this.GroupAddBOx.FillColor = System.Drawing.SystemColors.ControlLight;
-            this.GroupAddBOx.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.GroupAddBOx.Font = new System.Drawing.Font("Segoe UI", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.GroupAddBOx.ForeColor = System.Drawing.Color.Transparent;
             this.GroupAddBOx.Location = new System.Drawing.Point(0, 0);
             this.GroupAddBOx.Name = "GroupAddBOx";
@@ -228,9 +231,11 @@ namespace TeachersHandsBooks
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(425, 68);
+            this.label2.Location = new System.Drawing.Point(502, 66);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(64, 25);
             this.label2.TabIndex = 5;
@@ -238,9 +243,11 @@ namespace TeachersHandsBooks
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(428, 43);
+            this.label1.Location = new System.Drawing.Point(505, 41);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 25);
             this.label1.TabIndex = 3;

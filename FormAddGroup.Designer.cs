@@ -38,6 +38,8 @@ namespace TeachersHandsBooks
             // BoxAddGroup
             // 
             this.BoxAddGroup.AllowPromptAsInput = false;
+            this.BoxAddGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.BoxAddGroup.AnimateReadOnly = true;
             this.BoxAddGroup.AsciiOnly = false;
             this.BoxAddGroup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -79,6 +81,8 @@ namespace TeachersHandsBooks
             // 
             // GroupPanel
             // 
+            this.GroupPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.GroupPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.GroupPanel.Location = new System.Drawing.Point(21, 137);
             this.GroupPanel.Name = "GroupPanel";
@@ -87,6 +91,8 @@ namespace TeachersHandsBooks
             // 
             // BtnDeleteGroup
             // 
+            this.BtnDeleteGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.BtnDeleteGroup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BtnDeleteGroup.BackColor = System.Drawing.Color.Transparent;
             this.BtnDeleteGroup.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -94,7 +100,7 @@ namespace TeachersHandsBooks
             this.BtnDeleteGroup.Depth = 0;
             this.BtnDeleteGroup.HighEmphasis = true;
             this.BtnDeleteGroup.Icon = null;
-            this.BtnDeleteGroup.Location = new System.Drawing.Point(356, 397);
+            this.BtnDeleteGroup.Location = new System.Drawing.Point(457, 397);
             this.BtnDeleteGroup.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.BtnDeleteGroup.MouseState = MaterialSkin.MouseState.HOVER;
             this.BtnDeleteGroup.Name = "BtnDeleteGroup";
@@ -110,6 +116,8 @@ namespace TeachersHandsBooks
             // 
             // BtnSaveGroup
             // 
+            this.BtnSaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.BtnSaveGroup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BtnSaveGroup.BackColor = System.Drawing.Color.Transparent;
             this.BtnSaveGroup.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -117,7 +125,7 @@ namespace TeachersHandsBooks
             this.BtnSaveGroup.Depth = 0;
             this.BtnSaveGroup.HighEmphasis = true;
             this.BtnSaveGroup.Icon = null;
-            this.BtnSaveGroup.Location = new System.Drawing.Point(174, 397);
+            this.BtnSaveGroup.Location = new System.Drawing.Point(292, 397);
             this.BtnSaveGroup.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.BtnSaveGroup.MouseState = MaterialSkin.MouseState.HOVER;
             this.BtnSaveGroup.Name = "BtnSaveGroup";

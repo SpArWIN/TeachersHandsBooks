@@ -35,10 +35,11 @@ namespace TeachersHandsBooks
             toolTip1.SetToolTip(BtnDispAdd, "Добавление дисциплин");
             toolTip1.SetToolTip(BtnConnectionDispGroup, "Добавление КТП");
             toolTip1.SetToolTip(FormRasp, "Формирование расписания ");
+            GroupAddBOx.Font = new Font("Segoe UI", 14, FontStyle.Bold | FontStyle.Italic);
 
 
         }
-        private void SaveSettings()
+        public void SaveSettings()
         {
 
             Properties.Settings.Default.Theme = ThemeSkin.Theme.ToString();
@@ -73,7 +74,7 @@ namespace TeachersHandsBooks
                 GroupAddBOx.FillColor = Color.Transparent;
                 GridRaspisanie.BackgroundColor = Color.FromArgb(50, 50, 50);
                 GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
-
+               
 
 
 
@@ -96,6 +97,7 @@ namespace TeachersHandsBooks
         }
         private void SetFontStyleForAllCells(DataGridView dataGridView, FontStyle fontStyle)
         {
+            Color textColor = SwitchTheme.Checked ? Color.White : Color.Black;
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 foreach (DataGridViewCell cell in row.Cells)
@@ -103,6 +105,7 @@ namespace TeachersHandsBooks
                     if (cell is DataGridViewTextBoxCell || cell is DataGridViewComboBoxCell)
                     {
                         cell.Style.Font = new Font("Arial", 12, fontStyle);
+                        cell.Style.ForeColor = textColor;
                     }
                 }
             }
@@ -158,10 +161,11 @@ namespace TeachersHandsBooks
                 GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Teal;
             }
         }
+        DateTime currentDate = DateTime.Now;
         public void TodayDay()
         {
           
-            DateTime currentDate = DateTime.Now;
+            
             DateTime Data = currentDate.Date;
             label2.Text = Data.ToString("d", new CultureInfo("ru-RU"));
             string dayOfWeekRussian = currentDate.ToString("dddd", new CultureInfo("ru-RU"));
@@ -252,14 +256,41 @@ namespace TeachersHandsBooks
             }
             return headerStyle;
         }
+        /// <summary>
+        /// Формирование дат, относительно текущего дня
+        /// </summary>
+        /// <param name="currentDate"></param>
+        /// <returns></returns>
+        public LinkedList<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDates(DateTime currentDate)
+        {
+            DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
 
+            LinkedList<(DayOfWeek, DateTime)> daysAndDatesList = new LinkedList<(DayOfWeek, DateTime)>();
 
+            daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
+
+            for (int i = 1; i <= 6; i++)
+            {
+                currentDate = currentDate.AddDays(1);
+                currentDayOfWeek = currentDate.DayOfWeek;
+
+                if (currentDayOfWeek != DayOfWeek.Sunday)
+                {
+                    daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
+                }
+            }
+
+            return daysAndDatesList;
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
+
             TodayDay();
+            LinkedList<(DayOfWeek WeekDay, DateTime Date)> daysAndDatesList = GenerateDaysAndDates(currentDate);
+           
             gifImage = Properties.Resources.LoadPicture;
             BoxUpdate.Image = gifImage;
-            SetFontStyleForAllCells(GridRaspisanie, FontStyle.Regular);
+            SetFontStyleForAllCells(GridRaspisanie, FontStyle.Bold);
             label1.Font = new Font("Arial", 12, FontStyle.Bold);
             label2.Font = new Font("Arial", 10, FontStyle.Bold);
             label1.Text = label1.Text.ToUpper();
@@ -425,6 +456,7 @@ namespace TeachersHandsBooks
         {
             StartAnimate();
             TodayDay();
+            SetFontStyleForAllCells(GridRaspisanie, FontStyle.Bold);
         }
 
     }

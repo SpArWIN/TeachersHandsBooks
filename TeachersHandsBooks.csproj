@@ -105,11 +105,13 @@
   <ItemGroup>
     <Compile Include="Core\DatabaseContext.cs" />
     <Compile Include="Core\EdingFormValue.cs" />
+    <Compile Include="Core\GetCurrentData.cs" />
     <Compile Include="Core\Tables\DayTable.cs" />
     <Compile Include="Core\Tables\Displine.cs" />
     <Compile Include="Core\Tables\DisplineWithGroup.cs" />
     <Compile Include="Core\Tables\Group.cs" />
     <Compile Include="Core\Tables\KTP.cs" />
+    <Compile Include="Core\Tables\ModifiedSchedule.cs" />
     <Compile Include="Core\Tables\NumberPair.cs" />
     <Compile Include="Core\Tables\TimeTable.cs" />
     <Compile Include="Core\ThemeSettings.cs" />

@@ -15,7 +15,8 @@ namespace TeachersHandsBooks.Core
         public DbSet<DayTable> DayTables { get; set; }
         public DbSet<NumberPair> Pairs { get; set; }
         public DbSet<TimeTable> TimeTables { get; set; }
-        
+        //Таблица с изменяемым расписанием
+        public DbSet<ModifiedSchedule> Modifieds { get; set; }
         public DatabaseContext() : base(new SQLiteConnection
         {
             ConnectionString = new SQLiteConnectionStringBuilder

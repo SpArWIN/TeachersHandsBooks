@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
@@ -15,6 +16,8 @@ namespace TeachersHandsBooks
     {
         private MainForm _mainFormInstance;
         private ThemeSettings themeSettings;
+        private int currentProgress=0;
+        private Timer progressTimer;
 
         DatabaseContext context = new DatabaseContext();
         private int selectedGroupId = -1;
@@ -25,8 +28,26 @@ namespace TeachersHandsBooks
             materialSkinManager.AddFormToManage(this);
             this.themeSettings = theme;
             _mainFormInstance = Main;
+            progressTimer = new Timer();
+            progressTimer.Interval = 100; // Интервал обновления анимации (в миллисекундах)
+            progressTimer.Tick += ProgressTimer_Tick;
 
 
+        }
+
+        private void ProgressTimer_Tick(object sender, EventArgs e)
+        {
+            currentProgress += 10;
+            if (currentProgress > guna2CircleProgressBar1.Maximum)
+            {
+                // Если достигнут максимум, останавливаем анимацию
+                progressTimer.Stop();
+                guna2CircleProgressBar1.Visible = false;
+            }
+            else
+            {
+                guna2CircleProgressBar1.Value = currentProgress;
+            }
         }
 
         private DataGridViewCellStyle SetDataGridViewStyleFromTheme(DataGridView dataGridView, ThemeSettings setting)
@@ -78,6 +99,7 @@ namespace TeachersHandsBooks
             return selectedColor;
         }
 
+       
 
         private void ShowsPairsANDDay()
         {
@@ -98,7 +120,14 @@ namespace TeachersHandsBooks
             pairsColumn.Name = "PairsColumn";
             GridRasp.Columns.Add(pairsColumn);
 
-            // Добавление заголовков для дней недели в DataGridView
+            
+           
+
+           
+
+
+           
+
             foreach (var day in daysOfWeek)
             {
                 DataGridViewTextBoxColumn dayColumn = new DataGridViewTextBoxColumn();
@@ -108,6 +137,12 @@ namespace TeachersHandsBooks
 
                 GridRasp.Columns.Add(dayColumn);
             }
+
+          
+           
+
+         
+
             // Установка шрифта для заголовков столбцов
             foreach (DataGridViewColumn column in GridRasp.Columns)
             {
@@ -135,22 +170,27 @@ namespace TeachersHandsBooks
                 {
                     for (int innerRowIndex = 0; innerRowIndex < GridRasp.Rows.Count; innerRowIndex++)
                     {
-                        var cell = new DataGridViewComboBoxCell();
-                        cell.Style.Font = new Font("Arial", 12, FontStyle.Regular);
-                        // Получение списка значений из базы данных для данного дня недели (selectedGroupDisciplines)
-                        var selectedGroupDisciplines = context.ConnectWithGroup
-                            .Where(dwg => dwg.Group.ID == selectedGroupId)
-                            .Select(dwg => dwg.Displine.NameDispline)
-                            .ToList();
+                        
 
-                        // Установка элементов для комбо-бокса напрямую из запроса
-                        cell.Items.AddRange(selectedGroupDisciplines.ToArray());
-                        cell.FlatStyle = FlatStyle.Popup;
-                        //  GridRasp.Rows[innerRowIndex].Cells["DisplineS"].Value = cell;
-                        cell.DropDownWidth = 120;
 
-                        cell.Tag = "DisplineS";
-                        GridRasp[columnIndex, innerRowIndex] = cell;
+
+                            var cell = new DataGridViewComboBoxCell();
+                            cell.Style.Font = new Font("Arial", 12, FontStyle.Regular);
+                            // Получение списка значений из базы данных для данного дня недели (selectedGroupDisciplines)
+                            var selectedGroupDisciplines = context.ConnectWithGroup
+                                .Where(dwg => dwg.Group.ID == selectedGroupId)
+                                .Select(dwg => dwg.Displine.NameDispline)
+                                .ToList();
+
+                            // Установка элементов для комбо-бокса напрямую из запроса
+                            cell.Items.AddRange(selectedGroupDisciplines.ToArray());
+                            cell.FlatStyle = FlatStyle.Popup;
+                            //  GridRasp.Rows[innerRowIndex].Cells["DisplineS"].Value = cell;
+                            cell.DropDownWidth = 120;
+
+                            cell.Tag = "DisplineS";
+                            GridRasp[columnIndex, innerRowIndex] = cell;
+                        
                     }
                 }
             }
@@ -203,26 +243,20 @@ namespace TeachersHandsBooks
         {
 
 
-            bool isAnyCellFilled = true; // Предполагаем, что хотя бы одна ячейка заполнена
+            bool isAnyCellFilled = false; 
 
-            foreach (DataGridViewColumn column in GridRasp.Columns)
+            foreach (DataGridViewRow row in GridRasp.Rows)
             {
-                bool isColumnFilled = false; // Проверка для каждого столбца
-
-                foreach (DataGridViewRow row in GridRasp.Rows)
+                foreach (DataGridViewCell cell in row.Cells)
                 {
-                    DataGridViewCell cell = row.Cells[column.Index];
-
-                    if (cell.Value != null && !string.IsNullOrEmpty(cell.Value.ToString()))
+                    if (!cell.ReadOnly && cell.Value != null && !string.IsNullOrEmpty(cell.Value.ToString()))
                     {
-                        isColumnFilled = true; // Если хотя бы одна ячейка в столбце заполнена, устанавливаем флаг
+                        isAnyCellFilled = true; // Если хотя бы одна непустая и не только для чтения ячейка обнаружена, устанавливаем флаг
                         break;
                     }
                 }
-
-                if (!isColumnFilled) // Если столбец не заполнен, устанавливаем флаг, что нет заполненных ячеек в каждом столбце
+                if (isAnyCellFilled) // Если уже обнаружена заполненная ячейка, выходим из цикла
                 {
-                    isAnyCellFilled = false;
                     break;
                 }
             }
@@ -234,8 +268,20 @@ namespace TeachersHandsBooks
             else
             {
                 CollectDataGridViewData(GridRasp);
-                MessageBox.Show("Возможно, расписание было сформировано успешно");
+
+                guna2CircleProgressBar1.Visible = true;
+                currentProgress = 0;
+                guna2CircleProgressBar1.Value = currentProgress;
+                progressTimer.Start();
+
+                
+               
+
             }
+
+           
+
+         
         }
     
         private List<DisplineWithGroup> GetDisplineWithGroupById(int disciplineId)
@@ -420,12 +466,24 @@ namespace TeachersHandsBooks
                 }
             }
         }
-
+        readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
+        private void Themeset(MaterialSkinManager skin)
+        {
+            if(skin.Theme == MaterialSkinManager.Themes.DARK)
+            {
+                GridRasp.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
+                GridRasp.BackgroundColor = Color.FromArgb(50, 50, 50);
+            }
+            else
+            {
+                GridRasp.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Light;
+            }
+        }
         private void FormationRasp_Load(object sender, EventArgs e)
         {
            
             FillCombox();
-           
+            Themeset(ThemeSkin);
             BtnDinamicAdd();
             ShowsPairsANDDay();
             GridRasp.AllowUserToAddRows = false;
