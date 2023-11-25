@@ -184,31 +184,59 @@ namespace TeachersHandsBooks
 
 
                 DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
-                pairColumn.HeaderText = "Пары"; // Название столбца "Пары"
+                pairColumn.HeaderText = "Пары";
                 pairColumn.DataPropertyName = "Pair";
-                GridRaspisanie.Columns.Add(pairColumn); // Добавление столбца в DataGridView
+                pairColumn.Name = "Pair";
+                GridRaspisanie.Columns.Add(pairColumn); 
 
                 DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
-                disciplineColumn.HeaderText = "Дисциплина"; // Название столбца "Дисциплина"
-                disciplineColumn.DataPropertyName = "Discipline"; // Указание свойства объекта данных для этого столбца
-                GridRaspisanie.Columns.Add(disciplineColumn); // Добавление столбца в DataGridView
+                disciplineColumn.HeaderText = "Дисциплина"; 
+                disciplineColumn.DataPropertyName = "Discipline";
+                disciplineColumn.Name = "Discipline";
+                GridRaspisanie.Columns.Add(disciplineColumn); 
 
                 DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
-                groupColumn.HeaderText = "Группа"; // Название столбца "Группа"
-                groupColumn.DataPropertyName = "Group"; // Указание свойства объекта данных для этого столбца
+                groupColumn.HeaderText = "Группа"; 
+                groupColumn.DataPropertyName = "Group";
+                groupColumn.Name = "Group";
                 GridRaspisanie.Columns.Add(groupColumn);
 
 
 
-                // Привязываем результаты к DataGridView
+               
                 GridRaspisanie.AutoGenerateColumns = false;
                 GridRaspisanie.DataSource = todayEntries;
                 label1.Text = dayOfWeekRussian;
                 label1.Font = new Font("Segui UI", 14);
                 label1.BackColor = Color.Transparent;
             }
+            else
+            {
+                if (dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
+                {
+                    GridRaspisanie.Columns.Clear(); // Очищаем столбцы
+                   
+                    label1.Text = "Воскресенье"; // Устанавливаем текст метки как "Воскресенье"
+                    label1.Font = new Font("Segui UI", 14);
+                    label1.BackColor = Color.Transparent;
 
-        }
+                   
+
+                    DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                    pairColumn.HeaderText = "Выходной"; 
+                    GridRaspisanie.Columns.Add(pairColumn); 
+
+                   
+                }
+                else
+                {
+                    // Действия при отсутствии данных для других дней недели (не Воскресенье)
+                    MessageBox.Show("Нет данных для этого дня."); 
+                }
+            }
+            }
+
+        
         public void DisplayScheduleForDay(DayOfWeek dayOfWeek, DateTime date)
         {
             DateTime Data = date.Date;
@@ -233,18 +261,20 @@ namespace TeachersHandsBooks
                 DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
                 pairColumn.HeaderText = "Пары";
                 pairColumn.DataPropertyName = "Pair";
-                GridRaspisanie.Columns.Add(pairColumn); // Добавление столбца в DataGridView
+                pairColumn.Name = "Pair";
+                GridRaspisanie.Columns.Add(pairColumn);
 
                 DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
                 disciplineColumn.HeaderText = "Дисциплина";
-                disciplineColumn.DataPropertyName = "Discipline"; // Указание свойства объекта данных для этого столбца
-                GridRaspisanie.Columns.Add(disciplineColumn); // Добавление столбца в DataGridView
+                disciplineColumn.DataPropertyName = "Discipline";
+                disciplineColumn.Name = "Discipline";
+                GridRaspisanie.Columns.Add(disciplineColumn);
 
                 DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
-                groupColumn.HeaderText = "Группа"; // Название столбца "Группа"
-                groupColumn.DataPropertyName = "Group"; // Указание свойства объекта данных для этого столбца
+                groupColumn.HeaderText = "Группа";
+                groupColumn.DataPropertyName = "Group";
+                groupColumn.Name = "Group";
                 GridRaspisanie.Columns.Add(groupColumn);
-
 
 
 
@@ -255,6 +285,20 @@ namespace TeachersHandsBooks
                 label1.Text = dayOfWeekRussian;
                 label1.Font = new Font("Segui UI", 14);
                 label1.BackColor = Color.Transparent;
+
+
+            }
+            else
+            {
+               if( dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
+                {
+                    DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                    pairColumn.HeaderText = "Выходной";
+                  // Значение прочерка
+                    GridRaspisanie.Columns.Add(pairColumn);
+                    GridRaspisanie.AutoGenerateColumns = false;
+                    GridRaspisanie.DataSource = null;
+                }
             }
         }
 
@@ -326,10 +370,7 @@ namespace TeachersHandsBooks
             label1.Font = new Font("Arial", 12, FontStyle.Bold);
             label2.Font = new Font("Arial", 10, FontStyle.Bold);
             label1.Text = label1.Text.ToUpper();
-            //GridRaspisanie.ColumnHeadersDefaultCellStyle = SetDataGridViewStyleFromTheme(GridRaspisanie, ThemSet);
-            //GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = GetColorFromTheme(ThemSet);
-            //GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.Transparent;
-            //GridRaspisanie.ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.GrayText;
+            
 
 
 
@@ -492,9 +533,7 @@ namespace TeachersHandsBooks
             daysAndDatesPrevious = GenerateDaysAndDatesPrevious(currentDate);
             DisplayScheduleForDay(currentDate.DayOfWeek, currentDate); // Показываем расписание для текущего дня
             TodayDay();
-          //  SetFontStyleForAllCells(GridRaspisanie, FontStyle.Bold);
-
-            // Обновляем текущий узел currentNode до нового текущего дня
+          
             foreach (var node in daysAndDatesList)
             {
                 if (node.Date.Date == currentDate.Date)
@@ -532,7 +571,7 @@ namespace TeachersHandsBooks
             {
                 currentNode = currentNode.Next; // Переходим к следующему узлу
                 var nextDay = currentNode.Value;
-
+                
                 // Вызываем метод для отображения расписания для следующего дня
                 DisplayScheduleForDay(nextDay.WeekDay, nextDay.Date);
             }
@@ -597,6 +636,27 @@ namespace TeachersHandsBooks
             {
                 // Если ничего не выбрано, отключаем кнопку замены
                 BtnChangePairs.Enabled = false;
+            }
+        }
+
+        private void BtnChangePairs_Click(object sender, EventArgs e)
+        {
+          if(  GridRaspisanie.SelectedRows.Count > 0)
+            {
+                DataGridViewRow selectedRow = GridRaspisanie.SelectedRows[0];
+                string pairValue = selectedRow.Cells["pair"].Value?.ToString();
+                string disciplineValue = selectedRow.Cells["Discipline"].Value?.ToString();
+                string groupValue = selectedRow.Cells["Group"].Value?.ToString();
+                /*На основе полученных значений, открываю форму и передаю их туда,для дальнейшего изменение, добавления
+                 * или удаления
+                */
+               
+               
+            }
+            else
+            {
+                MessageBox.Show("Выберите строку для дальнейшего взаимодействия", "Ошибка выполнения команды", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
         }
     }
