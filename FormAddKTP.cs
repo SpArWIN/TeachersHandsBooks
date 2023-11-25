@@ -100,7 +100,7 @@ namespace TeachersHandsBooks
 
         private void ShowsConnect()
         {
-           
+
             if (SelectedPath == null)
             {
                 using (var context = new DatabaseContext())
@@ -120,7 +120,7 @@ namespace TeachersHandsBooks
                             connection.Displine.NameDispline // Displines - название дисциплины
                         );
 
-                       
+
 
                     }
 
@@ -128,14 +128,14 @@ namespace TeachersHandsBooks
                 // Устанавливаем шрифт для строк в DataGridView
                 foreach (DataGridViewRow row in GridKTPControll.Rows)
                 {
-                    row.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Regular); 
+                    row.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Regular);
                 }
                 //Белый цвет заголовков
                 foreach (DataGridViewColumn column in GridKTPControll.Columns)
                 {
                     column.HeaderCell.Style.Font = new Font("Arial", 12, FontStyle.Bold);
                     column.HeaderCell.Style.ForeColor = Color.White;
-                    
+
                 }
 
                 IsKTPLoaded = true;
@@ -331,7 +331,7 @@ namespace TeachersHandsBooks
             }
             else
             {
-                
+
             }
         }
 

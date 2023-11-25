@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TeachersHandsBooks.Core.Tables
 {
-  public  class ModifiedSchedule
+    public class ModifiedSchedule
     {
         [Key] public int ID { get; set; }
 

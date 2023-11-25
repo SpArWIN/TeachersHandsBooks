@@ -39,6 +39,8 @@ namespace TeachersHandsBooks
             this.HomePage = new System.Windows.Forms.TabPage();
             this.GridRaspisanie = new Guna.UI2.WinForms.Guna2DataGridView();
             this.GroupAddBOx = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.BtnNext = new System.Windows.Forms.PictureBox();
+            this.BtnPreviev = new System.Windows.Forms.PictureBox();
             this.BoxUpdate = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -64,10 +66,13 @@ namespace TeachersHandsBooks
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.BtnChangePairs = new System.Windows.Forms.PictureBox();
             this.MainTabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).BeginInit();
             this.GroupAddBOx.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnNext)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnPreviev)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BoxUpdate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FormRasp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDispAdd)).BeginInit();
@@ -75,6 +80,7 @@ namespace TeachersHandsBooks
             ((System.ComponentModel.ISupportInitialize)(this.BtnAddGroup)).BeginInit();
             this.PageSettings.SuspendLayout();
             this.materialCard1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnChangePairs)).BeginInit();
             this.SuspendLayout();
             // 
             // MainTabControl
@@ -188,7 +194,9 @@ namespace TeachersHandsBooks
             this.GridRaspisanie.ThemeStyle.RowsStyle.Height = 35;
             this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.GridRaspisanie.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.GridRaspisanie_CellFormatting);
             this.GridRaspisanie.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.GridRaspisanie_RowPrePaint);
+            this.GridRaspisanie.SelectionChanged += new System.EventHandler(this.GridRaspisanie_SelectionChanged);
             // 
             // GroupAddBOx
             // 
@@ -196,6 +204,9 @@ namespace TeachersHandsBooks
             this.GroupAddBOx.BorderColor = System.Drawing.Color.DarkGray;
             this.GroupAddBOx.BorderRadius = 6;
             this.GroupAddBOx.BorderThickness = 2;
+            this.GroupAddBOx.Controls.Add(this.BtnChangePairs);
+            this.GroupAddBOx.Controls.Add(this.BtnNext);
+            this.GroupAddBOx.Controls.Add(this.BtnPreviev);
             this.GroupAddBOx.Controls.Add(this.BoxUpdate);
             this.GroupAddBOx.Controls.Add(this.label2);
             this.GroupAddBOx.Controls.Add(this.label1);
@@ -217,6 +228,34 @@ namespace TeachersHandsBooks
             this.GroupAddBOx.UseTransparentBackground = true;
             this.GroupAddBOx.Click += new System.EventHandler(this.GroupAddBOx_Click);
             // 
+            // BtnNext
+            // 
+            this.BtnNext.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnNext.Image = ((System.Drawing.Image)(resources.GetObject("BtnNext.Image")));
+            this.BtnNext.Location = new System.Drawing.Point(687, 54);
+            this.BtnNext.Name = "BtnNext";
+            this.BtnNext.Size = new System.Drawing.Size(50, 37);
+            this.BtnNext.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.BtnNext.TabIndex = 8;
+            this.BtnNext.TabStop = false;
+            this.BtnNext.Click += new System.EventHandler(this.BtnNext_Click);
+            this.BtnNext.MouseEnter += new System.EventHandler(this.BtnNext_MouseEnter);
+            this.BtnNext.MouseLeave += new System.EventHandler(this.BtnNext_MouseLeave);
+            // 
+            // BtnPreviev
+            // 
+            this.BtnPreviev.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnPreviev.Image = ((System.Drawing.Image)(resources.GetObject("BtnPreviev.Image")));
+            this.BtnPreviev.Location = new System.Drawing.Point(452, 54);
+            this.BtnPreviev.Name = "BtnPreviev";
+            this.BtnPreviev.Size = new System.Drawing.Size(40, 37);
+            this.BtnPreviev.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.BtnPreviev.TabIndex = 7;
+            this.BtnPreviev.TabStop = false;
+            this.BtnPreviev.Click += new System.EventHandler(this.BtnPreviev_Click);
+            this.BtnPreviev.MouseEnter += new System.EventHandler(this.BtnPreviev_MouseEnter);
+            this.BtnPreviev.MouseLeave += new System.EventHandler(this.BtnPreviev_MouseLeave);
+            // 
             // BoxUpdate
             // 
             this.BoxUpdate.BackColor = System.Drawing.Color.Transparent;
@@ -235,7 +274,7 @@ namespace TeachersHandsBooks
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(502, 66);
+            this.label2.Location = new System.Drawing.Point(546, 66);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(64, 25);
             this.label2.TabIndex = 5;
@@ -247,7 +286,7 @@ namespace TeachersHandsBooks
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(505, 41);
+            this.label1.Location = new System.Drawing.Point(549, 41);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 25);
             this.label1.TabIndex = 3;
@@ -538,6 +577,21 @@ namespace TeachersHandsBooks
             this.imageList1.Images.SetKeyName(5, "setting_tools.png");
             this.imageList1.Images.SetKeyName(6, "block.png");
             // 
+            // BtnChangePairs
+            // 
+            this.BtnChangePairs.BackColor = System.Drawing.Color.Transparent;
+            this.BtnChangePairs.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnChangePairs.Enabled = false;
+            this.BtnChangePairs.Image = ((System.Drawing.Image)(resources.GetObject("BtnChangePairs.Image")));
+            this.BtnChangePairs.Location = new System.Drawing.Point(335, 54);
+            this.BtnChangePairs.Name = "BtnChangePairs";
+            this.BtnChangePairs.Size = new System.Drawing.Size(41, 37);
+            this.BtnChangePairs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.BtnChangePairs.TabIndex = 9;
+            this.BtnChangePairs.TabStop = false;
+            this.BtnChangePairs.MouseEnter += new System.EventHandler(this.BtnChangePairs_MouseEnter);
+            this.BtnChangePairs.MouseLeave += new System.EventHandler(this.BtnChangePairs_MouseLeave);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -556,6 +610,8 @@ namespace TeachersHandsBooks
             ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).EndInit();
             this.GroupAddBOx.ResumeLayout(false);
             this.GroupAddBOx.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnNext)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnPreviev)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BoxUpdate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FormRasp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDispAdd)).EndInit();
@@ -564,6 +620,7 @@ namespace TeachersHandsBooks
             this.PageSettings.ResumeLayout(false);
             this.materialCard1.ResumeLayout(false);
             this.materialCard1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnChangePairs)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -599,6 +656,9 @@ namespace TeachersHandsBooks
         private System.Windows.Forms.PictureBox BoxUpdate;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.PictureBox BtnNext;
+        private System.Windows.Forms.PictureBox BtnPreviev;
+        private System.Windows.Forms.PictureBox BtnChangePairs;
     }
 }
 
