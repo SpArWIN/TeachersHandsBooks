@@ -45,7 +45,7 @@ namespace TeachersHandsBooks
             else if (!IsThemeChecked)
             {
                 GridTransmitt.BackgroundColor = Color.WhiteSmoke;
-                GridTransmitt.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Teal;
+                GridTransmitt.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
             }
         }
         private void LoadGetData()

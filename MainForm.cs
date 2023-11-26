@@ -12,6 +12,11 @@ namespace TeachersHandsBooks
 {
     public partial class MainForm : MaterialForm
     {
+        //О программе
+        private Timer PrintTimer;
+        private string TextToPrint ;
+        private int CurrentIndex = 0;
+        private Control OutputControl;
 
         private readonly ThemeSettings ThemSet = new ThemeSettings();
         readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
@@ -46,12 +51,32 @@ namespace TeachersHandsBooks
             currentDate = DateTime.Now;
             daysAndDatesList = GenerateDaysAndDates(currentDate);
             daysAndDatesPrevious = GenerateDaysAndDatesPrevious(currentDate);
-
-
+            PrintTimer = new Timer();
+            PrintTimer.Interval = 50; // Интервал между печатью символов (в миллисекундах)
+            PrintTimer.Tick += PrintTimer_Tick;
+            OutputControl = PrintedText;
+            OutputControl.Font = new Font("Segui UI", 14, FontStyle.Regular);
 
 
 
         }
+
+        private void PrintTimer_Tick(object sender, EventArgs e)
+        {
+            if (CurrentIndex < TextToPrint.Length)
+            {
+                // Печать текста посимвольно
+                OutputControl.Text += TextToPrint[CurrentIndex];
+                CurrentIndex++;
+            }
+            else
+            {
+                // Когда весь текст напечатан, останавливаем таймер
+                PrintTimer.Stop();
+            }
+        }
+    
+
         public void SaveSettings()
         {
 
@@ -735,6 +760,19 @@ namespace TeachersHandsBooks
             else
             {
                 MessageBox.Show("Выберите строку для дальнейшего взаимодействия", "Ошибка выполнения команды", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+        }
+
+        private void MainTabControl_Selected(object sender, TabControlEventArgs e)
+        {
+            if(MainTabControl.SelectedTab == AboutProgramm)
+            {
+                TextToPrint = "Программный продукт создан в рамках курсового проектирования по МДК03.01 " +
+                    "\nТехнология разработки программного обеспечения\nСтудентом группы П-20\nБалыкиным Николаем Александровичем.\nРуководитель курсового проекта: Фролова Г.Н\nПреподаватель-консультант:Данилов Д.М";
+                CurrentIndex = 0;
+                OutputControl.Text = string.Empty;
+                PrintTimer.Start();
 
             }
         }

@@ -20,21 +20,7 @@ namespace TeachersHandsBooks
         public string Discipline { get; set; }
         public string Group { get; set; }
         public bool IsThemeChecked { get; set; }
-        // Метод для получения доступных пар на определенный день
-        //private List<string> GetAvailableEmptyPairsForDay(string dayOfWeek)
-        //{
-        //    List<string> emptyPairsForDay = new List<string>();
-
-        //    foreach (var emptyCell in Emty)
-        //    {
-        //        if (emptyCell.DayOfWeek.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            emptyPairsForDay.Add(emptyCell.Pair);
-        //        }
-        //    }
-
-        //    return emptyPairsForDay;
-        //}
+       
 
         public MechanismoFAddingPairs(ThemeSettings theme)
         {
@@ -50,9 +36,9 @@ namespace TeachersHandsBooks
             DataGridViewComboBoxColumn pairColumn = new DataGridViewComboBoxColumn();
             pairColumn.HeaderText = "Пары";
             pairColumn.Name = "PairColumn";
-            pairColumn.DataSource = EmptyPairsForDay;    //GetAvailableEmptyPairsForDay(DayWeekLabel.Text);
+            pairColumn.DataSource = EmptyPairsForDay;    
             pairColumn.DataPropertyName = "Pair";
-            pairColumn.DefaultCellStyle.Font = new Font("Arial", 14,FontStyle.Bold);
+            pairColumn.DefaultCellStyle.Font = new Font("Arial", 14, FontStyle.Bold);
             pairColumn.FlatStyle = FlatStyle.Popup;
             pairColumn.DropDownWidth = 150;
             GridAddPair.Columns.Add(pairColumn);
@@ -65,7 +51,7 @@ namespace TeachersHandsBooks
             disciplineColumn.DataPropertyName = "Discipline";
             disciplineColumn.FlatStyle = FlatStyle.Popup;
             disciplineColumn.DropDownWidth = 150;
-            disciplineColumn.DefaultCellStyle.Font = new Font("Arial", 14 );
+            disciplineColumn.DefaultCellStyle.Font = new Font("Arial", 14);
             GridAddPair.Columns.Add(disciplineColumn);
 
             DataGridViewComboBoxColumn groupColumn = new DataGridViewComboBoxColumn();
@@ -107,20 +93,40 @@ namespace TeachersHandsBooks
 
         }
 
-       
+
 
         private void MechanismoFAddingPairs_Load(object sender, EventArgs e)
         {
             DataLabel.Font = new Font("Segui UI", 12, FontStyle.Bold);
             DayWeekLabel.Font = new Font("Segui UI", 12, FontStyle.Bold);
             LoadGetData();
-           GridAddPair.ColumnHeadersDefaultCellStyle.SelectionBackColor = eding.GetColorFromTheme(themeSettings);
+            GridAddPair.ColumnHeadersDefaultCellStyle.SelectionBackColor = eding.GetColorFromTheme(themeSettings);
             LoadSetting();
         }
-
-        private void BtnAddPairs_Click(object sender, EventArgs e)
+        public int GetTimeTableId(string pairName, string disciplineName, string groupName)
         {
 
+
+            var timeTableId = (from tt in context.TimeTables
+                               where tt.Pair.Pair == pairName &&
+                                     tt.DisplineWithGroup.Displine.NameDispline == disciplineName &&
+                                     tt.DisplineWithGroup.Group.NameGroup == groupName
+                               select tt.ID).FirstOrDefault();
+
+            return timeTableId;
+        }
+        private void BtnAddPairs_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show("Вы действительно хотите добавить пару на " + DataLabel.Text, "Проверка", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            int TimeTableID = GetTimeTableId()
+            if(res == DialogResult.Yes)
+            {
+                // Проверка наличия записи в ModifiedSchedule
+                var existingEntry = context.Modifieds.FirstOrDefault(entry =>
+                    entry.TimeTable.ID == TimeTableID &&
+                    entry.Data == DataLabel.Text &&
+                    entry.isAdded == true);
+            }
         }
 
         private void GridAddPair_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -152,6 +158,28 @@ namespace TeachersHandsBooks
 
 
             }
+        }
+        //Все ли ячейки заполнены
+       private bool AreAllComboBoxesFilled()
+        {
+            foreach (DataGridViewRow row in GridAddPair.Rows)
+            {
+                foreach (DataGridViewColumn column in GridAddPair.Columns)
+                {
+                    if (column is DataGridViewComboBoxColumn comboBoxColumn && row.Cells[column.Index] is DataGridViewComboBoxCell comboBoxCell)
+                    {
+                        if (string.IsNullOrWhiteSpace(comboBoxCell.Value?.ToString()))
+                        {
+                            return false; // Если хотя бы одна ячейка не заполнена, возвращаем false
+                        }
+                    }
+                }
+            }
+            return true; // Если все ячейки заполнены, возвращаем true
+        }
+        private void GridAddPair_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            BtnAddPairs.Enabled = AreAllComboBoxesFilled();
         }
     }
 }
