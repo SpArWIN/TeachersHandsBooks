@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
+using TeachersHandsBooks.Core.Tables;
 
 namespace TeachersHandsBooks
 {
@@ -15,12 +16,16 @@ namespace TeachersHandsBooks
         private DatabaseContext context = new DatabaseContext();
         private ThemeSettings themeSettings;
         private EdingFormValue eding = new EdingFormValue();
+        //Для анимации загрузки
+
+        private int currentProgress = 0;
+        private Timer progressTimer;
         public List<string> EmptyPairsForDay { get; set; } = new List<string>();
         public string Pair { get; set; }
         public string Discipline { get; set; }
         public string Group { get; set; }
         public bool IsThemeChecked { get; set; }
-       
+
 
         public MechanismoFAddingPairs(ThemeSettings theme)
         {
@@ -28,7 +33,26 @@ namespace TeachersHandsBooks
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             this.themeSettings = theme;
+            progressTimer = new Timer();
+            progressTimer.Interval = 100; // Интервал обновления анимации (в миллисекундах)
+            progressTimer.Tick += ProgressTimer_Tick;
         }
+
+        private void ProgressTimer_Tick(object sender, EventArgs e)
+        {
+            currentProgress += 10;
+            if (currentProgress > guna2CircleProgressBar1.Maximum)
+            {
+                // Если достигнут максимум, останавливаем анимацию
+                progressTimer.Stop();
+                guna2CircleProgressBar1.Visible = false;
+            }
+            else
+            {
+                guna2CircleProgressBar1.Value = currentProgress;
+            }
+        }
+
         private void LoadGetData()
         {
             DataLabel.Text = TransmissionOfInformation.Data;
@@ -36,7 +60,7 @@ namespace TeachersHandsBooks
             DataGridViewComboBoxColumn pairColumn = new DataGridViewComboBoxColumn();
             pairColumn.HeaderText = "Пары";
             pairColumn.Name = "PairColumn";
-            pairColumn.DataSource = EmptyPairsForDay;    
+            pairColumn.DataSource = EmptyPairsForDay;
             pairColumn.DataPropertyName = "Pair";
             pairColumn.DefaultCellStyle.Font = new Font("Arial", 14, FontStyle.Bold);
             pairColumn.FlatStyle = FlatStyle.Popup;
@@ -118,14 +142,46 @@ namespace TeachersHandsBooks
         private void BtnAddPairs_Click(object sender, EventArgs e)
         {
             DialogResult res = MessageBox.Show("Вы действительно хотите добавить пару на " + DataLabel.Text, "Проверка", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            int TimeTableID = GetTimeTableId()
-            if(res == DialogResult.Yes)
+
+            string pairName = GridAddPair.Rows[0].Cells[0].Value?.ToString();
+            string disciplineName = GridAddPair.Rows[0].Cells[1].Value?.ToString();
+            string groupName = GridAddPair.Rows[0].Cells[2].Value?.ToString();
+
+            int TimeTableID = GetTimeTableId(pairName, disciplineName, groupName);
+
+
+
+            if (res == DialogResult.Yes)
             {
                 // Проверка наличия записи в ModifiedSchedule
                 var existingEntry = context.Modifieds.FirstOrDefault(entry =>
                     entry.TimeTable.ID == TimeTableID &&
                     entry.Data == DataLabel.Text &&
                     entry.isAdded == true);
+                if (existingEntry != null)
+                {
+                    MessageBox.Show("Повторная попытка добавления уже добавленной пары", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+                else
+                {
+                    var TimetablesAdd = context.TimeTables.FirstOrDefault(Tt => Tt.ID == TimeTableID);
+                    ModifiedSchedule AddEntry = new ModifiedSchedule
+                    {
+                        TimeTable = TimetablesAdd,
+                        Data = DataLabel.Text,
+                        isAdded = true
+
+                    };
+                    context.Modifieds.Add(AddEntry);
+                    context.SaveChanges();
+                    guna2CircleProgressBar1.Visible = true;
+                    currentProgress = 0;
+                    guna2CircleProgressBar1.Value = currentProgress;
+                    progressTimer.Start();
+                    MessageBox.Show("Пара была добавлена на " + DataLabel.Text + "обновите таблицу", "Информирование", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
+                }
             }
         }
 
@@ -160,7 +216,7 @@ namespace TeachersHandsBooks
             }
         }
         //Все ли ячейки заполнены
-       private bool AreAllComboBoxesFilled()
+        private bool AreAllComboBoxesFilled()
         {
             foreach (DataGridViewRow row in GridAddPair.Rows)
             {

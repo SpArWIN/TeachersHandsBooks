@@ -41,9 +41,12 @@ namespace TeachersHandsBooks
             this.label2 = new System.Windows.Forms.Label();
             this.GridTransmitt = new Guna.UI2.WinForms.Guna2DataGridView();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.guna2CircleProgressBar1 = new Guna.UI2.WinForms.Guna2CircleProgressBar();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.BtnAddRows)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDelRows)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GridTransmitt)).BeginInit();
+            this.guna2CircleProgressBar1.SuspendLayout();
             this.SuspendLayout();
             // 
             // BtnAddRows
@@ -173,11 +176,37 @@ namespace TeachersHandsBooks
             this.GridTransmitt.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.GridTransmitt.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.GridTransmitt_CellFormatting);
             // 
+            // guna2CircleProgressBar1
+            // 
+            this.guna2CircleProgressBar1.Animated = true;
+            this.guna2CircleProgressBar1.AnimationSpeed = 0.8F;
+            this.guna2CircleProgressBar1.Controls.Add(this.label5);
+            this.guna2CircleProgressBar1.Location = new System.Drawing.Point(163, 77);
+            this.guna2CircleProgressBar1.Name = "guna2CircleProgressBar1";
+            this.guna2CircleProgressBar1.ProgressColor = System.Drawing.Color.Green;
+            this.guna2CircleProgressBar1.ProgressColor2 = System.Drawing.Color.Lime;
+            this.guna2CircleProgressBar1.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
+            this.guna2CircleProgressBar1.ShadowDecoration.Parent = this.guna2CircleProgressBar1;
+            this.guna2CircleProgressBar1.Size = new System.Drawing.Size(214, 185);
+            this.guna2CircleProgressBar1.TabIndex = 12;
+            this.guna2CircleProgressBar1.Visible = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(65, 90);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(83, 20);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Загрузка...";
+            // 
             // Replacement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(682, 350);
+            this.Controls.Add(this.guna2CircleProgressBar1);
             this.Controls.Add(this.GridTransmitt);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -190,6 +219,8 @@ namespace TeachersHandsBooks
             ((System.ComponentModel.ISupportInitialize)(this.BtnAddRows)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDelRows)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.GridTransmitt)).EndInit();
+            this.guna2CircleProgressBar1.ResumeLayout(false);
+            this.guna2CircleProgressBar1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -203,5 +234,7 @@ namespace TeachersHandsBooks
         private System.Windows.Forms.Label label2;
         private Guna.UI2.WinForms.Guna2DataGridView GridTransmitt;
         private System.Windows.Forms.ToolTip toolTip1;
+        private Guna.UI2.WinForms.Guna2CircleProgressBar guna2CircleProgressBar1;
+        private System.Windows.Forms.Label label5;
     }
 }

@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
+using TeachersHandsBooks.Core.Tables;
 
 namespace TeachersHandsBooks
 {
@@ -14,7 +15,7 @@ namespace TeachersHandsBooks
     {
         //О программе
         private Timer PrintTimer;
-        private string TextToPrint ;
+        private string TextToPrint;
         private int CurrentIndex = 0;
         private Control OutputControl;
 
@@ -75,7 +76,7 @@ namespace TeachersHandsBooks
                 PrintTimer.Stop();
             }
         }
-    
+
 
         public void SaveSettings()
         {
@@ -172,8 +173,8 @@ namespace TeachersHandsBooks
             if (SwitchTheme.Checked)
             {
                 GroupAddBOx.FillColor = Color.Transparent;
-              //  GridRaspisanie.BackgroundColor = Color.FromArgb(214, 214, 214);
-             //   GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
+                //  GridRaspisanie.BackgroundColor = Color.FromArgb(214, 214, 214);
+                //   GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
 
 
 
@@ -182,8 +183,8 @@ namespace TeachersHandsBooks
             else if (!SwitchTheme.Checked)
             {
                 GroupAddBOx.FillColor = Color.WhiteSmoke;
-              //  GridRaspisanie.BackgroundColor = Color.FromArgb(214, 214, 214);
-              //  GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
+                //  GridRaspisanie.BackgroundColor = Color.FromArgb(214, 214, 214);
+                //  GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
             }
         }
 
@@ -192,6 +193,10 @@ namespace TeachersHandsBooks
         {
             // Проверка наличия записи для текущей даты в базе данных
             var entryForCurrentDate = context.Modifieds.FirstOrDefault(entry => entry.Data == label2.Text);
+            var EntryForADdCurrentDate = context.Modifieds.FirstOrDefault(entry => entry.Data == label2.Text && entry.isAdded == true);
+
+         
+
 
             if (entryForCurrentDate != null)
             {
@@ -201,20 +206,31 @@ namespace TeachersHandsBooks
                     string discipline = row.Cells["Discipline"].Value?.ToString();
                     string group = row.Cells["Group"].Value?.ToString();
 
-                    // Сравнение записи в DataGridView с найденной записью для текущей даты
                     if (pair == entryForCurrentDate.TimeTable.Pair.Pair &&
-                        discipline == entryForCurrentDate.TimeTable.DisplineWithGroup.Displine.NameDispline &&
-                        group == entryForCurrentDate.TimeTable.DisplineWithGroup.Group.NameGroup && entryForCurrentDate.isAdded == false)
+                discipline == entryForCurrentDate.TimeTable.DisplineWithGroup.Displine.NameDispline &&
+                group == entryForCurrentDate.TimeTable.DisplineWithGroup.Group.NameGroup)
                     {
-                        row.DefaultCellStyle.BackColor = Color.Brown;
-
-
-                        row.ReadOnly = true;
-                        row.Frozen = true;
-
-
+                        if (entryForCurrentDate.isAdded == false)
+                        {
+                            row.DefaultCellStyle.BackColor = Color.Brown;
+                            row.ReadOnly = true;
+                            row.Frozen = true;
+                        }
+                        else if (entryForCurrentDate.isAdded == true)
+                        {
+                           
+                            row.DefaultCellStyle.BackColor = Color.Green;
+                           
+                        }
                     }
                 }
+            }
+            if(EntryForADdCurrentDate!= null)
+            {
+                
+
+                int rowIndex = GridRaspisanie.Rows.Count - 1;
+                GridRaspisanie.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Green;
             }
         }
         public void TodayDay()
@@ -272,12 +288,30 @@ namespace TeachersHandsBooks
                 groupColumn.DataPropertyName = "Group";
                 groupColumn.Name = "Group";
                 GridRaspisanie.Columns.Add(groupColumn);
+                var temporaryEntries = context.Modifieds
+                  .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
+                  .Select(entry => new
+                  {
+                      Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
+                      Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
+                      Pair = entry.TimeTable.Pair.Pair
+                  })
+                  .ToList();
 
+
+                if (temporaryEntries != null)
+                {
+                    todayEntries.AddRange(temporaryEntries);
+
+                }
+                GridRaspisanie.DataSource = todayEntries;
+                GridRaspisanie.ResetBindings();
+                MarkRowsForCurrentDate();
 
 
 
                 GridRaspisanie.AutoGenerateColumns = false;
-                GridRaspisanie.DataSource = todayEntries;
+           
                 label1.Text = dayOfWeekRussian;
                 label1.Font = new Font("Segui UI", 14);
                 label1.BackColor = Color.Transparent;
@@ -358,28 +392,49 @@ namespace TeachersHandsBooks
                 groupColumn.Name = "Group";
                 GridRaspisanie.Columns.Add(groupColumn);
 
+                // Получение временного расписания из Modifieds, если оно есть
+                var temporaryEntries = context.Modifieds
+                    .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
+                    .Select(entry => new
+                    {
+                        Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
+                        Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
+                        Pair = entry.TimeTable.Pair.Pair
+                    })
+                    .ToList();
+             
 
+                    // Привязываем результаты к DataGridView
+                    GridRaspisanie.AutoGenerateColumns = false;
+                   
+                
+                  
+                    label1.Text = dayOfWeekRussian;
+                    label1.Font = new Font("Segui UI", 14);
+                    label1.BackColor = Color.Transparent;
 
+                    // Проверяем, если пары уже есть на этот день
+                    var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
+                    // Проверяем наличие отмененных пар для указанной даты
+                    var cancelledPairs = context.Modifieds
+                                            .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
+                                            .Select(modified => modified.TimeTable.Pair.Pair)
+                                            .ToList();
+                    // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
+                    emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
 
-                // Привязываем результаты к DataGridView
-                GridRaspisanie.AutoGenerateColumns = false;
+                   
+                if(temporaryEntries != null)
+                {
+                    todayEntries.AddRange(temporaryEntries);
+
+                }
+                // Отсортируем записи по полю Pair.ID, при этом запись с ID 6 будет первой
+            
+
                 GridRaspisanie.DataSource = todayEntries;
-                label1.Text = dayOfWeekRussian;
-                label1.Font = new Font("Segui UI", 14);
-                label1.BackColor = Color.Transparent;
-
-                // Проверяем, если пары уже есть на этот день
-                var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
-                // Проверяем наличие отмененных пар для указанной даты
-                var cancelledPairs = context.Modifieds
-                                        .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
-                                        .Select(modified => modified.TimeTable.Pair.Pair)
-                                        .ToList();
-                // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
-                emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
-
+                GridRaspisanie.ResetBindings();
                 MarkRowsForCurrentDate();
-
             }
             else
             {
@@ -766,7 +821,7 @@ namespace TeachersHandsBooks
 
         private void MainTabControl_Selected(object sender, TabControlEventArgs e)
         {
-            if(MainTabControl.SelectedTab == AboutProgramm)
+            if (MainTabControl.SelectedTab == AboutProgramm)
             {
                 TextToPrint = "Программный продукт создан в рамках курсового проектирования по МДК03.01 " +
                     "\nТехнология разработки программного обеспечения\nСтудентом группы П-20\nБалыкиным Николаем Александровичем.\nРуководитель курсового проекта: Фролова Г.Н\nПреподаватель-консультант:Данилов Д.М";

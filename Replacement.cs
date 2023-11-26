@@ -15,7 +15,10 @@ namespace TeachersHandsBooks
     {
         private DatabaseContext context = new DatabaseContext();
         private ThemeSettings themeSettings;
-        
+        //ДЛя анимации загрузки
+
+        private int currentProgress = 0;
+        private Timer progressTimer;
         EdingFormValue editingForm = new EdingFormValue();
         //ДЛя передачи в форму
         public List<string> EmptyForAddForm { get; set; } = new List<string>();
@@ -34,7 +37,26 @@ namespace TeachersHandsBooks
             this.themeSettings = theme;
             toolTip1.SetToolTip(BtnAddRows, "Добавить пару");
             toolTip1.SetToolTip(BtnDelRows, "Отменить пару");
+            progressTimer = new Timer();
+            progressTimer.Interval = 100; // Интервал обновления анимации (в миллисекундах)
+            progressTimer.Tick += ProgressTimer_Tick;
         }
+
+        private void ProgressTimer_Tick(object sender, EventArgs e)
+        {
+            currentProgress += 10;
+            if (currentProgress > guna2CircleProgressBar1.Maximum)
+            {
+                // Если достигнут максимум, останавливаем анимацию
+                progressTimer.Stop();
+                guna2CircleProgressBar1.Visible = false;
+            }
+            else
+            {
+                guna2CircleProgressBar1.Value = currentProgress;
+            }
+        }
+
         private void LoadSetting()
         {
             if (IsThemeChecked)
@@ -118,7 +140,7 @@ namespace TeachersHandsBooks
             label2.Font = new Font("Segui UI", 12, FontStyle.Bold);
             LoadGetData();
             LoadSetting();
-           GridTransmitt.ColumnHeadersDefaultCellStyle.SelectionBackColor = editingForm.GetColorFromTheme(themeSettings);
+            GridTransmitt.ColumnHeadersDefaultCellStyle.SelectionBackColor = editingForm.GetColorFromTheme(themeSettings);
         }
 
         private void BtnAddRows_MouseEnter(object sender, EventArgs e)
@@ -187,7 +209,13 @@ namespace TeachersHandsBooks
 
                     context.Modifieds.Add(newEntry);
                     context.SaveChanges();
+                    guna2CircleProgressBar1.Visible = true;
+                    currentProgress = 0;
+                    guna2CircleProgressBar1.Value = currentProgress;
+                    progressTimer.Start();
                     MessageBox.Show("Пара была отменена на " + label1.Text + " обновите таблицу ", "Информирование", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    this.Close();
                 }
             }
         }
