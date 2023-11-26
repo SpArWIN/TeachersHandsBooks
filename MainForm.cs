@@ -18,7 +18,7 @@ namespace TeachersHandsBooks
         EdingFormValue editingForm = new EdingFormValue();
         //Для пустых пар
         private List<string> emptyPairsForDay { get; set; } = new List<string>();
-      
+
         private DatabaseContext context = new DatabaseContext();
         // для гифки
         private Image gifImage;
@@ -96,7 +96,7 @@ namespace TeachersHandsBooks
             {
                 GroupAddBOx.FillColor = Color.WhiteSmoke;
                 GridRaspisanie.BackgroundColor = Color.WhiteSmoke;
-                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Teal;
+                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
             }
 
 
@@ -108,7 +108,7 @@ namespace TeachersHandsBooks
 
 
         }
-       
+
         //Метод загрузки
         private void LoadSettings()
         {
@@ -147,8 +147,8 @@ namespace TeachersHandsBooks
             if (SwitchTheme.Checked)
             {
                 GroupAddBOx.FillColor = Color.Transparent;
-                GridRaspisanie.BackgroundColor = Color.FromArgb(50, 50, 50);
-                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
+              //  GridRaspisanie.BackgroundColor = Color.FromArgb(214, 214, 214);
+             //   GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
 
 
 
@@ -157,8 +157,8 @@ namespace TeachersHandsBooks
             else if (!SwitchTheme.Checked)
             {
                 GroupAddBOx.FillColor = Color.WhiteSmoke;
-                GridRaspisanie.BackgroundColor = Color.WhiteSmoke;
-                GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Teal;
+              //  GridRaspisanie.BackgroundColor = Color.FromArgb(214, 214, 214);
+              //  GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
             }
         }
 
@@ -179,11 +179,11 @@ namespace TeachersHandsBooks
                     // Сравнение записи в DataGridView с найденной записью для текущей даты
                     if (pair == entryForCurrentDate.TimeTable.Pair.Pair &&
                         discipline == entryForCurrentDate.TimeTable.DisplineWithGroup.Displine.NameDispline &&
-                        group == entryForCurrentDate.TimeTable.DisplineWithGroup.Group.NameGroup && entryForCurrentDate.isAdded ==false)
+                        group == entryForCurrentDate.TimeTable.DisplineWithGroup.Group.NameGroup && entryForCurrentDate.isAdded == false)
                     {
                         row.DefaultCellStyle.BackColor = Color.Brown;
-                        
-                       
+
+
                         row.ReadOnly = true;
                         row.Frozen = true;
 
@@ -201,85 +201,90 @@ namespace TeachersHandsBooks
             string dayOfWeekRussian = currentDate.ToString("dddd", new CultureInfo("ru-RU"));
 
 
-                var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
-                if (dayId != null)
-                {
-                    GridRaspisanie.Columns.Clear();
-                    var todayEntries = context.TimeTables
-              .Where(entry => entry.Day.ID == dayId)
-              .OrderBy(entry => entry.Pair.ID) // Сортировка по ID пары из таблицы Pairs
-              .Select(entry => new
-              {
-                  Group = entry.DisplineWithGroup.Group.NameGroup,
-                  Discipline = entry.DisplineWithGroup.Displine.NameDispline,
-                  Pair = entry.Pair.Pair
-              })
+            var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
+            if (dayId != null)
+            {
+                GridRaspisanie.Columns.Clear();
+                var todayEntries = context.TimeTables
+          .Where(entry => entry.Day.ID == dayId)
+          .OrderBy(entry => entry.Pair.ID) // Сортировка по ID пары из таблицы Pairs
+          .Select(entry => new
+          {
+              Group = entry.DisplineWithGroup.Group.NameGroup,
+              Discipline = entry.DisplineWithGroup.Displine.NameDispline,
+              Pair = entry.Pair.Pair
+          })
 
-              .ToList();
+          .ToList();
                 //ПОлучаем все пары
                 var allPairs = context.Pairs
                   .Select(entry => entry.Pair)
                   .ToList();
 
+                // Проверяем, если пары уже есть на этот день
                 var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
-
-                // Создаем новый список для пустых ячеек
-                emptyPairsForDay = allPairs.Except(existingPairs).ToList();
+                // Проверяем наличие отмененных пар для указанной даты
+                var cancelledPairs = context.Modifieds
+                                        .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
+                                        .Select(modified => modified.TimeTable.Pair.Pair)
+                                        .ToList();
+                // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
+                emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
                 DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
-                    pairColumn.HeaderText = "Пары";
-                    pairColumn.DataPropertyName = "Pair";
-                    pairColumn.Name = "Pair";
-                    GridRaspisanie.Columns.Add(pairColumn);
+                pairColumn.HeaderText = "Пары";
+                pairColumn.DataPropertyName = "Pair";
+                pairColumn.Name = "Pair";
+                GridRaspisanie.Columns.Add(pairColumn);
 
-                    DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
-                    disciplineColumn.HeaderText = "Дисциплина";
-                    disciplineColumn.DataPropertyName = "Discipline";
-                    disciplineColumn.Name = "Discipline";
-                    GridRaspisanie.Columns.Add(disciplineColumn);
+                DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
+                disciplineColumn.HeaderText = "Дисциплина";
+                disciplineColumn.DataPropertyName = "Discipline";
+                disciplineColumn.Name = "Discipline";
+                GridRaspisanie.Columns.Add(disciplineColumn);
 
-                    DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
-                    groupColumn.HeaderText = "Группа";
-                    groupColumn.DataPropertyName = "Group";
-                    groupColumn.Name = "Group";
-                    GridRaspisanie.Columns.Add(groupColumn);
-
-
+                DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
+                groupColumn.HeaderText = "Группа";
+                groupColumn.DataPropertyName = "Group";
+                groupColumn.Name = "Group";
+                GridRaspisanie.Columns.Add(groupColumn);
 
 
-                    GridRaspisanie.AutoGenerateColumns = false;
-                    GridRaspisanie.DataSource = todayEntries;
-                    label1.Text = dayOfWeekRussian;
-                    label1.Font = new Font("Segui UI", 14);
+
+
+                GridRaspisanie.AutoGenerateColumns = false;
+                GridRaspisanie.DataSource = todayEntries;
+                label1.Text = dayOfWeekRussian;
+                label1.Font = new Font("Segui UI", 14);
                 label1.BackColor = Color.Transparent;
                 GridRaspisanie.ClearSelection();
                 MarkRowsForCurrentDate();
             }
             else
+            {
+                if (dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
-                    {
-                        GridRaspisanie.Columns.Clear(); // Очищаем столбцы
+                    GridRaspisanie.Columns.Clear(); // Очищаем столбцы
 
-                        label1.Text = "Воскресенье"; // Устанавливаем текст метки как "Воскресенье"
-                        label1.Font = new Font("Segui UI", 14);
-                        label1.BackColor = Color.Transparent;
+                    label1.Text = "Воскресенье"; // Устанавливаем текст метки как "Воскресенье"
+                    label1.Font = new Font("Segui UI", 14);
+                    label1.BackColor = Color.Transparent;
 
 
 
-                        DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
-                        pairColumn.HeaderText = "Выходной";
-                        GridRaspisanie.Columns.Add(pairColumn);
+                    DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                    pairColumn.HeaderText = "Выходной";
+                    GridRaspisanie.Columns.Add(pairColumn);
 
 
-                    }
-                    else
-                    {
-                        // Действия при отсутствии данных для других дней недели (не Воскресенье)
-                        MessageBox.Show("Нет данных для этого дня.");
-                    }
+                }
+                else
+                {
+                    // Действия при отсутствии данных для других дней недели (не Воскресенье)
+                    MessageBox.Show("Нет данных для этого дня.");
                 }
             }
-        
+        }
+
 
 
         public void DisplayScheduleForDay(DayOfWeek dayOfWeek, DateTime date)
@@ -290,53 +295,53 @@ namespace TeachersHandsBooks
 
 
 
-                var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
-                if (dayId != null)
-                {
-                    GridRaspisanie.Columns.Clear();
-                    var todayEntries = context.TimeTables
-                        .Where(entry => entry.Day.ID == dayId)
-                        .OrderBy(entry => entry.Pair.ID)
-                        .Select(entry => new
-                        {
-                            Group = entry.DisplineWithGroup.Group.NameGroup,
-                            Discipline = entry.DisplineWithGroup.Displine.NameDispline,
-                            Pair = entry.Pair.Pair
-                        })
-                        .ToList();
+            var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
+            if (dayId != null)
+            {
+                GridRaspisanie.Columns.Clear();
+                var todayEntries = context.TimeTables
+                    .Where(entry => entry.Day.ID == dayId)
+                    .OrderBy(entry => entry.Pair.ID)
+                    .Select(entry => new
+                    {
+                        Group = entry.DisplineWithGroup.Group.NameGroup,
+                        Discipline = entry.DisplineWithGroup.Displine.NameDispline,
+                        Pair = entry.Pair.Pair
+                    })
+                    .ToList();
                 // Получаем все пары из базы данных
                 var allPairs = context.Pairs
                     .Select(entry => entry.Pair)
                     .ToList();
-                    
+
 
                 DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
-                    pairColumn.HeaderText = "Пары";
-                    pairColumn.DataPropertyName = "Pair";
-                    pairColumn.Name = "Pair";
-                    GridRaspisanie.Columns.Add(pairColumn);
+                pairColumn.HeaderText = "Пары";
+                pairColumn.DataPropertyName = "Pair";
+                pairColumn.Name = "Pair";
+                GridRaspisanie.Columns.Add(pairColumn);
 
-                    DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
-                    disciplineColumn.HeaderText = "Дисциплина";
-                    disciplineColumn.DataPropertyName = "Discipline";
-                    disciplineColumn.Name = "Discipline";
-                    GridRaspisanie.Columns.Add(disciplineColumn);
+                DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
+                disciplineColumn.HeaderText = "Дисциплина";
+                disciplineColumn.DataPropertyName = "Discipline";
+                disciplineColumn.Name = "Discipline";
+                GridRaspisanie.Columns.Add(disciplineColumn);
 
-                    DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
-                    groupColumn.HeaderText = "Группа";
-                    groupColumn.DataPropertyName = "Group";
-                    groupColumn.Name = "Group";
-                    GridRaspisanie.Columns.Add(groupColumn);
-
-
+                DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
+                groupColumn.HeaderText = "Группа";
+                groupColumn.DataPropertyName = "Group";
+                groupColumn.Name = "Group";
+                GridRaspisanie.Columns.Add(groupColumn);
 
 
-                    // Привязываем результаты к DataGridView
-                    GridRaspisanie.AutoGenerateColumns = false;
-                    GridRaspisanie.DataSource = todayEntries;
-                    label1.Text = dayOfWeekRussian;
-                    label1.Font = new Font("Segui UI", 14);
-                    label1.BackColor = Color.Transparent;
+
+
+                // Привязываем результаты к DataGridView
+                GridRaspisanie.AutoGenerateColumns = false;
+                GridRaspisanie.DataSource = todayEntries;
+                label1.Text = dayOfWeekRussian;
+                label1.Font = new Font("Segui UI", 14);
+                label1.BackColor = Color.Transparent;
 
                 // Проверяем, если пары уже есть на этот день
                 var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
@@ -351,22 +356,22 @@ namespace TeachersHandsBooks
                 MarkRowsForCurrentDate();
 
             }
-                else
+            else
+            {
+                if (dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
-                    {
-                        DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
-                        pairColumn.HeaderText = "Выходной";
-                        // Значение прочерка
-                        GridRaspisanie.Columns.Add(pairColumn);
-                        GridRaspisanie.AutoGenerateColumns = false;
-                        GridRaspisanie.DataSource = null;
-                    }
+                    DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                    pairColumn.HeaderText = "Выходной";
+                    // Значение прочерка
+                    GridRaspisanie.Columns.Add(pairColumn);
+                    GridRaspisanie.AutoGenerateColumns = false;
+                    GridRaspisanie.DataSource = null;
                 }
-            
+            }
+
         }
 
-      
+
         /// <summary>
         /// Формирование дат, относительно текущего дня
         /// </summary>
@@ -419,23 +424,23 @@ namespace TeachersHandsBooks
             // Возвращаем список дней
             return daysAndDatesList;
         }
-       
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            
-         
+
+
             BtnChangePairs.Enabled = false;
             TodayDay();
 
-           
+
 
             gifImage = Properties.Resources.LoadPicture;
             BoxUpdate.Image = gifImage;
-           // SetFontStyleForAllCells(GridRaspisanie, FontStyle.Bold);
+            // SetFontStyleForAllCells(GridRaspisanie, FontStyle.Bold);
             label1.Font = new Font("Arial", 12, FontStyle.Bold);
             label2.Font = new Font("Arial", 10, FontStyle.Bold);
             label1.Text = label1.Text.ToUpper();
-            
+
 
 
 
@@ -598,7 +603,7 @@ namespace TeachersHandsBooks
             daysAndDatesPrevious = GenerateDaysAndDatesPrevious(currentDate);
             DisplayScheduleForDay(currentDate.DayOfWeek, currentDate); // Показываем расписание для текущего дня
             TodayDay();
-          
+
             foreach (var node in daysAndDatesList)
             {
                 if (node.Date.Date == currentDate.Date)
@@ -636,7 +641,7 @@ namespace TeachersHandsBooks
             {
                 currentNode = currentNode.Next; // Переходим к следующему узлу
                 var nextDay = currentNode.Value;
-                
+
                 // Вызываем метод для отображения расписания для следующего дня
                 DisplayScheduleForDay(nextDay.WeekDay, nextDay.Date);
             }
@@ -655,7 +660,7 @@ namespace TeachersHandsBooks
                 this.GridRaspisanie.Columns[e.ColumnIndex].DataPropertyName == "Discipline" ||
                 this.GridRaspisanie.Columns[e.ColumnIndex].DataPropertyName == "Group")
             {
-               
+
                 e.CellStyle.Font = new Font("Segui UI", 13, FontStyle.Bold);
             }
             Color textColor = SwitchTheme.Checked ? Color.White : Color.Black;
@@ -675,7 +680,7 @@ namespace TeachersHandsBooks
             else
             {
 
-              
+
                 currentNode = daysAndDatesList.First;
             }
         }
@@ -706,7 +711,7 @@ namespace TeachersHandsBooks
 
         private void BtnChangePairs_Click(object sender, EventArgs e)
         {
-          if(  GridRaspisanie.SelectedRows.Count > 0)
+            if (GridRaspisanie.SelectedRows.Count > 0)
             {
                 DataGridViewRow selectedRow = GridRaspisanie.SelectedRows[0];
                 string pairValue = selectedRow.Cells["pair"].Value?.ToString();

@@ -43,6 +43,7 @@ namespace TeachersHandsBooks
             // GridAddPair
             // 
             this.GridAddPair.AllowUserToDeleteRows = false;
+            this.GridAddPair.AllowUserToResizeColumns = false;
             this.GridAddPair.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -53,7 +54,7 @@ namespace TeachersHandsBooks
             this.GridAddPair.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.GridAddPair.BackgroundColor = System.Drawing.Color.White;
             this.GridAddPair.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.GridAddPair.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.GridAddPair.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.GridAddPair.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
@@ -111,6 +112,7 @@ namespace TeachersHandsBooks
             this.GridAddPair.ThemeStyle.RowsStyle.Height = 29;
             this.GridAddPair.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.GridAddPair.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.GridAddPair.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridAddPair_CellValueChanged);
             // 
             // BtnAddPairs
             // 

@@ -17,7 +17,7 @@ namespace TeachersHandsBooks
         private ThemeSettings themeSettings;
         private int currentProgress = 0;
         private Timer progressTimer;
-       
+
         DatabaseContext context = new DatabaseContext();
         private int selectedGroupId = -1;
         public FormationRasp(ThemeSettings theme, MainForm Main)
@@ -524,9 +524,9 @@ namespace TeachersHandsBooks
         private void GridRasp_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             // Проверяем столбец, для которого мы хотим установить стиль
-          
+
         }
-    
+
 
         private void GridRasp_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {

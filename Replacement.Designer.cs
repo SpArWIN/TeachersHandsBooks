@@ -29,6 +29,7 @@ namespace TeachersHandsBooks
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Replacement));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -39,6 +40,7 @@ namespace TeachersHandsBooks
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.GridTransmitt = new Guna.UI2.WinForms.Guna2DataGridView();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.BtnAddRows)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnDelRows)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GridTransmitt)).BeginInit();
@@ -200,5 +202,6 @@ namespace TeachersHandsBooks
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private Guna.UI2.WinForms.Guna2DataGridView GridTransmitt;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

@@ -2,12 +2,9 @@
 using MaterialSkin.Controls;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
 using TeachersHandsBooks.Core.Tables;
@@ -34,7 +31,8 @@ namespace TeachersHandsBooks
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             this.themeSettings = theme;
-
+            toolTip1.SetToolTip(BtnAddRows, "Добавить пару");
+            toolTip1.SetToolTip(BtnDelRows, "Отменить пару");
         }
         private void LoadSetting()
         {
@@ -198,7 +196,7 @@ namespace TeachersHandsBooks
             mech.IsThemeChecked = IsThemeChecked;
             mech.EmptyPairsForDay = EmptyForAddForm;
             mech.ShowDialog();
-       
+
 
         }
     }
