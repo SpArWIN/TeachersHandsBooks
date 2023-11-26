@@ -17,7 +17,7 @@ namespace TeachersHandsBooks
         private ThemeSettings themeSettings;
         private int currentProgress = 0;
         private Timer progressTimer;
-
+       
         DatabaseContext context = new DatabaseContext();
         private int selectedGroupId = -1;
         public FormationRasp(ThemeSettings theme, MainForm Main)
@@ -368,6 +368,15 @@ namespace TeachersHandsBooks
                             // Получаем ID дисциплины
                             int disciplineId = GetDisciplineIdByName(Discipline);
                             disciplineIds.Add(disciplineId);
+                        }
+                        else
+                        {
+                            //string DayOfWeekNull = datagrid.Columns[columnIndex].HeaderText;
+                            //EmptyCellsList.Add(new EmptyCellInfo
+                            //{
+                            //    DayOfWeek = DayOfWeekNull, 
+                            //    Pair = datagrid.Rows[rowIndex].Cells["PairsColumn"].Value?.ToString() 
+                            //});
                         }
                     }
 

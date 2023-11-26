@@ -19,7 +19,8 @@ namespace TeachersHandsBooks
         private DatabaseContext context = new DatabaseContext();
         private ThemeSettings themeSettings;
         EdingFormValue editingForm = new EdingFormValue();
-
+        //ДЛя передачи в форму
+        public List<string> EmptyForAddForm { get; set; } = new List<string>();
         // Добавляем свойства для передачи данных
         public string Pair { get; set; }
         public string Discipline { get; set; }
@@ -161,25 +162,43 @@ namespace TeachersHandsBooks
                 int groupId = GetGroupId(Group);
 
                 int TimeTableID = GetTimeTableId(Pair, Discipline, Group);
-                
+                // Проверка наличия записи в ModifiedSchedule
+                var existingEntry = context.Modifieds.FirstOrDefault(entry =>
+                    entry.TimeTable.ID == TimeTableID &&
+                    entry.Data == label1.Text &&
+                    entry.isAdded == false);
+
+                if (existingEntry != null)
+                {
+                    MessageBox.Show("Выбранная пара уже была отменена, ошибка повторной операции", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+
+
                     var timeTable = context.TimeTables.FirstOrDefault(tt => tt.ID == TimeTableID);
 
                     ModifiedSchedule newEntry = new ModifiedSchedule
                     {
                         TimeTable = timeTable,
-                        Data = label1.Text
-
+                        Data = label1.Text,
+                        isAdded = false
                     };
 
-                context.Modifieds.Add(newEntry);
-                context.SaveChanges();
-               
+                    context.Modifieds.Add(newEntry);
+                    context.SaveChanges();
+                    MessageBox.Show("Пара была отменена на " + label1.Text + " обновите таблицу ", "Информирование", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
-
         }
 
         private void BtnAddRows_Click(object sender, EventArgs e)
         {
+            MechanismoFAddingPairs mech = new MechanismoFAddingPairs(themeSettings);
+            mech.IsThemeChecked = IsThemeChecked;
+            mech.EmptyPairsForDay = EmptyForAddForm;
+            mech.ShowDialog();
+       
 
         }
     }

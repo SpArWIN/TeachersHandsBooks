@@ -16,6 +16,9 @@ namespace TeachersHandsBooks
         private readonly ThemeSettings ThemSet = new ThemeSettings();
         readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
         EdingFormValue editingForm = new EdingFormValue();
+        //Для пустых пар
+        private List<string> emptyPairsForDay { get; set; } = new List<string>();
+      
         private DatabaseContext context = new DatabaseContext();
         // для гифки
         private Image gifImage;
@@ -176,13 +179,15 @@ namespace TeachersHandsBooks
                     // Сравнение записи в DataGridView с найденной записью для текущей даты
                     if (pair == entryForCurrentDate.TimeTable.Pair.Pair &&
                         discipline == entryForCurrentDate.TimeTable.DisplineWithGroup.Displine.NameDispline &&
-                        group == entryForCurrentDate.TimeTable.DisplineWithGroup.Group.NameGroup)
+                        group == entryForCurrentDate.TimeTable.DisplineWithGroup.Group.NameGroup && entryForCurrentDate.isAdded ==false)
                     {
-                        row.DefaultCellStyle.BackColor = Color.Brown; 
-                       // row.Visible = false;
-                        row.ReadOnly = true; 
-                       
+                        row.DefaultCellStyle.BackColor = Color.Brown;
                         
+                       
+                        row.ReadOnly = true;
+                        row.Frozen = true;
+
+
                     }
                 }
             }
@@ -211,9 +216,16 @@ namespace TeachersHandsBooks
               })
 
               .ToList();
+                //ПОлучаем все пары
+                var allPairs = context.Pairs
+                  .Select(entry => entry.Pair)
+                  .ToList();
 
+                var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
 
-                    DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                // Создаем новый список для пустых ячеек
+                emptyPairsForDay = allPairs.Except(existingPairs).ToList();
+                DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
                     pairColumn.HeaderText = "Пары";
                     pairColumn.DataPropertyName = "Pair";
                     pairColumn.Name = "Pair";
@@ -239,6 +251,7 @@ namespace TeachersHandsBooks
                     label1.Text = dayOfWeekRussian;
                     label1.Font = new Font("Segui UI", 14);
                 label1.BackColor = Color.Transparent;
+                GridRaspisanie.ClearSelection();
                 MarkRowsForCurrentDate();
             }
             else
@@ -291,8 +304,13 @@ namespace TeachersHandsBooks
                             Pair = entry.Pair.Pair
                         })
                         .ToList();
+                // Получаем все пары из базы данных
+                var allPairs = context.Pairs
+                    .Select(entry => entry.Pair)
+                    .ToList();
+                    
 
-                    DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
                     pairColumn.HeaderText = "Пары";
                     pairColumn.DataPropertyName = "Pair";
                     pairColumn.Name = "Pair";
@@ -319,6 +337,17 @@ namespace TeachersHandsBooks
                     label1.Text = dayOfWeekRussian;
                     label1.Font = new Font("Segui UI", 14);
                     label1.BackColor = Color.Transparent;
+
+                // Проверяем, если пары уже есть на этот день
+                var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
+                // Проверяем наличие отмененных пар для указанной даты
+                var cancelledPairs = context.Modifieds
+                                        .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
+                                        .Select(modified => modified.TimeTable.Pair.Pair)
+                                        .ToList();
+                // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
+                emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
+
                 MarkRowsForCurrentDate();
 
             }
@@ -393,7 +422,7 @@ namespace TeachersHandsBooks
        
         private void Form1_Load(object sender, EventArgs e)
         {
-            GridRaspisanie.ClearSelection();
+            
          
             BtnChangePairs.Enabled = false;
             TodayDay();
@@ -694,6 +723,7 @@ namespace TeachersHandsBooks
                 replacement.Discipline = disciplineValue;
                 replacement.Group = groupValue;
                 replacement.IsThemeChecked = SwitchTheme.Checked;
+                replacement.EmptyForAddForm = emptyPairsForDay;
 
                 replacement.ShowDialog();
             }
