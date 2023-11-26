@@ -105,7 +105,7 @@
   <ItemGroup>
     <Compile Include="Core\DatabaseContext.cs" />
     <Compile Include="Core\EdingFormValue.cs" />
-    <Compile Include="Core\GetCurrentData.cs" />
+    <Compile Include="Core\transmission .cs" />
     <Compile Include="Core\Tables\DayTable.cs" />
     <Compile Include="Core\Tables\Displine.cs" />
     <Compile Include="Core\Tables\DisplineWithGroup.cs" />
