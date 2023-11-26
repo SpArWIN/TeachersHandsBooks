@@ -15,6 +15,7 @@ namespace TeachersHandsBooks
     {
         private DatabaseContext context = new DatabaseContext();
         private ThemeSettings themeSettings;
+        
         EdingFormValue editingForm = new EdingFormValue();
         //ДЛя передачи в форму
         public List<string> EmptyForAddForm { get; set; } = new List<string>();
@@ -117,6 +118,7 @@ namespace TeachersHandsBooks
             label2.Font = new Font("Segui UI", 12, FontStyle.Bold);
             LoadGetData();
             LoadSetting();
+           GridTransmitt.ColumnHeadersDefaultCellStyle.SelectionBackColor = editingForm.GetColorFromTheme(themeSettings);
         }
 
         private void BtnAddRows_MouseEnter(object sender, EventArgs e)

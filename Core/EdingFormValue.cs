@@ -76,5 +76,26 @@ namespace TeachersHandsBooks.Core
                 picture.BackColor = Color.White;
             }
         }
+
+        public Color GetColorFromTheme(ThemeSettings setting)
+        {
+            Color selectedColor = Color.White;
+
+            if (!string.IsNullOrEmpty(setting.ColorTheme) && setting.ColorTheme != "Transparent")
+            {
+                try
+                {
+                    selectedColor = Color.FromName(setting.ColorTheme);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    // Если возникла ошибка, установим цвет по умолчанию
+                    selectedColor = Color.White;
+                }
+            }
+
+            return selectedColor;
+        }
     }
 }

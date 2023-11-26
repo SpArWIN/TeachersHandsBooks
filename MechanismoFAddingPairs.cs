@@ -14,6 +14,7 @@ namespace TeachersHandsBooks
     {
         private DatabaseContext context = new DatabaseContext();
         private ThemeSettings themeSettings;
+        private EdingFormValue eding = new EdingFormValue();
         public List<string> EmptyPairsForDay { get; set; } = new List<string>();
         public string Pair { get; set; }
         public string Discipline { get; set; }
@@ -51,7 +52,9 @@ namespace TeachersHandsBooks
             pairColumn.Name = "PairColumn";
             pairColumn.DataSource = EmptyPairsForDay;    //GetAvailableEmptyPairsForDay(DayWeekLabel.Text);
             pairColumn.DataPropertyName = "Pair";
+            pairColumn.DefaultCellStyle.Font = new Font("Arial", 14,FontStyle.Bold);
             pairColumn.FlatStyle = FlatStyle.Popup;
+            pairColumn.DropDownWidth = 150;
             GridAddPair.Columns.Add(pairColumn);
 
 
@@ -61,6 +64,8 @@ namespace TeachersHandsBooks
             disciplineColumn.DataSource = null;
             disciplineColumn.DataPropertyName = "Discipline";
             disciplineColumn.FlatStyle = FlatStyle.Popup;
+            disciplineColumn.DropDownWidth = 150;
+            disciplineColumn.DefaultCellStyle.Font = new Font("Arial", 14 );
             GridAddPair.Columns.Add(disciplineColumn);
 
             DataGridViewComboBoxColumn groupColumn = new DataGridViewComboBoxColumn();
@@ -69,6 +74,8 @@ namespace TeachersHandsBooks
             groupColumn.DataSource = FillCombox();
             groupColumn.DataPropertyName = "Group";
             groupColumn.FlatStyle = FlatStyle.Popup;
+            groupColumn.DefaultCellStyle.Font = new Font("Arial", 14);
+            groupColumn.DropDownWidth = 150;
             GridAddPair.Columns.Add(groupColumn);
             GridAddPair.AutoGenerateColumns = false;
 
@@ -99,12 +106,15 @@ namespace TeachersHandsBooks
 
 
         }
+
+       
+
         private void MechanismoFAddingPairs_Load(object sender, EventArgs e)
         {
             DataLabel.Font = new Font("Segui UI", 12, FontStyle.Bold);
             DayWeekLabel.Font = new Font("Segui UI", 12, FontStyle.Bold);
             LoadGetData();
-
+           GridAddPair.ColumnHeadersDefaultCellStyle.SelectionBackColor = eding.GetColorFromTheme(themeSettings);
             LoadSetting();
         }
 
