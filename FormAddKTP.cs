@@ -12,8 +12,7 @@ using TeachersHandsBooks.Core.Tables;
 using Displine = TeachersHandsBooks.Core.Tables.Displine;
 using KTP = TeachersHandsBooks.Core.Tables.KTP;
 using OfficeOpenXml;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
+
 using System.Diagnostics;
 
 namespace TeachersHandsBooks
