@@ -429,7 +429,7 @@ namespace TeachersHandsBooks
                     todayEntries.AddRange(temporaryEntries);
 
                 }
-                // Отсортируем записи по полю Pair.ID, при этом запись с ID 6 будет первой
+              
             
 
                 GridRaspisanie.DataSource = todayEntries;

@@ -1,6 +1,6 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
-using OfficeOpenXml;
+
 using System;
 using System.Data;
 using System.Drawing;
@@ -11,7 +11,10 @@ using TeachersHandsBooks.Core;
 using TeachersHandsBooks.Core.Tables;
 using Displine = TeachersHandsBooks.Core.Tables.Displine;
 using KTP = TeachersHandsBooks.Core.Tables.KTP;
-using LicenseContext = OfficeOpenXml.LicenseContext;
+using OfficeOpenXml;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using System.Diagnostics;
 
 namespace TeachersHandsBooks
 {
@@ -209,6 +212,7 @@ namespace TeachersHandsBooks
             openFileDialog1.Filter = "Файлы Excel|*.xlsx;*.xls|Все файлы|*.*";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                string selectedPath = openFileDialog1.FileName;
                 // Проверяем, существует ли метка ktplabel, если нет, то создаем новую
                 Label ktplabel = KTPPath.Controls.OfType<Label>().FirstOrDefault();
                 if (ktplabel == null)
@@ -218,6 +222,42 @@ namespace TeachersHandsBooks
                     KTPPath.Controls.Add(ktplabel);
 
                 }
+                if (Path.GetExtension(selectedPath).ToLower() == ".xls")
+                {
+                    string tempFilePathXLSX = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.xlsx");
+
+                    // Запускаем процесс конвертации
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = "convert", // Путь к утилите для конвертации
+                        Arguments = $"\"{selectedPath}\" \"{tempFilePathXLSX}\"", // Аргументы для конвертации из XLS в XLSX
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
+                    };
+
+                    try
+                    {
+                        using (Process process = Process.Start(psi))
+                        {
+                            process.WaitForExit(); 
+
+                            if (File.Exists(tempFilePathXLSX))
+                            {
+                                selectedPath = tempFilePathXLSX; 
+                            }
+                            else
+                            {
+                                MessageBox.Show("Конвертация провалена");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка: {ex.Message}");
+                    }
+                }
 
                 SelectedPath = openFileDialog1.FileName;
                 ktplabel.Text = SelectedPath;
@@ -225,115 +265,123 @@ namespace TeachersHandsBooks
 
                 using (var excel = new ExcelPackage(openFileDialog1.FileName))
                 {
-                    ExcelWorksheet worksheet = excel.Workbook.Worksheets[0];
-                    string NameFile = Path.GetFileName(SelectedPath);
-
-                    string groupCellValue = worksheet.Cells["B6"].Text;
-                    string[] parts = groupCellValue.Split('-');
-                    if (parts.Length > 0)
+                    if (excel.Workbook.Worksheets.Count > 0)
                     {
-                        string groupName = parts[0].Trim();
 
-                        using (var context = new DatabaseContext())
+
+                        ExcelWorksheet worksheet = excel.Workbook.Worksheets.First();
+                        string NameFile = Path.GetFileName(SelectedPath);
+
+                        string groupCellValue = worksheet.Cells["B6"].Text;
+                        string[] parts = groupCellValue.Split('-');
+                        if (parts.Length > 0)
                         {
-                            var group = context.Groups.FirstOrDefault(g => g.NameGroup == groupName);
+                            string groupName = parts[0].Trim();
 
-                            if (group != null)
+                            using (var context = new DatabaseContext())
                             {
-                                BtnCreateAdd.Enabled = true;
+                                var group = context.Groups.FirstOrDefault(g => g.NameGroup == groupName);
 
-                                // Очистить данные в DataGridView перед отображением новой группы
-                                GridKTPControll.Rows.Clear();
-
-                                // Получить существующий КТП по имени
-                                var existingKtp = context.kTPs.FirstOrDefault(k => k.NameKTP == NameFile);
-
-                                if (existingKtp == null)
+                                if (group != null)
                                 {
-                                    var newKTP = new KTP
-                                    {
-                                        NameKTP = NameFile
-                                    };
-                                    context.kTPs.Add(newKTP);
-                                    context.SaveChanges();
-                                    existingKtp = newKTP;
-                                }
-                                else
-                                {
-                                    var result = MessageBox.Show("КТП уже существует. Желаете перезаписать?", "Подтверждение", MessageBoxButtons.YesNo);
+                                    BtnCreateAdd.Enabled = true;
 
-                                    if (result == DialogResult.Yes)
+                                    // Очистить данные в DataGridView перед отображением новой группы
+                                    GridKTPControll.Rows.Clear();
+
+                                    // Получить существующий КТП по имени
+                                    var existingKtp = context.kTPs.FirstOrDefault(k => k.NameKTP == NameFile);
+
+                                    if (existingKtp == null)
                                     {
-                                        var ktpToDelete = context.kTPs.FirstOrDefault(b => b.NameKTP == NameFile);
-                                        if (ktpToDelete != null)
+                                        var newKTP = new KTP
                                         {
-                                            // Находим связанные записи DisplineWithGroup, которые содержат этот KTP
-                                            var relatedDisplineWithGroup = context.ConnectWithGroup
-                .Where(dwg => dwg.KTP.ID == ktpToDelete.ID)
-                .ToList();
-
-                                            foreach (var connection in relatedDisplineWithGroup)
-                                            {
-                                                // Получаем информацию о дисциплине по ID
-                                                var discipline = context.Displines.FirstOrDefault(d => d.ID == connection.Displine.ID);
-
-                                                // Проверяем, что дисциплина найдена
-                                                if (discipline != null)
-                                                {
-                                                    // Удаление папок, связанных с дисциплиной
-                                                    DisplineWithGroup.DeleteFolders(groupName, discipline.NameDispline);
-                                                }
-
-                                                // Удаляем найденные связи из контекста данных
-                                                context.ConnectWithGroup.Remove(connection);
-                                            }
-
-                                            // Теперь удаляем сам KTP
-                                            context.kTPs.Remove(ktpToDelete);
-
-                                            // Сохраняем изменения в базе данных
-                                            context.SaveChanges();
-                                        }
+                                            NameKTP = NameFile
+                                        };
+                                        context.kTPs.Add(newKTP);
+                                        context.SaveChanges();
+                                        existingKtp = newKTP;
                                     }
                                     else
                                     {
-                                        var IDktp = context.kTPs.FirstOrDefault(b => b.NameKTP == NameFile);
-                                        if (IDktp != null)
+                                        var result = MessageBox.Show("КТП уже существует. Желаете перезаписать?", "Подтверждение", MessageBoxButtons.YesNo);
+
+                                        if (result == DialogResult.Yes)
                                         {
-                                            int ktpId = IDktp.ID;
-                                            ShowConnection(ktpId);
+                                            var ktpToDelete = context.kTPs.FirstOrDefault(b => b.NameKTP == NameFile);
+                                            if (ktpToDelete != null)
+                                            {
+                                                // Находим связанные записи DisplineWithGroup, которые содержат этот KTP
+                                                var relatedDisplineWithGroup = context.ConnectWithGroup
+                    .Where(dwg => dwg.KTP.ID == ktpToDelete.ID)
+                    .ToList();
+
+                                                foreach (var connection in relatedDisplineWithGroup)
+                                                {
+                                                    // Получаем информацию о дисциплине по ID
+                                                    var discipline = context.Displines.FirstOrDefault(d => d.ID == connection.Displine.ID);
+
+                                                    // Проверяем, что дисциплина найдена
+                                                    if (discipline != null)
+                                                    {
+                                                        // Удаление папок, связанных с дисциплиной
+                                                        DisplineWithGroup.DeleteFolders(groupName, discipline.NameDispline);
+                                                    }
+
+                                                    // Удаляем найденные связи из контекста данных
+                                                    context.ConnectWithGroup.Remove(connection);
+                                                }
+
+                                                // Теперь удаляем сам KTP
+                                                context.kTPs.Remove(ktpToDelete);
+
+                                                // Сохраняем изменения в базе данных
+                                                context.SaveChanges();
+                                            }
                                         }
+                                        else
+                                        {
+                                            var IDktp = context.kTPs.FirstOrDefault(b => b.NameKTP == NameFile);
+                                            if (IDktp != null)
+                                            {
+                                                int ktpId = IDktp.ID;
+                                                ShowConnection(ktpId);
+                                            }
 
+                                        }
                                     }
-                                }
 
 
 
 
-                                if (existingKtp != null)
-                                {
-                                    // Добавить данные группы и КТП в DataGridView
-                                    GridKTPControll.Rows.Add(group.ID, group.NameGroup, existingKtp.NameKTP);
+                                    if (existingKtp != null)
+                                    {
+                                        // Добавить данные группы и КТП в DataGridView
+                                        GridKTPControll.Rows.Add(group.ID, group.NameGroup, existingKtp.NameKTP);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Группа не найдена в документе базы данных!", "Поиск не удался", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
                                 }
                                 else
                                 {
                                     MessageBox.Show("Группа не найдена в документе базы данных!", "Поиск не удался", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Группа не найдена в документе базы данных!", "Поиск не удался", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            }
 
+                            }
                         }
                     }
+                    else
+                    {
+                        MessageBox.Show("Ошибка чтения файла");
+                    }
                 }
-            }
-            else
-            {
 
             }
         }
+
+
 
         private bool AreAllDisciplinesSelected(DataGridView dataGridView)
         {
