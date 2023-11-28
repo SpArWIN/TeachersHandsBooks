@@ -35,8 +35,10 @@ namespace TeachersHandsBooks
             grouplabel.Font = new Font("Segoe UI", 12, FontStyle.Regular);
             grouplabel.Margin = new Padding(5, 10, 0, 10);
             grouplabel.Cursor = Cursors.Hand;
+            grouplabel.AutoSize = true;
             grouplabel.Click += Grouplabel_Click;
-
+            Size textSize = TextRenderer.MeasureText(DisplineName, grouplabel.Font);
+            card.Size = new Size(textSize.Width + 20, 37);
             card.Controls.Add(grouplabel);
             flowLayoutPanel1.Controls.Add(card);
 
@@ -74,12 +76,13 @@ namespace TeachersHandsBooks
         private bool Validations()
         {
             string InputGroup = DispBoxAdd.Text;
-            bool isValid = Regex.IsMatch(InputGroup, @"^[а-яА-Яa-zA-Z0-9\\\^]+$");
+            bool isValid = Regex.IsMatch(InputGroup, @"^[\sа-яА-Яa-zA-Z0-9\.\-]+$");
+
             if (!isValid)
             {
                 MaterialMessageBox.Show("Некорректный ввод", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, false, FlexibleMaterialForm.ButtonsPosition.Center); ;
                 //MessageBox.Show("Некорректный ввод. Разрешены только символы, тире и цифры.");
-                DispBoxAdd.Text = Regex.Replace(DispBoxAdd.Text, @"^[а-яА-Яa-zA-Z0-9\-]+$", "");
+                DispBoxAdd.Text = Regex.Replace(DispBoxAdd.Text, @"[^а-яА-Яa-zA-Z0-9\\\-]+", "");
                 DispBoxAdd.SelectionStart = DispBoxAdd.Text.Length;
                 DispBoxAdd.Clear();
             }
@@ -128,7 +131,8 @@ namespace TeachersHandsBooks
             {
                 MessageBox.Show("Дисциплина с наименованием '" + InputTextBox + "' уже существует.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 DispBoxAdd.Clear();
-                DispBoxAdd.Enabled = false;
+                DispBoxAdd.Focus();
+              //  DispBoxAdd.Enabled = false;
 
 
 
@@ -136,7 +140,8 @@ namespace TeachersHandsBooks
             else
             {
 
-                MessageBox.Show("Группа " + InputTextBox + " была успешно добавлена в базу данных", "Добавление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Дисциплина " + InputTextBox + " была успешно добавлена в базу данных", "Добавление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DispBoxAdd.Clear();
                 Displine.AddDispline(InputTextBox);
                 RefreshGroupDisplay();
 

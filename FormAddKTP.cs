@@ -211,6 +211,7 @@ namespace TeachersHandsBooks
             openFileDialog1.Filter = "Файлы Excel|*.xlsx;*.xls|Все файлы|*.*";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                BtnCreateAdd.Enabled = true;
                 string selectedPath = openFileDialog1.FileName;
                 // Проверяем, существует ли метка ktplabel, если нет, то создаем новую
                 Label ktplabel = KTPPath.Controls.OfType<Label>().FirstOrDefault();
@@ -361,11 +362,13 @@ namespace TeachersHandsBooks
                                     else
                                     {
                                         MessageBox.Show("Группа не найдена в документе базы данных!", "Поиск не удался", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        BtnCreateAdd.Enabled = false;
                                     }
                                 }
                                 else
                                 {
                                     MessageBox.Show("Группа не найдена в документе базы данных!", "Поиск не удался", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    BtnCreateAdd.Enabled = false;
                                 }
 
                             }
