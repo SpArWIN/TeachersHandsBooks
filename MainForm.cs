@@ -255,7 +255,7 @@ namespace TeachersHandsBooks
               Discipline = entry.DisplineWithGroup.Displine.NameDispline,
               Pair = entry.Pair.Pair
           })
-
+         
           .ToList();
                 //ПОлучаем все пары
                 var allPairs = context.Pairs
@@ -306,7 +306,7 @@ namespace TeachersHandsBooks
                 }
                 GridRaspisanie.DataSource = todayEntries;
                 GridRaspisanie.ResetBindings();
-                MarkRowsForCurrentDate();
+               
 
 
 

@@ -130,12 +130,13 @@ namespace TeachersHandsBooks
         public int GetTimeTableId(string pairName, string disciplineName, string groupName)
         {
 
-
-            var timeTableId = (from tt in context.TimeTables
-                               where tt.Pair.Pair == pairName &&
-                                     tt.DisplineWithGroup.Displine.NameDispline == disciplineName &&
-                                     tt.DisplineWithGroup.Group.NameGroup == groupName
-                               select tt.ID).FirstOrDefault();
+            var timeTableId = context.TimeTables
+                   .Where(tt =>
+                       tt.DisplineWithGroup.Displine.NameDispline == disciplineName &&
+                       tt.DisplineWithGroup.Group.NameGroup == groupName &&
+                       tt.Pair.Pair == pairName)
+                   .Select(tt => tt.ID)
+                   .FirstOrDefault();
 
             return timeTableId;
         }

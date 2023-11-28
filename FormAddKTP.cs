@@ -208,7 +208,7 @@ namespace TeachersHandsBooks
             IsKTPLoaded = true;
             GridKTPControll.ReadOnly = !IsKTPLoaded;
             openFileDialog1.Title = "Выберите файл Excel";
-            openFileDialog1.Filter = "Файлы Excel|*.xlsx;*.xls|Все файлы|*.*";
+            openFileDialog1.Filter = "Файлы Excel|*.xlsx;|Все файлы|*.*";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 BtnCreateAdd.Enabled = true;
@@ -376,7 +376,7 @@ namespace TeachersHandsBooks
                     }
                     else
                     {
-                        MessageBox.Show("Ошибка чтения файла");
+                        MessageBox.Show("Пожалуйста, загрузите файл Excel формата xlsx","Ошибка чтения файла",MessageBoxButtons.OK,MessageBoxIcon.Error);
                     }
                 }
 

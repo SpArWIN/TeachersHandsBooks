@@ -42,6 +42,7 @@ namespace TeachersHandsBooks
                 // Если достигнут максимум, останавливаем анимацию
                 progressTimer.Stop();
                 guna2CircleProgressBar1.Visible = false;
+                this.Close();
             }
             else
             {
