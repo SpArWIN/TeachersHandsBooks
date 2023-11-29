@@ -84,6 +84,9 @@
     <Reference Include="MathNet.Numerics, Version=4.15.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>packages\MathNet.Numerics.Signed.4.15.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="MetroFramework">
+      <HintPath>..\StomatolKurs 1.1\bin\Debug\MetroFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=2.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.IO.RecyclableMemoryStream.2.3.2\lib\net462\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
     </Reference>
@@ -155,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\DatabaseContext.cs" />
+    <Compile Include="Core\DataRows.cs" />
     <Compile Include="Core\EdingFormValue.cs" />
     <Compile Include="Core\transmission .cs" />
     <Compile Include="Core\Tables\DayTable.cs" />

@@ -68,6 +68,8 @@ namespace TeachersHandsBooks
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.ContextChangeData = new MetroFramework.Controls.MetroContextMenu(this.components);
+            this.BackPair = new System.Windows.Forms.ToolStripMenuItem();
             this.MainTabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).BeginInit();
@@ -83,6 +85,7 @@ namespace TeachersHandsBooks
             this.PageSettings.SuspendLayout();
             this.materialCard1.SuspendLayout();
             this.AboutProgramm.SuspendLayout();
+            this.ContextChangeData.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainTabControl
@@ -198,6 +201,7 @@ namespace TeachersHandsBooks
             this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.GridRaspisanie.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.GridRaspisanie_CellFormatting);
+            this.GridRaspisanie.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.GridRaspisanie_CellMouseDown);
             this.GridRaspisanie.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.GridRaspisanie_RowPrePaint);
             this.GridRaspisanie.SelectionChanged += new System.EventHandler(this.GridRaspisanie_SelectionChanged);
             // 
@@ -606,6 +610,20 @@ namespace TeachersHandsBooks
             this.imageList1.Images.SetKeyName(5, "setting_tools.png");
             this.imageList1.Images.SetKeyName(6, "block.png");
             // 
+            // ContextChangeData
+            // 
+            this.ContextChangeData.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.BackPair});
+            this.ContextChangeData.Name = "ContextChangeData";
+            this.ContextChangeData.Size = new System.Drawing.Size(181, 48);
+            this.ContextChangeData.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.ContextChangeData_ItemClicked);
+            // 
+            // BackPair
+            // 
+            this.BackPair.Name = "BackPair";
+            this.BackPair.Size = new System.Drawing.Size(157, 22);
+            this.BackPair.Text = "Отменить пару";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -637,6 +655,7 @@ namespace TeachersHandsBooks
             this.materialCard1.PerformLayout();
             this.AboutProgramm.ResumeLayout(false);
             this.AboutProgramm.PerformLayout();
+            this.ContextChangeData.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -676,6 +695,8 @@ namespace TeachersHandsBooks
         private System.Windows.Forms.PictureBox BtnPreviev;
         private System.Windows.Forms.PictureBox BtnChangePairs;
         private System.Windows.Forms.Label PrintedText;
+        private MetroFramework.Controls.MetroContextMenu ContextChangeData;
+        private System.Windows.Forms.ToolStripMenuItem BackPair;
     }
 }
 

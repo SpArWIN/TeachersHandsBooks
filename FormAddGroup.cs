@@ -93,15 +93,18 @@ namespace TeachersHandsBooks
         {
             string InputGroup = BoxAddGroup.Text;
             bool isValid = Regex.IsMatch(InputGroup, @"^[а-яА-Яa-zA-Z0-9\\\^]+$");
-            if (!isValid)
+            bool isFirstCharacterLetter = char.IsLetter(InputGroup.FirstOrDefault());
+            if (!isValid || !isFirstCharacterLetter)
             {
                 MaterialMessageBox.Show("Некорректный ввод", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, false, FlexibleMaterialForm.ButtonsPosition.Center); ;
-                //MessageBox.Show("Некорректный ввод. Разрешены только символы, тире и цифры.");
-                BoxAddGroup.Text = Regex.Replace(BoxAddGroup.Text, @"^[а-яА-Яa-zA-Z0-9\-]+$", "");
-                BoxAddGroup.SelectionStart = BoxAddGroup.Text.Length;
+               
+                string cleanedInput = Regex.Replace(InputGroup, @"^[^а-яА-Яa-zA-Z].*", ""); 
+                BoxAddGroup.Text = cleanedInput;
                 BoxAddGroup.Clear();
+                BoxAddGroup.SelectionStart = BoxAddGroup.Text.Length;
+              
             }
-            return isValid;
+            return isValid && isFirstCharacterLetter;
         }
         private bool IsGroupExists(string GroupName)
         {

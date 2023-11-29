@@ -192,46 +192,67 @@ namespace TeachersHandsBooks
         private void MarkRowsForCurrentDate()
         {
             // Проверка наличия записи для текущей даты в базе данных
-            var entryForCurrentDate = context.Modifieds.FirstOrDefault(entry => entry.Data == label2.Text);
-            var EntryForADdCurrentDate = context.Modifieds.FirstOrDefault(entry => entry.Data == label2.Text && entry.isAdded == true);
+            var entriesForCurrentDate = context.Modifieds
+     .Where(entry => entry.Data == label2.Text)
+     .ToList();
 
-         
 
+            var entriesForAddCurrentDate = context.Modifieds
+      .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
+      .ToList();
 
-            if (entryForCurrentDate != null)
+            // Мы проходимся по целой коллекции ID, и выясняем наши условия
+            foreach (var entry in entriesForCurrentDate)
             {
-                foreach (DataGridViewRow row in GridRaspisanie.Rows)
+                for (int i = 0; i < GridRaspisanie.Rows.Count; i++)
                 {
+                    DataGridViewRow row = GridRaspisanie.Rows[i];
                     string pair = row.Cells["Pair"].Value?.ToString();
                     string discipline = row.Cells["Discipline"].Value?.ToString();
                     string group = row.Cells["Group"].Value?.ToString();
 
-                    if (pair == entryForCurrentDate.TimeTable.Pair.Pair &&
-                discipline == entryForCurrentDate.TimeTable.DisplineWithGroup.Displine.NameDispline &&
-                group == entryForCurrentDate.TimeTable.DisplineWithGroup.Group.NameGroup)
+                    if (pair == entry.TimeTable.Pair.Pair &&
+                        discipline == entry.TimeTable.DisplineWithGroup.Displine.NameDispline &&
+                        group == entry.TimeTable.DisplineWithGroup.Group.NameGroup)
                     {
-                        if (entryForCurrentDate.isAdded == false)
+                        if (entry.isAdded == false)
                         {
                             row.DefaultCellStyle.BackColor = Color.Brown;
                             row.ReadOnly = true;
                             row.Frozen = true;
+                          
                         }
-                        else if (entryForCurrentDate.isAdded == true)
+                        else if (entry.isAdded == true)
                         {
-                           
                             row.DefaultCellStyle.BackColor = Color.Green;
-                           
                         }
                     }
                 }
             }
-            if(EntryForADdCurrentDate!= null)
-            {
-                
 
-                int rowIndex = GridRaspisanie.Rows.Count - 1;
-                GridRaspisanie.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Green;
+            foreach (var entary in entriesForAddCurrentDate)
+            {
+
+                for (int i = 0; i < GridRaspisanie.RowCount; i++)
+                {
+                    DataGridViewRow row = GridRaspisanie.Rows[i];
+
+                  
+                    string pair = row.Cells["Pair"].Value?.ToString();
+                    string discipline = row.Cells["Discipline"].Value?.ToString();
+                    string group = row.Cells["Group"].Value?.ToString();
+
+                    if (pair == entary.TimeTable.Pair.Pair &&
+                        discipline == entary.TimeTable.DisplineWithGroup.Displine.NameDispline &&
+                        group == entary.TimeTable.DisplineWithGroup.Group.NameGroup)
+                    {
+                        row.DefaultCellStyle.BackColor = Color.Green;
+
+                    }
+                }
+
             }
+            
         }
         public void TodayDay()
         {
@@ -255,7 +276,7 @@ namespace TeachersHandsBooks
               Discipline = entry.DisplineWithGroup.Displine.NameDispline,
               Pair = entry.Pair.Pair
           })
-         
+        
           .ToList();
                 //ПОлучаем все пары
                 var allPairs = context.Pairs
@@ -288,6 +309,7 @@ namespace TeachersHandsBooks
                 groupColumn.DataPropertyName = "Group";
                 groupColumn.Name = "Group";
                 GridRaspisanie.Columns.Add(groupColumn);
+
                 var temporaryEntries = context.Modifieds
                   .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
                   .Select(entry => new
@@ -434,6 +456,7 @@ namespace TeachersHandsBooks
 
                 GridRaspisanie.DataSource = todayEntries;
                 GridRaspisanie.ResetBindings();
+                GridRaspisanie.Refresh();
                 MarkRowsForCurrentDate();
             }
             else
@@ -504,7 +527,7 @@ namespace TeachersHandsBooks
             // Возвращаем список дней
             return daysAndDatesList;
         }
-
+       
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -692,6 +715,7 @@ namespace TeachersHandsBooks
                     break;
                 }
             }
+           
         }
 
         private void BtnPreviev_MouseEnter(object sender, EventArgs e)
@@ -830,6 +854,133 @@ namespace TeachersHandsBooks
                 PrintTimer.Start();
 
             }
+        }
+
+        //метод получения ID из TimeTable
+        public int GetTimeTableId(string pairName, string disciplineName, string groupName)
+        {
+
+
+            var timeTableId = (from tt in context.TimeTables
+                               where tt.Pair.Pair == pairName &&
+                                     tt.DisplineWithGroup.Displine.NameDispline == disciplineName &&
+                                     tt.DisplineWithGroup.Group.NameGroup == groupName
+                               select tt.ID).FirstOrDefault();
+
+            return timeTableId;
+        }
+
+
+        private void GridRaspisanie_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0 && e.RowIndex < GridRaspisanie.RowCount)
+            {
+                GridRaspisanie.ClearSelection();
+                GridRaspisanie.Rows[e.RowIndex].Selected = true;
+                var cancelledPairs = context.Modifieds
+           .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
+           .Select(modified => modified.TimeTable.Pair.Pair)
+           .ToList();
+
+                // Показать контекстное меню с измененным текстом
+                
+                string pairName = GridRaspisanie.Rows[e.RowIndex].Cells["Pair"].Value.ToString();
+                string disciplineName = GridRaspisanie.Rows[e.RowIndex].Cells["Discipline"].Value.ToString();
+                string groupName = GridRaspisanie.Rows[e.RowIndex].Cells["Group"].Value.ToString();
+
+                int TimeTablesID = GetTimeTableId(pairName, disciplineName, groupName);
+
+                if(TimeTablesID != 0)
+                {
+                    // Получение значения поля isAdded для записи, соответствующей выбранной паре
+                    var modifiedRecord = context.Modifieds.FirstOrDefault(modified => modified.TimeTable.ID == TimeTablesID);
+
+                    if (modifiedRecord != null)
+                    {
+                        if (modifiedRecord.isAdded == false)
+                        {
+                            ContextChangeData.Items[0].Text = "Снять отмену пары";
+                        }
+                        else if (modifiedRecord.isAdded == true)
+                        {
+                            ContextChangeData.Items[0].Text = "Снять добавление пары";
+                        }
+                    }
+                    else
+                    {
+                        ContextChangeData.Items[0].Text = "Отменить пару";
+                    }
+
+                }
+                DataRows.GroupName = groupName;
+                DataRows.DisplineName = disciplineName;
+                DataRows.PairName = pairName;
+                ContextChangeData.Show(Cursor.Position);
+
+            }
+        }
+
+        private void ContextChangeData_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            switch (e.ClickedItem.Text)
+            {
+                case "Снять отмену пары":
+                    string Pair = DataRows.PairName ;
+                    string Displine = DataRows.DisplineName ;
+                    string Group = DataRows.GroupName;
+                    int TimeTablesID = GetTimeTableId(Pair, Displine, Group);
+
+                    if(TimeTablesID != 0)
+                    {
+                        var modifiedRecord = context.Modifieds.FirstOrDefault(modified => modified.TimeTable.ID == TimeTablesID);
+                        DialogResult res = MessageBox.Show("Вы действительно хотите снять отметку отмены пары на " + label2.Text, "Уточнение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (res == DialogResult.Yes)
+                        {
+                            context.Modifieds.Remove(modifiedRecord);
+                            context.SaveChanges();
+                            MessageBox.Show("Пометка об удалении пары на " + label2.Text + " была снята, обновите таблицу", "Операция", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                           
+                         
+
+
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("Запись для снятия отметки отмены не найдена.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(" Не найдено.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+                case "Отменить пару":
+                    DataGridViewRow selectedRow = GridRaspisanie.SelectedRows[0];
+                    string pairValue = selectedRow.Cells["pair"].Value?.ToString();
+                    string disciplineValue = selectedRow.Cells["Discipline"].Value?.ToString();
+                    string groupValue = selectedRow.Cells["Group"].Value?.ToString();
+                    /*На основе полученных значений, открываю форму и передаю их туда,для дальнейшего изменение, добавления
+                     * или удаления
+                    */
+
+                    Replacement replacement = new Replacement(ThemSet);
+                    TransmissionOfInformation.Data = label2.Text;
+                    TransmissionOfInformation.DayWeek = label1.Text;
+                    replacement.Pair = pairValue;
+                    replacement.Discipline = disciplineValue;
+                    replacement.Group = groupValue;
+                    replacement.IsThemeChecked = SwitchTheme.Checked;
+                    replacement.EmptyForAddForm = emptyPairsForDay;
+
+                    replacement.ShowDialog();
+                    break;
+
+
+            }
+           
         }
     }
 
