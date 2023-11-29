@@ -5,7 +5,7 @@ namespace TeachersHandsBooks.Core.Tables
 {
     public class Group
     {
-        DatabaseContext context = new DatabaseContext();
+      
         [Key] public int ID { get; set; }
         public string NameGroup { get; set; }
 

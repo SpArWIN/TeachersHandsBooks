@@ -208,8 +208,9 @@ namespace TeachersHandsBooks
                 {
                     DataGridViewRow row = GridRaspisanie.Rows[i];
                     string pair = row.Cells["Pair"].Value?.ToString();
-                    string discipline = row.Cells["Discipline"].Value?.ToString();
                     string group = row.Cells["Group"].Value?.ToString();
+                    string discipline = row.Cells["Discipline"].Value?.ToString();
+                  
 
                     if (pair == entry.TimeTable.Pair.Pair &&
                         discipline == entry.TimeTable.DisplineWithGroup.Displine.NameDispline &&
@@ -272,19 +273,25 @@ namespace TeachersHandsBooks
           .OrderBy(entry => entry.Pair.ID) // Сортировка по ID пары из таблицы Pairs
           .Select(entry => new
           {
+              Pair = entry.Pair.Pair,
+
               Group = entry.DisplineWithGroup.Group.NameGroup,
               Discipline = entry.DisplineWithGroup.Displine.NameDispline,
-              Pair = entry.Pair.Pair
+
+
           })
-        
+            
           .ToList();
+                // Группировка по паре и дисциплине, выбор одной записи из каждой группы
+              
                 //ПОлучаем все пары
                 var allPairs = context.Pairs
                   .Select(entry => entry.Pair)
                   .ToList();
 
                 // Проверяем, если пары уже есть на этот день
-                var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
+                 var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
+        
                 // Проверяем наличие отмененных пар для указанной даты
                 var cancelledPairs = context.Modifieds
                                         .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
@@ -314,10 +321,12 @@ namespace TeachersHandsBooks
                   .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
                   .Select(entry => new
                   {
+                      Pair = entry.TimeTable.Pair.Pair,
                       Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
                       Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
-                      Pair = entry.TimeTable.Pair.Pair
+                      
                   })
+                  
                   .ToList();
 
 

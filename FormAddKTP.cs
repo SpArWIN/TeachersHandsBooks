@@ -313,8 +313,8 @@ namespace TeachersHandsBooks
                                             {
                                                 // Находим связанные записи DisplineWithGroup, которые содержат этот KTP
                                                 var relatedDisplineWithGroup = context.ConnectWithGroup
-                    .Where(dwg => dwg.KTP.ID == ktpToDelete.ID)
-                    .ToList();
+                                                  .Where(dwg => dwg.KTP.ID == ktpToDelete.ID)
+                                                      .ToList();
 
                                                 foreach (var connection in relatedDisplineWithGroup)
                                                 {
@@ -330,10 +330,11 @@ namespace TeachersHandsBooks
 
                                                     // Удаляем найденные связи из контекста данных
                                                     context.ConnectWithGroup.Remove(connection);
+                                                    context.SaveChanges();
                                                 }
 
                                                 // Теперь удаляем сам KTP
-                                                context.kTPs.Remove(ktpToDelete);
+                                              //  context.kTPs.Remove(ktpToDelete);
 
                                                 // Сохраняем изменения в базе данных
                                                 context.SaveChanges();
