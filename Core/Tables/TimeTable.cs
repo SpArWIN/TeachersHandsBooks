@@ -11,6 +11,7 @@ namespace TeachersHandsBooks.Core.Tables
         public int TeacherLoad_ID { get; set; }
         public virtual DisplineWithGroup DisplineWithGroup { get; set; }
         public virtual DayTable Day { get; set; }
+
         public virtual NumberPair Pair { get; set; }
 
     }
