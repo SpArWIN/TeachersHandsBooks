@@ -13,6 +13,7 @@ namespace TeachersHandsBooks
 {
     public partial class MainForm : MaterialForm
     {
+        public string KtpPath { get; set; }
         //О программе
         private Timer PrintTimer;
         private string TextToPrint;
@@ -994,6 +995,48 @@ namespace TeachersHandsBooks
 
             }
            
+        }
+         private   void ProcessExcelFileAndPopulateDataGridView(string filePath, Guna.UI2.WinForms.Guna2DataGridView dataGridView)
+            {
+
+            }
+        private void GridRaspisanie_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridViewRow selectedRow = GridRaspisanie.SelectedRows[0];
+            string pairValue = selectedRow.Cells["pair"].Value?.ToString();
+            string disciplineValue = selectedRow.Cells["Discipline"].Value?.ToString();
+            string groupValue = selectedRow.Cells["Group"].Value?.ToString();
+            var ktpInfo = context.ConnectWithGroup
+                .Where(d => d.Displine.NameDispline == disciplineValue && d.Group.NameGroup == groupValue)
+                .Select(d => new
+                {
+                    KTP_Name = d.KTP.NameKTP // Предположим, что KTP - это свойство навигации к таблице KTP
+                })
+    .FirstOrDefault();
+            if (ktpInfo!= null)
+            {
+                string ktpName = ktpInfo.KTP_Name;
+                KtpPath = DisplineWithGroup.GetPathKTP(groupValue, disciplineValue, ktpName);
+               
+              
+            }
+            else
+            {
+                MessageBox.Show($"КТП для выбранной группы '{groupValue}' и дисциплины '{disciplineValue}' не найдено.");
+            }
+
+
+            if (KtpPath != null)
+            {
+                MainTabControl.SelectTab(Theory);
+                TheoryDataGrid.Visible = true;
+
+            }
+            else
+            {
+                TheoryDataGrid.Visible = false;
+            }
+
         }
     }
 

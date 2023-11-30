@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace TeachersHandsBooks.Core.Tables
 {
@@ -49,7 +51,50 @@ namespace TeachersHandsBooks.Core.Tables
         }
 
 
+        public static string GetPathKTP(string NameGroup,string DisplineName,string KtpNameFiles)
+        {
+            string ReturnedFilePath;
+            string folderessPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,  "Folderess");
+            string groupName = NameGroup; 
+            string disciplineName = DisplineName;
+            // Формирую путь к папке группы внутри Folderess
+            string GroupFolderPath = Path.Combine(folderessPath, groupName);
+            if (Directory.Exists(GroupFolderPath))
+            {
+                //Если папка с группой есть, лезем дальше
+                string DisplineFolderPath = Path.Combine(GroupFolderPath, disciplineName);
 
+                if (Directory.Exists(DisplineFolderPath))
+                {
+                    //Проверяем наличие Excel файла и проверяемт, что это вообще он
+                    string KtpName = KtpNameFiles;
+                    ReturnedFilePath = Path.Combine(DisplineFolderPath, KtpName);
+                    if (File.Exists(ReturnedFilePath))
+                    {
+                        return ReturnedFilePath;
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Файл КТП '{KtpName}' для группы '{groupName}' и дисциплины '{disciplineName}' не найден.", "Операция", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"Папка дисциплины '{disciplineName}' для группы '{groupName}' не найдена.", "Операция", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show($"Папка группы '{groupName}' не найдена в папке Folderess.", "Операция", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+           
+            return string.Empty;
+        }
+            
+
+
+        
 
         public static void CreateFolders(string NameGroup, string NameDispline, string KtpPath)
         {
