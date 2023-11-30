@@ -147,6 +147,7 @@ namespace TeachersHandsBooks
             this.Controls.Add(this.BtnSaveGroup);
             this.Controls.Add(this.GroupPanel);
             this.Controls.Add(this.BoxAddGroup);
+            this.MinimumSize = new System.Drawing.Size(787, 468);
             this.Name = "FormAddGroup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Добавление групп";

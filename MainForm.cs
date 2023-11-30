@@ -1,9 +1,11 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
@@ -19,6 +21,7 @@ namespace TeachersHandsBooks
         private string TextToPrint;
         private int CurrentIndex = 0;
         private Control OutputControl;
+    
 
         private readonly ThemeSettings ThemSet = new ThemeSettings();
         readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
@@ -111,9 +114,13 @@ namespace TeachersHandsBooks
             SwitchTheme.Checked = (ThemeSkin.Theme == MaterialSkinManager.Themes.DARK);
             if (SwitchTheme.Checked)
             {
+
                 GroupAddBOx.FillColor = Color.Transparent;
+                TheoryDataGrid.BackgroundColor = Color.FromArgb(50, 50, 50);
                 GridRaspisanie.BackgroundColor = Color.FromArgb(50, 50, 50);
                 GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
+                TheoryDataGrid.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
+               
 
 
 
@@ -124,6 +131,8 @@ namespace TeachersHandsBooks
                 GroupAddBOx.FillColor = Color.WhiteSmoke;
                 GridRaspisanie.BackgroundColor = Color.WhiteSmoke;
                 GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
+                TheoryDataGrid.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
+                TheoryDataGrid.BackgroundColor = Color.WhiteSmoke;
             }
 
 
@@ -544,12 +553,12 @@ namespace TeachersHandsBooks
        
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             BtnChangePairs.Enabled = false;
             TodayDay();
 
-
+            TheoryDataGrid.ColumnHeadersDefaultCellStyle = editingForm.SetDataGridViewStyleFromThemes(TheoryDataGrid, ThemSet);
 
             gifImage = Properties.Resources.LoadPicture;
             BoxUpdate.Image = gifImage;
@@ -996,47 +1005,129 @@ namespace TeachersHandsBooks
             }
            
         }
-         private   void ProcessExcelFileAndPopulateDataGridView(string filePath, Guna.UI2.WinForms.Guna2DataGridView dataGridView)
+        private void ProcessExcelFileAndPopulateDataGridView(string filePath, Guna.UI2.WinForms.Guna2DataGridView dataGridView)
+        {
+            // Открываем файл Excel с помощью EPPlus
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
             {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1]; 
 
+                int rowNumber = 4; // Начальная строка, где хранятся даты (N4, N5, и так далее)
+
+                
+                DataGridViewTextBoxColumn topicColumn = new DataGridViewTextBoxColumn();
+                topicColumn.HeaderText = "Тема занятия";
+                topicColumn.Name = "Topic";
+                dataGridView.Columns.Add(topicColumn);
+
+                DataGridViewTextBoxColumn VidColumn = new DataGridViewTextBoxColumn();
+                VidColumn.HeaderText = "Вид занятия";
+                VidColumn.Name = "Vid";
+                dataGridView.Columns.Add(VidColumn);
+
+                DataGridViewTextBoxColumn notesColumn = new DataGridViewTextBoxColumn();
+                notesColumn.HeaderText = "Примечания";
+                notesColumn.Name = "Prim";
+                notesColumn.Width = 300; 
+                dataGridView.Columns.Add(notesColumn);
+
+               
+
+                while (true)
+                {
+                    string cellValue = worksheet.Cells[$"N{rowNumber}"].Text;
+                    if (string.IsNullOrEmpty(cellValue))
+                    {
+                        worksheet.Cells[$"N{rowNumber}"].Value = label2.Text;
+                        cellValue = worksheet.Cells[$"N{rowNumber}"].Text;
+                    }
+                   
+                    // Сравниваем значение в ячейке с текущей датой из label2.Text
+                    if (cellValue == label2.Text)
+                    {
+                        // Ничего не делаем с колонками здесь, так как они уже добавлены ранее
+
+                        // Считываем данные из соответствующих ячеек D{i}, F{i}
+                        string lessonTopic = worksheet.Cells[$"D{rowNumber}"].Value?.ToString();
+                        string lessonType = worksheet.Cells[$"F{rowNumber}"].Value?.ToString();
+
+                        dataGridView.Rows.Add(lessonTopic, lessonType);
+
+                     
+                        break;
+                    }
+
+                    rowNumber++;
+                }
+                package.Save();
             }
+        }
+
         private void GridRaspisanie_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             DataGridViewRow selectedRow = GridRaspisanie.SelectedRows[0];
             string pairValue = selectedRow.Cells["pair"].Value?.ToString();
             string disciplineValue = selectedRow.Cells["Discipline"].Value?.ToString();
             string groupValue = selectedRow.Cells["Group"].Value?.ToString();
-            var ktpInfo = context.ConnectWithGroup
-                .Where(d => d.Displine.NameDispline == disciplineValue && d.Group.NameGroup == groupValue)
-                .Select(d => new
-                {
-                    KTP_Name = d.KTP.NameKTP // Предположим, что KTP - это свойство навигации к таблице KTP
+
+            bool isDataInCancelledPairs = context.Modifieds
+    .Any(modified => modified.Data == label2.Text &&
+                     modified.isAdded == false &&
+                     modified.TimeTable.Pair.Pair == pairValue &&
+                     modified.TimeTable.DisplineWithGroup.Displine.NameDispline == disciplineValue &&
+                     modified.TimeTable.DisplineWithGroup.Group.NameGroup == groupValue);
+
+            if (isDataInCancelledPairs)
+            {
+                MessageBox.Show("Пара была отменена, урок недоступен", "Отмена операции", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            else
+            {
+
+
+
+                var ktpInfo = context.ConnectWithGroup
+                    .Where(d => d.Displine.NameDispline == disciplineValue && d.Group.NameGroup == groupValue)
+                    .Select(d => new
+                    {
+                        KTP_Name = d.KTP.NameKTP // Предположим, что KTP - это свойство навигации к таблице KTP
                 })
-    .FirstOrDefault();
-            if (ktpInfo!= null)
-            {
-                string ktpName = ktpInfo.KTP_Name;
-                KtpPath = DisplineWithGroup.GetPathKTP(groupValue, disciplineValue, ktpName);
-               
-              
-            }
-            else
-            {
-                MessageBox.Show($"КТП для выбранной группы '{groupValue}' и дисциплины '{disciplineValue}' не найдено.");
-            }
+        .FirstOrDefault();
+                if (ktpInfo != null)
+                {
+                    string ktpName = ktpInfo.KTP_Name;
+                    KtpPath = DisplineWithGroup.GetPathKTP(groupValue, disciplineValue, ktpName);
 
 
-            if (KtpPath != null)
-            {
-                MainTabControl.SelectTab(Theory);
-                TheoryDataGrid.Visible = true;
+                }
+                else
+                {
+                    MessageBox.Show($"КТП для выбранной группы '{groupValue}' и дисциплины '{disciplineValue}' не найдено.");
+                }
 
-            }
-            else
-            {
-                TheoryDataGrid.Visible = false;
-            }
 
+                if (KtpPath != null)
+                {
+                    MainTabControl.SelectTab(Theory);
+                    TheoryDataGrid.Visible = true;
+                    ProcessExcelFileAndPopulateDataGridView(KtpPath, TheoryDataGrid);
+                }
+                else
+                {
+                    TheoryDataGrid.Visible = false;
+                }
+            }
+        }
+
+        private void GridRaspisanie_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            //ignore
+        }
+
+        private void TheoryDataGrid_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            //ignore
         }
     }
 

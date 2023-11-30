@@ -97,5 +97,40 @@ namespace TeachersHandsBooks.Core
 
             return selectedColor;
         }
+
+
+
+        public DataGridViewCellStyle SetDataGridViewStyleFromThemes(DataGridView dataGridView, ThemeSettings setting)
+        {
+            DataGridViewCellStyle headerStyle = new DataGridViewCellStyle();
+            if (!string.IsNullOrEmpty(setting.ColorTheme) && setting.ColorTheme != "Transparent")
+            {
+                Color selectedColor;
+                try
+                {
+                    selectedColor = ColorTranslator.FromHtml(setting.ColorTheme); // Преобразование цвета из HTML/HEX в Color
+
+                    // Создание нового стиля для заголовков столбцов
+
+                    headerStyle.BackColor = selectedColor;
+
+                    // Применение стиля к заголовкам столбцов
+                    dataGridView.ColumnHeadersDefaultCellStyle = headerStyle;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    // Обработка ошибки, если есть
+                }
+
+            }
+            return headerStyle;
+        }
+
+
+
+
+
+
     }
 }
