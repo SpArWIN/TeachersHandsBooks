@@ -280,10 +280,14 @@ namespace TeachersHandsBooks
 
 
           })
-            
+
           .ToList();
+
+
+
+
                 // Группировка по паре и дисциплине, выбор одной записи из каждой группы
-              
+
                 //ПОлучаем все пары
                 var allPairs = context.Pairs
                   .Select(entry => entry.Pair)

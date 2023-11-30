@@ -284,15 +284,20 @@ namespace TeachersHandsBooks
 
         }
 
-        private List<DisplineWithGroup> GetDisplineWithGroupById(int disciplineId)
+        private List<DisplineWithGroup> GetDisplineWithGroupsById(int disciplineId, int groupId)
         {
-            var disciplineWithGroupList = context.ConnectWithGroup
-                .Where(dwg => dwg.Displine.ID == disciplineId)
+            var disciplineWithGroups = context.ConnectWithGroup
+                .Where(dwg => dwg.Displine.ID == disciplineId && dwg.Group.ID == groupId)
                 .ToList();
 
-            return disciplineWithGroupList;
+            return disciplineWithGroups;
         }
 
+        private DayTable GetDayTableByName(string dayOfWeek)
+        {
+            var day = context.DayTables.FirstOrDefault(d => d.Day == dayOfWeek);
+            return day;
+        }
         private List<DayTable> GetDayTableByName(List<string> daysOfWeek)
         {
             var days = context.DayTables.Where(d => daysOfWeek.Contains(d.Day)).ToList();
@@ -413,23 +418,39 @@ namespace TeachersHandsBooks
         {
             for (int i = 0; i < disciplineIds.Count; i++)
             {
+
                 var disciplineId = disciplineIds[i];
-                var disciplineWithGroup = GetDisplineWithGroupById(disciplineId);
-                var dayTable = GetDayTableByName(new List<string> { daysOfWeek[i] });
+                var groupId = selectedGroupId;
+                var disciplineWithGroup = GetDisplineWithGroupsById(disciplineId,groupId);
+                //  var dayTable = GetDayTableByName(new List<string> { daysOfWeek[i] });
+                var dayOfWeek = daysOfWeek[i];
                 var numberPair = GetNumberPairByName(new List<string> { pairs[i] });
                 foreach (var disciplineGroup in disciplineWithGroup)
                 {
                     foreach (var pair in numberPair)
                     {
-                        TimeTable newRecord = new TimeTable
-                        {
-                            DisplineWithGroup = disciplineGroup,
-                            Day = dayTable.FirstOrDefault(),
-                            Pair = pair
-                        };
+                        var existingRecord = context.TimeTables.FirstOrDefault(record =>
+                     record.DisplineWithGroup.IDW == disciplineGroup.IDW &&
+                     record.Day.Day == dayOfWeek &&
+                     record.Pair.ID == pair.ID &&
+                     record.DisplineWithGroup.Displine.ID == disciplineId && 
+                     record.DisplineWithGroup.Group.ID == disciplineGroup.Group.ID); 
 
-                        context.TimeTables.Add(newRecord);
+                        if (existingRecord == null)
+                        {
+
+
+                            TimeTable newRecord = new TimeTable
+                            {
+                                DisplineWithGroup = disciplineGroup,
+                                Day = GetDayTableByName(dayOfWeek),
+                                Pair = pair
+                            };
+
+                            context.TimeTables.Add(newRecord);
+                        }
                     }
+
                 }
             }
 
