@@ -409,6 +409,7 @@ namespace TeachersHandsBooks
 
         private void BtnCreateAdd_Click(object sender, EventArgs e)
         {
+            BtnCreateAdd.Enabled = false;
             if (AreAllDisciplinesSelected(GridKTPControll))
             {
                 foreach (DataGridViewRow row in GridKTPControll.Rows)

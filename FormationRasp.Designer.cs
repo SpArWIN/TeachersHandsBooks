@@ -181,7 +181,7 @@ namespace TeachersHandsBooks
             this.MinimumSize = new System.Drawing.Size(1023, 532);
             this.Name = "FormationRasp";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Формирование расписания";
+            this.Text = "Формирование шаблона расписания";
             this.Load += new System.EventHandler(this.FormationRasp_Load);
             ((System.ComponentModel.ISupportInitialize)(this.GridRasp)).EndInit();
             this.guna2CircleProgressBar1.ResumeLayout(false);

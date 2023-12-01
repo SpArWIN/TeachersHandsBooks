@@ -48,7 +48,7 @@ namespace TeachersHandsBooks
             toolTip1.SetToolTip(BtnAddGroup, "Добавление групп");
             toolTip1.SetToolTip(BtnDispAdd, "Добавление дисциплин");
             toolTip1.SetToolTip(BtnConnectionDispGroup, "Добавление КТП");
-            toolTip1.SetToolTip(FormRasp, "Формирование расписания ");
+            toolTip1.SetToolTip(FormRasp, "Формирование шаблона расписания ");
             toolTip1.SetToolTip(BoxUpdate, "Обновление таблицы");
             toolTip1.SetToolTip(BtnChangePairs, "Изменение расписания");
 
@@ -1010,56 +1010,66 @@ namespace TeachersHandsBooks
             // Открываем файл Excel с помощью EPPlus
             using (var package = new ExcelPackage(new FileInfo(filePath)))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1]; 
-
-                int rowNumber = 4; // Начальная строка, где хранятся даты (N4, N5, и так далее)
-
-                
-                DataGridViewTextBoxColumn topicColumn = new DataGridViewTextBoxColumn();
-                topicColumn.HeaderText = "Тема занятия";
-                topicColumn.Name = "Topic";
-                dataGridView.Columns.Add(topicColumn);
-
-                DataGridViewTextBoxColumn VidColumn = new DataGridViewTextBoxColumn();
-                VidColumn.HeaderText = "Вид занятия";
-                VidColumn.Name = "Vid";
-                dataGridView.Columns.Add(VidColumn);
-
-                DataGridViewTextBoxColumn notesColumn = new DataGridViewTextBoxColumn();
-                notesColumn.HeaderText = "Примечания";
-                notesColumn.Name = "Prim";
-                notesColumn.Width = 300; 
-                dataGridView.Columns.Add(notesColumn);
-
-               
-
-                while (true)
+                try
                 {
-                    string cellValue = worksheet.Cells[$"N{rowNumber}"].Text;
-                    if (string.IsNullOrEmpty(cellValue))
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+
+                    int rowNumber = 4; // Начальная строка, где хранятся даты (N4, N5, и так далее)
+
+
+                    DataGridViewTextBoxColumn topicColumn = new DataGridViewTextBoxColumn();
+                    topicColumn.HeaderText = "Тема занятия";
+                    topicColumn.Name = "Topic";
+                    dataGridView.Columns.Add(topicColumn);
+
+                    DataGridViewTextBoxColumn VidColumn = new DataGridViewTextBoxColumn();
+                    VidColumn.HeaderText = "Вид занятия";
+                    VidColumn.Name = "Vid";
+                    dataGridView.Columns.Add(VidColumn);
+
+                    DataGridViewTextBoxColumn notesColumn = new DataGridViewTextBoxColumn();
+                    notesColumn.HeaderText = "Примечания";
+                    notesColumn.Name = "Prim";
+                    notesColumn.Width = 300;
+                    dataGridView.Columns.Add(notesColumn);
+
+
+
+                    while (true)
                     {
-                        worksheet.Cells[$"N{rowNumber}"].Value = label2.Text;
-                        cellValue = worksheet.Cells[$"N{rowNumber}"].Text;
+                        string cellValue = worksheet.Cells[$"N{rowNumber}"].Text;
+                        if (string.IsNullOrEmpty(cellValue))
+                        {
+                            worksheet.Cells[$"N{rowNumber}"].Value = label2.Text;
+                            cellValue = worksheet.Cells[$"N{rowNumber}"].Text;
+                        }
+
+                        // Сравниваем значение в ячейке с текущей датой из label2.Text
+                        if (cellValue == label2.Text)
+                        {
+                            // Ничего не делаем с колонками здесь, так как они уже добавлены ранее
+
+                            // Считываем данные из соответствующих ячеек D{i}, F{i}
+                            string lessonTopic = worksheet.Cells[$"D{rowNumber}"].Value?.ToString();
+                            string lessonType = worksheet.Cells[$"F{rowNumber}"].Value?.ToString();
+
+                            dataGridView.Rows.Add(lessonTopic, lessonType);
+
+
+                            break;
+                        }
+
+                        rowNumber++;
                     }
-                   
-                    // Сравниваем значение в ячейке с текущей датой из label2.Text
-                    if (cellValue == label2.Text)
-                    {
-                        // Ничего не делаем с колонками здесь, так как они уже добавлены ранее
+                    package.Save();
 
-                        // Считываем данные из соответствующих ячеек D{i}, F{i}
-                        string lessonTopic = worksheet.Cells[$"D{rowNumber}"].Value?.ToString();
-                        string lessonType = worksheet.Cells[$"F{rowNumber}"].Value?.ToString();
 
-                        dataGridView.Rows.Add(lessonTopic, lessonType);
-
-                     
-                        break;
-                    }
-
-                    rowNumber++;
                 }
-                package.Save();
+                catch (IndexOutOfRangeException ex)
+                {
+                    MessageBox.Show("Не удаётся получить доступ к нужному листу, убедитесь в корректности файла", "Ошибка операции чтения", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
         }
 
@@ -1128,6 +1138,22 @@ namespace TeachersHandsBooks
         private void TheoryDataGrid_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             //ignore
+        }
+
+        private void BoxFormingShedule_MouseEnter(object sender, EventArgs e)
+        {
+            editingForm.SetBorderColorFromTheme(BtnFormingShedule, ThemSet);
+        }
+
+        private void BtnFormingShedule_MouseLeave(object sender, EventArgs e)
+        {
+            BtnFormingShedule.BackColor = Color.Transparent;
+        }
+
+        private void BtnFormingShedule_Click(object sender, EventArgs e)
+        {
+            CurrentFormShedule currentFormShedule = new CurrentFormShedule(ThemSet);
+            currentFormShedule.ShowDialog();
         }
     }
 

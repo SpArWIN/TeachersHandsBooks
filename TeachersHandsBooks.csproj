@@ -160,6 +160,7 @@
     <Compile Include="Core\DatabaseContext.cs" />
     <Compile Include="Core\DataRows.cs" />
     <Compile Include="Core\EdingFormValue.cs" />
+    <Compile Include="Core\Tables\CurrentSchedule.cs" />
     <Compile Include="Core\transmission .cs" />
     <Compile Include="Core\Tables\DayTable.cs" />
     <Compile Include="Core\Tables\Displine.cs" />
@@ -170,6 +171,12 @@
     <Compile Include="Core\Tables\NumberPair.cs" />
     <Compile Include="Core\Tables\TimeTable.cs" />
     <Compile Include="Core\ThemeSettings.cs" />
+    <Compile Include="CurrentFormShedule.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CurrentFormShedule.Designer.cs">
+      <DependentUpon>CurrentFormShedule.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormAddGroup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -214,6 +221,9 @@
     <Compile Include="Replacement.Designer.cs">
       <DependentUpon>Replacement.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CurrentFormShedule.resx">
+      <DependentUpon>CurrentFormShedule.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormAddGroup.resx">
       <DependentUpon>FormAddGroup.cs</DependentUpon>
     </EmbeddedResource>

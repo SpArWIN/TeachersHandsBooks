@@ -506,7 +506,7 @@ namespace TeachersHandsBooks
             }
             else
             {
-                GridRasp.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Light;
+                GridRasp.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
             }
         }
         private void FormationRasp_Load(object sender, EventArgs e)
