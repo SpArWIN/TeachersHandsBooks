@@ -97,12 +97,12 @@ namespace TeachersHandsBooks
             if (!isValid || !isFirstCharacterLetter)
             {
                 MaterialMessageBox.Show("Некорректный ввод", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, false, FlexibleMaterialForm.ButtonsPosition.Center); ;
-               
-                string cleanedInput = Regex.Replace(InputGroup, @"^[^а-яА-Яa-zA-Z].*", ""); 
+
+                string cleanedInput = Regex.Replace(InputGroup, @"^[^а-яА-Яa-zA-Z].*", "");
                 BoxAddGroup.Text = cleanedInput;
                 BoxAddGroup.Clear();
                 BoxAddGroup.SelectionStart = BoxAddGroup.Text.Length;
-              
+
             }
             return isValid && isFirstCharacterLetter;
         }

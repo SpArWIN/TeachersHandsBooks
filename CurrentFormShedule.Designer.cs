@@ -36,6 +36,9 @@ namespace TeachersHandsBooks
             this.label3 = new System.Windows.Forms.Label();
             this.ComboxFormingItems = new Guna.UI2.WinForms.Guna2ComboBox();
             this.BtnForming = new MaterialSkin.Controls.MaterialButton();
+            this.guna2CircleProgressBar1 = new Guna.UI2.WinForms.Guna2CircleProgressBar();
+            this.label5 = new System.Windows.Forms.Label();
+            this.guna2CircleProgressBar1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -147,11 +150,37 @@ namespace TeachersHandsBooks
             this.BtnForming.UseVisualStyleBackColor = true;
             this.BtnForming.Click += new System.EventHandler(this.BtnForming_Click);
             // 
+            // guna2CircleProgressBar1
+            // 
+            this.guna2CircleProgressBar1.Animated = true;
+            this.guna2CircleProgressBar1.AnimationSpeed = 0.8F;
+            this.guna2CircleProgressBar1.Controls.Add(this.label5);
+            this.guna2CircleProgressBar1.Location = new System.Drawing.Point(255, 67);
+            this.guna2CircleProgressBar1.Name = "guna2CircleProgressBar1";
+            this.guna2CircleProgressBar1.ProgressColor = System.Drawing.Color.Green;
+            this.guna2CircleProgressBar1.ProgressColor2 = System.Drawing.Color.Lime;
+            this.guna2CircleProgressBar1.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
+            this.guna2CircleProgressBar1.ShadowDecoration.Parent = this.guna2CircleProgressBar1;
+            this.guna2CircleProgressBar1.Size = new System.Drawing.Size(214, 185);
+            this.guna2CircleProgressBar1.TabIndex = 12;
+            this.guna2CircleProgressBar1.Visible = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(22, 73);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(170, 20);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Загрузка расписания...";
+            // 
             // CurrentFormShedule
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(745, 376);
+            this.Controls.Add(this.guna2CircleProgressBar1);
             this.Controls.Add(this.BtnForming);
             this.Controls.Add(this.ComboxFormingItems);
             this.Controls.Add(this.label3);
@@ -164,6 +193,8 @@ namespace TeachersHandsBooks
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Формирование Расписания";
             this.Load += new System.EventHandler(this.CurrentFormShedule_Load);
+            this.guna2CircleProgressBar1.ResumeLayout(false);
+            this.guna2CircleProgressBar1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -178,5 +209,7 @@ namespace TeachersHandsBooks
         private System.Windows.Forms.Label label3;
         private Guna.UI2.WinForms.Guna2ComboBox ComboxFormingItems;
         private MaterialSkin.Controls.MaterialButton BtnForming;
+        private Guna.UI2.WinForms.Guna2CircleProgressBar guna2CircleProgressBar1;
+        private System.Windows.Forms.Label label5;
     }
 }

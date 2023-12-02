@@ -51,11 +51,11 @@ namespace TeachersHandsBooks.Core.Tables
         }
 
 
-        public static string GetPathKTP(string NameGroup,string DisplineName,string KtpNameFiles)
+        public static string GetPathKTP(string NameGroup, string DisplineName, string KtpNameFiles)
         {
             string ReturnedFilePath;
-            string folderessPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,  "Folderess");
-            string groupName = NameGroup; 
+            string folderessPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Folderess");
+            string groupName = NameGroup;
             string disciplineName = DisplineName;
             // Формирую путь к папке группы внутри Folderess
             string GroupFolderPath = Path.Combine(folderessPath, groupName);
@@ -88,13 +88,13 @@ namespace TeachersHandsBooks.Core.Tables
                 MessageBox.Show($"Папка группы '{groupName}' не найдена в папке Folderess.", "Операция", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-           
+
             return string.Empty;
         }
-            
 
 
-        
+
+
 
         public static void CreateFolders(string NameGroup, string NameDispline, string KtpPath)
         {

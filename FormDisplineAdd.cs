@@ -132,7 +132,7 @@ namespace TeachersHandsBooks
                 MessageBox.Show("Дисциплина с наименованием '" + InputTextBox + "' уже существует.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 DispBoxAdd.Clear();
                 DispBoxAdd.Focus();
-              //  DispBoxAdd.Enabled = false;
+                //  DispBoxAdd.Enabled = false;
 
 
 

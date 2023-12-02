@@ -421,7 +421,7 @@ namespace TeachersHandsBooks
 
                 var disciplineId = disciplineIds[i];
                 var groupId = selectedGroupId;
-                var disciplineWithGroup = GetDisplineWithGroupsById(disciplineId,groupId);
+                var disciplineWithGroup = GetDisplineWithGroupsById(disciplineId, groupId);
                 //  var dayTable = GetDayTableByName(new List<string> { daysOfWeek[i] });
                 var dayOfWeek = daysOfWeek[i];
                 var numberPair = GetNumberPairByName(new List<string> { pairs[i] });
@@ -433,8 +433,8 @@ namespace TeachersHandsBooks
                      record.DisplineWithGroup.IDW == disciplineGroup.IDW &&
                      record.Day.Day == dayOfWeek &&
                      record.Pair.ID == pair.ID &&
-                     record.DisplineWithGroup.Displine.ID == disciplineId && 
-                     record.DisplineWithGroup.Group.ID == disciplineGroup.Group.ID); 
+                     record.DisplineWithGroup.Displine.ID == disciplineId &&
+                     record.DisplineWithGroup.Group.ID == disciplineGroup.Group.ID);
 
                         if (existingRecord == null)
                         {

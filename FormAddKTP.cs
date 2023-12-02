@@ -1,8 +1,9 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
-
+using OfficeOpenXml;
 using System;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,9 +12,6 @@ using TeachersHandsBooks.Core;
 using TeachersHandsBooks.Core.Tables;
 using Displine = TeachersHandsBooks.Core.Tables.Displine;
 using KTP = TeachersHandsBooks.Core.Tables.KTP;
-using OfficeOpenXml;
-
-using System.Diagnostics;
 
 namespace TeachersHandsBooks
 {
@@ -241,11 +239,11 @@ namespace TeachersHandsBooks
                     {
                         using (Process process = Process.Start(psi))
                         {
-                            process.WaitForExit(); 
+                            process.WaitForExit();
 
                             if (File.Exists(tempFilePathXLSX))
                             {
-                                selectedPath = tempFilePathXLSX; 
+                                selectedPath = tempFilePathXLSX;
                             }
                             else
                             {
@@ -334,7 +332,7 @@ namespace TeachersHandsBooks
                                                 }
 
                                                 // Теперь удаляем сам KTP
-                                              //  context.kTPs.Remove(ktpToDelete);
+                                                //  context.kTPs.Remove(ktpToDelete);
 
                                                 // Сохраняем изменения в базе данных
                                                 context.SaveChanges();
@@ -377,7 +375,7 @@ namespace TeachersHandsBooks
                     }
                     else
                     {
-                        MessageBox.Show("Пожалуйста, загрузите файл Excel формата xlsx","Ошибка чтения файла",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                        MessageBox.Show("Пожалуйста, загрузите файл Excel формата xlsx", "Ошибка чтения файла", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
 

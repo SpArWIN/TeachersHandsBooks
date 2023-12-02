@@ -21,7 +21,7 @@ namespace TeachersHandsBooks
         private string TextToPrint;
         private int CurrentIndex = 0;
         private Control OutputControl;
-    
+
 
         private readonly ThemeSettings ThemSet = new ThemeSettings();
         readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
@@ -120,7 +120,7 @@ namespace TeachersHandsBooks
                 GridRaspisanie.BackgroundColor = Color.FromArgb(50, 50, 50);
                 GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
                 TheoryDataGrid.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
-               
+
 
 
 
@@ -220,7 +220,7 @@ namespace TeachersHandsBooks
                     string pair = row.Cells["Pair"].Value?.ToString();
                     string group = row.Cells["Group"].Value?.ToString();
                     string discipline = row.Cells["Discipline"].Value?.ToString();
-                  
+
 
                     if (pair == entry.TimeTable.Pair.Pair &&
                         discipline == entry.TimeTable.DisplineWithGroup.Displine.NameDispline &&
@@ -231,7 +231,7 @@ namespace TeachersHandsBooks
                             row.DefaultCellStyle.BackColor = Color.Brown;
                             row.ReadOnly = true;
                             row.Frozen = true;
-                          
+
                         }
                         else if (entry.isAdded == true)
                         {
@@ -248,7 +248,7 @@ namespace TeachersHandsBooks
                 {
                     DataGridViewRow row = GridRaspisanie.Rows[i];
 
-                  
+
                     string pair = row.Cells["Pair"].Value?.ToString();
                     string discipline = row.Cells["Discipline"].Value?.ToString();
                     string group = row.Cells["Group"].Value?.ToString();
@@ -263,7 +263,7 @@ namespace TeachersHandsBooks
                 }
 
             }
-            
+
         }
         public void TodayDay()
         {
@@ -304,8 +304,8 @@ namespace TeachersHandsBooks
                   .ToList();
 
                 // Проверяем, если пары уже есть на этот день
-                 var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
-        
+                var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
+
                 // Проверяем наличие отмененных пар для указанной даты
                 var cancelledPairs = context.Modifieds
                                         .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
@@ -338,9 +338,9 @@ namespace TeachersHandsBooks
                       Pair = entry.TimeTable.Pair.Pair,
                       Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
                       Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
-                      
+
                   })
-                  
+
                   .ToList();
 
 
@@ -351,12 +351,12 @@ namespace TeachersHandsBooks
                 }
                 GridRaspisanie.DataSource = todayEntries;
                 GridRaspisanie.ResetBindings();
-               
+
 
 
 
                 GridRaspisanie.AutoGenerateColumns = false;
-           
+
                 label1.Text = dayOfWeekRussian;
                 label1.Font = new Font("Segui UI", 14);
                 label1.BackColor = Color.Transparent;
@@ -447,35 +447,35 @@ namespace TeachersHandsBooks
                         Pair = entry.TimeTable.Pair.Pair
                     })
                     .ToList();
-             
 
-                    // Привязываем результаты к DataGridView
-                    GridRaspisanie.AutoGenerateColumns = false;
-                   
-                
-                  
-                    label1.Text = dayOfWeekRussian;
-                    label1.Font = new Font("Segui UI", 14);
-                    label1.BackColor = Color.Transparent;
 
-                    // Проверяем, если пары уже есть на этот день
-                    var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
-                    // Проверяем наличие отмененных пар для указанной даты
-                    var cancelledPairs = context.Modifieds
-                                            .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
-                                            .Select(modified => modified.TimeTable.Pair.Pair)
-                                            .ToList();
-                    // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
-                    emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
+                // Привязываем результаты к DataGridView
+                GridRaspisanie.AutoGenerateColumns = false;
 
-                   
-                if(temporaryEntries != null)
+
+
+                label1.Text = dayOfWeekRussian;
+                label1.Font = new Font("Segui UI", 14);
+                label1.BackColor = Color.Transparent;
+
+                // Проверяем, если пары уже есть на этот день
+                var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
+                // Проверяем наличие отмененных пар для указанной даты
+                var cancelledPairs = context.Modifieds
+                                        .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
+                                        .Select(modified => modified.TimeTable.Pair.Pair)
+                                        .ToList();
+                // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
+                emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
+
+
+                if (temporaryEntries != null)
                 {
                     todayEntries.AddRange(temporaryEntries);
 
                 }
-              
-            
+
+
 
                 GridRaspisanie.DataSource = todayEntries;
                 GridRaspisanie.ResetBindings();
@@ -550,7 +550,7 @@ namespace TeachersHandsBooks
             // Возвращаем список дней
             return daysAndDatesList;
         }
-       
+
         private void Form1_Load(object sender, EventArgs e)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -738,7 +738,7 @@ namespace TeachersHandsBooks
                     break;
                 }
             }
-           
+
         }
 
         private void BtnPreviev_MouseEnter(object sender, EventArgs e)
@@ -906,14 +906,14 @@ namespace TeachersHandsBooks
            .ToList();
 
                 // Показать контекстное меню с измененным текстом
-                
+
                 string pairName = GridRaspisanie.Rows[e.RowIndex].Cells["Pair"].Value.ToString();
                 string disciplineName = GridRaspisanie.Rows[e.RowIndex].Cells["Discipline"].Value.ToString();
                 string groupName = GridRaspisanie.Rows[e.RowIndex].Cells["Group"].Value.ToString();
 
                 int TimeTablesID = GetTimeTableId(pairName, disciplineName, groupName);
 
-                if(TimeTablesID != 0)
+                if (TimeTablesID != 0)
                 {
                     // Получение значения поля isAdded для записи, соответствующей выбранной паре
                     var modifiedRecord = context.Modifieds.FirstOrDefault(modified => modified.TimeTable.ID == TimeTablesID);
@@ -948,12 +948,12 @@ namespace TeachersHandsBooks
             switch (e.ClickedItem.Text)
             {
                 case "Снять отмену пары":
-                    string Pair = DataRows.PairName ;
-                    string Displine = DataRows.DisplineName ;
+                    string Pair = DataRows.PairName;
+                    string Displine = DataRows.DisplineName;
                     string Group = DataRows.GroupName;
                     int TimeTablesID = GetTimeTableId(Pair, Displine, Group);
 
-                    if(TimeTablesID != 0)
+                    if (TimeTablesID != 0)
                     {
                         var modifiedRecord = context.Modifieds.FirstOrDefault(modified => modified.TimeTable.ID == TimeTablesID);
                         DialogResult res = MessageBox.Show("Вы действительно хотите снять отметку отмены пары на " + label2.Text, "Уточнение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -963,8 +963,8 @@ namespace TeachersHandsBooks
                             context.SaveChanges();
                             MessageBox.Show("Пометка об удалении пары на " + label2.Text + " была снята, обновите таблицу", "Операция", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                           
-                         
+
+
 
 
 
@@ -1003,7 +1003,7 @@ namespace TeachersHandsBooks
 
 
             }
-           
+
         }
         private void ProcessExcelFileAndPopulateDataGridView(string filePath, Guna.UI2.WinForms.Guna2DataGridView dataGridView)
         {
@@ -1102,7 +1102,7 @@ namespace TeachersHandsBooks
                     .Select(d => new
                     {
                         KTP_Name = d.KTP.NameKTP // Предположим, что KTP - это свойство навигации к таблице KTP
-                })
+                    })
         .FirstOrDefault();
                 if (ktpInfo != null)
                 {
@@ -1156,7 +1156,7 @@ namespace TeachersHandsBooks
             currentFormShedule.ShowDialog();
         }
 
-       
+
     }
 
 
