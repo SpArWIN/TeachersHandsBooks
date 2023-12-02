@@ -145,6 +145,7 @@ namespace TeachersHandsBooks
             this.BtnForming.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.BtnForming.UseAccentColor = false;
             this.BtnForming.UseVisualStyleBackColor = true;
+            this.BtnForming.Click += new System.EventHandler(this.BtnForming_Click);
             // 
             // CurrentFormShedule
             // 

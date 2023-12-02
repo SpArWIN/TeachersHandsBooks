@@ -34,15 +34,16 @@ namespace TeachersHandsBooks
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainTabControl = new MaterialSkin.Controls.MaterialTabControl();
             this.HomePage = new System.Windows.Forms.TabPage();
             this.GridRaspisanie = new Guna.UI2.WinForms.Guna2DataGridView();
             this.GroupAddBOx = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.BtnFormingShedule = new System.Windows.Forms.PictureBox();
             this.BtnChangePairs = new System.Windows.Forms.PictureBox();
             this.BtnNext = new System.Windows.Forms.PictureBox();
             this.BtnPreviev = new System.Windows.Forms.PictureBox();
@@ -75,11 +76,11 @@ namespace TeachersHandsBooks
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.ContextChangeData = new MetroFramework.Controls.MetroContextMenu(this.components);
             this.BackPair = new System.Windows.Forms.ToolStripMenuItem();
-            this.BtnFormingShedule = new System.Windows.Forms.PictureBox();
             this.MainTabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).BeginInit();
             this.GroupAddBOx.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnFormingShedule)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnChangePairs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnNext)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnPreviev)).BeginInit();
@@ -94,7 +95,6 @@ namespace TeachersHandsBooks
             this.materialCard1.SuspendLayout();
             this.AboutProgramm.SuspendLayout();
             this.ContextChangeData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BtnFormingShedule)).BeginInit();
             this.SuspendLayout();
             // 
             // MainTabControl
@@ -247,6 +247,21 @@ namespace TeachersHandsBooks
             this.GroupAddBOx.UseTransparentBackground = true;
             this.GroupAddBOx.Click += new System.EventHandler(this.GroupAddBOx_Click);
             // 
+            // BtnFormingShedule
+            // 
+            this.BtnFormingShedule.BackColor = System.Drawing.Color.Transparent;
+            this.BtnFormingShedule.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BtnFormingShedule.Image = ((System.Drawing.Image)(resources.GetObject("BtnFormingShedule.Image")));
+            this.BtnFormingShedule.Location = new System.Drawing.Point(337, 54);
+            this.BtnFormingShedule.Name = "BtnFormingShedule";
+            this.BtnFormingShedule.Size = new System.Drawing.Size(41, 37);
+            this.BtnFormingShedule.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.BtnFormingShedule.TabIndex = 10;
+            this.BtnFormingShedule.TabStop = false;
+            this.BtnFormingShedule.Click += new System.EventHandler(this.BtnFormingShedule_Click);
+            this.BtnFormingShedule.MouseEnter += new System.EventHandler(this.BoxFormingShedule_MouseEnter);
+            this.BtnFormingShedule.MouseLeave += new System.EventHandler(this.BtnFormingShedule_MouseLeave);
+            // 
             // BtnChangePairs
             // 
             this.BtnChangePairs.BackColor = System.Drawing.Color.Transparent;
@@ -325,6 +340,7 @@ namespace TeachersHandsBooks
             this.label1.Size = new System.Drawing.Size(61, 25);
             this.label1.TabIndex = 3;
             this.label1.Text = "label1";
+         
             // 
             // FormRasp
             // 
@@ -718,21 +734,6 @@ namespace TeachersHandsBooks
             this.BackPair.Size = new System.Drawing.Size(157, 22);
             this.BackPair.Text = "Отменить пару";
             // 
-            // BtnFormingShedule
-            // 
-            this.BtnFormingShedule.BackColor = System.Drawing.Color.Transparent;
-            this.BtnFormingShedule.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BtnFormingShedule.Image = ((System.Drawing.Image)(resources.GetObject("BtnFormingShedule.Image")));
-            this.BtnFormingShedule.Location = new System.Drawing.Point(337, 54);
-            this.BtnFormingShedule.Name = "BtnFormingShedule";
-            this.BtnFormingShedule.Size = new System.Drawing.Size(41, 37);
-            this.BtnFormingShedule.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.BtnFormingShedule.TabIndex = 10;
-            this.BtnFormingShedule.TabStop = false;
-            this.BtnFormingShedule.Click += new System.EventHandler(this.BtnFormingShedule_Click);
-            this.BtnFormingShedule.MouseEnter += new System.EventHandler(this.BoxFormingShedule_MouseEnter);
-            this.BtnFormingShedule.MouseLeave += new System.EventHandler(this.BtnFormingShedule_MouseLeave);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -752,6 +753,7 @@ namespace TeachersHandsBooks
             ((System.ComponentModel.ISupportInitialize)(this.GridRaspisanie)).EndInit();
             this.GroupAddBOx.ResumeLayout(false);
             this.GroupAddBOx.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnFormingShedule)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnChangePairs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnNext)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnPreviev)).EndInit();
@@ -768,7 +770,6 @@ namespace TeachersHandsBooks
             this.AboutProgramm.ResumeLayout(false);
             this.AboutProgramm.PerformLayout();
             this.ContextChangeData.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.BtnFormingShedule)).EndInit();
             this.ResumeLayout(false);
 
         }

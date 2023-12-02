@@ -1065,7 +1065,7 @@ namespace TeachersHandsBooks
 
 
                 }
-                catch (IndexOutOfRangeException ex)
+                catch (IndexOutOfRangeException)
                 {
                     MessageBox.Show("Не удаётся получить доступ к нужному листу, убедитесь в корректности файла", "Ошибка операции чтения", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -1155,6 +1155,8 @@ namespace TeachersHandsBooks
             CurrentFormShedule currentFormShedule = new CurrentFormShedule(ThemSet);
             currentFormShedule.ShowDialog();
         }
+
+       
     }
 
 

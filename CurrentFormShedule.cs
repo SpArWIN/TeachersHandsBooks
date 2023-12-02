@@ -5,16 +5,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TeachersHandsBooks.Core;
+using TeachersHandsBooks.Core.Tables;
 
 namespace TeachersHandsBooks
 {
     public partial class CurrentFormShedule : MaterialForm
     {
+        DatabaseContext context = new DatabaseContext();
         public enum WeekRange
         {
             [Description("7 дней")]
@@ -46,7 +49,7 @@ namespace TeachersHandsBooks
             var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
             return attribute == null ? value.ToString() : attribute.Description;
         }
-
+        //Получение значение из описания 7 дней,14 дней,30 дней.
         private TEnum GetEnumValueFromDescription<TEnum>(string description)
         {
             foreach (var field in typeof(TEnum).GetFields())
@@ -89,7 +92,7 @@ namespace TeachersHandsBooks
         }
         private void CurrentFormShedule_Load(object sender, EventArgs e)
         {
-           
+            TimePicerCurrentDay.Value = DateTime.Now.Date;
             ShowDiap();
            
         }
@@ -163,12 +166,12 @@ namespace TeachersHandsBooks
         {
             if(ComboxFormingItems.SelectedIndex != -1)
             {
+                TimePickerNext.Enabled = true;
                 //получаем значения диапазона
                 string selectedDescription = ComboxFormingItems.SelectedItem.ToString();
                 WeekRange selectedRange = GetEnumValueFromDescription<WeekRange>(selectedDescription);
                 // Получение даты для выбранного диапазона
-                
-                //  DateTime selectedDate = GetStartDateForWeekRange(selectedRange, TimePicerCurrentDay.Value);
+               
                 int NumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, TimePicerCurrentDay.Value);
                 // Установка даты в TimePickerNext, пропуская воскресенье
 
@@ -181,11 +184,38 @@ namespace TeachersHandsBooks
                 }
 
                 // Отображение списка дат в MessageBox
-                MessageBox.Show(datesString, "Список дат без воскресений", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DialogResult res =  MessageBox.Show(datesString, "Список дат без воскресений", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if(res == DialogResult.OK)
+                {
+                    TimePickerNext.Enabled = false;
+                }
 
 
                 TimePickerNext.Value =TimePicerCurrentDay.Value.AddDays(NumberShift-1); 
                 BtnForming.Enabled = true;
+            }
+        }
+        private bool CheckResponse()
+        {
+            bool HasRecords;
+            HasRecords = context.TimeTables.Any();
+
+            return HasRecords;
+        }
+
+        [Obsolete]
+        private void BtnForming_Click(object sender, EventArgs e)
+        {
+            bool record = CheckResponse();
+            if (!record)
+            {
+                MessageBox.Show("Шаблон не был загружен", "Отмена операции", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+            else if(record)
+            {
+                
+                CurrentShedule.InsertCurrentData(TransmissionOfInformation.DateList);
             }
         }
     }
