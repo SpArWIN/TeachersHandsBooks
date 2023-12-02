@@ -50,7 +50,7 @@ namespace TeachersHandsBooks
         private void ProgressTimer_Tick(object sender, EventArgs e)
         {
             currentProgress += 10;
-       
+
             if (currentProgress > guna2CircleProgressBar1.Maximum)
             {
                 // Если достигнут максимум, останавливаем анимацию
@@ -64,7 +64,7 @@ namespace TeachersHandsBooks
                 guna2CircleProgressBar1.Value = currentProgress;
             }
         }
-    
+
 
         private string GetEnumDescription(Enum value)
         {
@@ -124,49 +124,39 @@ namespace TeachersHandsBooks
             int count = 0;
 
             DateTime currentDate = baseDate;
+            int daysToAdd = 0;
 
             switch (weekRange)
             {
                 case WeekRange.OneWeek:
-                    for (int i = 0; i <= 7; i++)
-                    {
-                        if (currentDate.DayOfWeek != DayOfWeek.Sunday)
-                        {
-                            count++;
-                        }
-                        currentDate = currentDate.AddDays(1);
-                    }
+                    daysToAdd = 7;
                     break;
                 case WeekRange.TwoWeeks:
-                    for (int i = 0; i <= 14; i++)
-                    {
-                        if (currentDate.DayOfWeek != DayOfWeek.Sunday)
-                        {
-                            count++;
-                        }
-                        currentDate = currentDate.AddDays(1);
-                    }
+                    daysToAdd = 14;
                     break;
                 case WeekRange.OneMonth:
-                    for (int i = 0; i <= 30; i++)
-                    {
-                        if (currentDate.DayOfWeek != DayOfWeek.Sunday)
-                        {
-                            count++;
-                        }
-                        currentDate = currentDate.AddDays(1);
-                    }
+                    daysToAdd = 30;
                     break;
                 default:
                     break;
             }
 
+            for (int i = 0; i < daysToAdd; i++)
+            {
+                if (currentDate.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    count++;
+                }
+                currentDate = currentDate.AddDays(1);
+            }
+
             return count;
         }
+       
 
-        // Метод для получения следующей даты, исключая воскресенье
+            // Метод для получения следующей даты, исключая воскресенье
 
-        private List<DateTime> GetNonSundayDatesList(DateTime startDate, int numberOfDays)
+            private List<DateTime> GetNonSundayDatesList(DateTime startDate, int numberOfDays)
         {
             List<DateTime> datesList = new List<DateTime>();
             DateTime currentDate = startDate;
@@ -189,34 +179,41 @@ namespace TeachersHandsBooks
         {
             if (ComboxFormingItems.SelectedIndex != -1)
             {
-                TimePickerNext.Enabled = true;
-                //получаем значения диапазона
+                BtnForming.Enabled = true;
+                // Получаем значения диапазона
                 string selectedDescription = ComboxFormingItems.SelectedItem.ToString();
                 WeekRange selectedRange = GetEnumValueFromDescription<WeekRange>(selectedDescription);
-                // Получение даты для выбранного диапазона
 
-                int NumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, TimePicerCurrentDay.Value);
-                // Установка даты в TimePickerNext, пропуская воскресенье
+                // Получаем предыдущий диапазон дат
+                int previousNumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, TimePicerCurrentDay.Value);
+                List<DateTime> previousDateList = GetNonSundayDatesList(TimePicerCurrentDay.Value, previousNumberShift);
 
-                TransmissionOfInformation.DateList = GetNonSundayDatesList(TimePicerCurrentDay.Value, NumberShift);
-                string datesString = "Список дат без воскресений:\n";
+                // Проверяем наличие записей для предыдущего диапазона дат в таблице CurrentShedule
+                bool existingRecordsForPreviousRange = AreEntriesExistingForRange(previousDateList);
 
-                foreach (DateTime date in TransmissionOfInformation.DateList)
+                if (existingRecordsForPreviousRange)
                 {
-                    datesString += date.ToShortDateString() + "\n";
+                    // Используем последнюю дату из предыдущего диапазона для нового диапазона
+                    DateTime lastDateOfPreviousRange = previousDateList.Last();
+                    int NumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, lastDateOfPreviousRange.AddDays(1));
+
+                    // Устанавливаем дату в TimePickerNext, пропуская воскресенье
+                    TransmissionOfInformation.DateList = GetNonSundayDatesList(lastDateOfPreviousRange.AddDays(1), NumberShift);
+                    TimePickerNext.Value = lastDateOfPreviousRange.AddDays(NumberShift);
+
+
+                }
+                else
+                {
+                    // Передаем новый диапазон дат
+                    int NumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, TimePicerCurrentDay.Value);
+                    TransmissionOfInformation.DateList = GetNonSundayDatesList(TimePicerCurrentDay.Value, NumberShift);
+                    TimePickerNext.Value = TransmissionOfInformation.DateList.Last();
                 }
 
-                // Отображение списка дат в MessageBox
-                DialogResult res = MessageBox.Show(datesString, "Список дат без воскресений", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                if (res == DialogResult.OK)
-                {
-                    TimePickerNext.Enabled = false;
-                }
 
-
-                TimePickerNext.Value = TimePicerCurrentDay.Value.AddDays(NumberShift-1);
-                BtnForming.Enabled = true;
             }
+
         }
         private bool CheckResponse()
         {
@@ -256,6 +253,7 @@ namespace TeachersHandsBooks
         {
             DateTime startDate = TimePicerCurrentDay.Value.Date; // Начальная дата
             DateTime endDate = TimePickerNext.Value.Date; // Конечная дата
+            HashSet<string> uniqueDates = new HashSet<string>();
 
             foreach (var timeTableEntry in context.TimeTables)
             {
@@ -264,9 +262,10 @@ namespace TeachersHandsBooks
                     date.DayOfWeek == day && date.Date >= startDate && date.Date <= endDate).ToList();
                 foreach (DateTime date in filteredDates)
                 {
-                
+
                     string formattedDate = date.ToString("dd.MM.yyyy");
 
+                    uniqueDates.Add(formattedDate);
                     // Проверяем, есть ли уже запись для данной даты и timeTableEntry в CurrentShedule
                     var existingEntry = context.CurrentsShedules.FirstOrDefault(c =>
                         c.Data == formattedDate && c.TimeTables.ID == timeTableEntry.ID);
@@ -284,12 +283,18 @@ namespace TeachersHandsBooks
                     }
                 }
             }
+            string uniqueDatesString = "Даты включенные в диапазон:\n";
+            foreach (var date in uniqueDates)
+            {
+                uniqueDatesString += date + "\n";
+            }
+            MessageBox.Show(uniqueDatesString, "Даты включенные в диапазон", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 
             context.SaveChanges();
 
         }
-
+        // Возвращаем true при обнаружении хотя бы одной существующей записи
         private bool AreEntriesExistingForRange(List<DateTime> datelist)
         {
             DateTime startDate = TimePicerCurrentDay.Value.Date; // Начальная дата
@@ -326,32 +331,85 @@ namespace TeachersHandsBooks
             if (!record)
             {
                 MessageBox.Show("Шаблон не был загружен", "Отмена операции", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            }
-            else if (AreEntriesExistingForRange(TransmissionOfInformation.DateList))
-            {
-                MessageBox.Show("Для текущего диапазона дат уже существуют записи", "Отмена операции", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-            }
-            else if (AreEntriesMissing(TransmissionOfInformation.DateList))
-            {
-                CheckEmtyResponse(TransmissionOfInformation.DateList);
-
-                guna2CircleProgressBar1.Visible = true;
-                currentProgress = 0;
-                guna2CircleProgressBar1.Value = currentProgress;
-                progressTimer.Start();
-
             }
             else
             {
-                CurrentShedule.InsertCurrentData(TransmissionOfInformation.DateList);
+                // Получаем выбранный диапазон дат из TransmissionOfInformation.DateList
+                List<DateTime> selectedDateList = TransmissionOfInformation.DateList;
 
-                guna2CircleProgressBar1.Visible = true;
-                currentProgress = 0;
-                guna2CircleProgressBar1.Value = currentProgress;
-                progressTimer.Start();
+                if (selectedDateList != null && selectedDateList.Count > 0)
+                {
+
+
+
+
+                    // Проверяем наличие записей в таблице CurrentShedule для выбранного диапазона
+                    bool entriesExistForSelectedRange = AreEntriesExistingForRange(selectedDateList);
+
+                    if (!entriesExistForSelectedRange)
+                    {
+                        // Если записей нет, добавляем их
+                        CurrentShedule.InsertCurrentData(selectedDateList);
+                        MessageBox.Show("Записи успешно добавлены", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // Проверяем наличие новых записей в таблице TimeTable
+                        bool newEntriesExistInTimeTable = AreEntriesMissing(selectedDateList);
+
+                        if (newEntriesExistInTimeTable)
+                        {
+                            // Если есть новые записи в TimeTable, добавляем их в CurrentShedule
+                            CheckEmtyResponse(selectedDateList);
+                            MessageBox.Show("Новые записи добавлены", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            // Проверяем повторный ввод данных для избежания дублирования
+                            bool isDuplicateInput = CheckForDuplicateInput(selectedDateList);
+
+                            if (isDuplicateInput)
+                            {
+
+                                MessageBox.Show("Для текущего диапазона дат уже существуют записи", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Диапазон дат пуст", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
+
+        private bool CheckForDuplicateInput(List<DateTime> selectedDateList)
+        {
+            // Проходимся по каждой дате из выбранного диапазона
+            foreach (var date in selectedDateList)
+            {
+                string formattedDate = date.ToString("dd.MM.yyyy");
+
+                // Проверяем, есть ли запись в таблице CurrentShedule для каждой даты
+                var existingEntry = context.CurrentsShedules.FirstOrDefault(c =>
+                                        c.Data == formattedDate);
+
+                // Если запись для текущей даты найдена, возвращаем true (дубликат найден)
+                if (existingEntry != null)
+                {
+                    return true;
+                }
+            }
+
+            // Если не найдены дубликаты для всех дат из выбранного диапазона, возвращаем false
+            return false;
+        }
     }
-}
+    }
+
+
