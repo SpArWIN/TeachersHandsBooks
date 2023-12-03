@@ -236,6 +236,7 @@ namespace TeachersHandsBooks
 
             foreach (var timeTableEntry in context.TimeTables)
             {
+
                 DayOfWeek day = CurrentShedule.GetDayOfWeekFromRussian(timeTableEntry.Day.Day);
                 var filteredDates = datelist.Where(date =>
                     date.DayOfWeek == day && date.Date >= startDate && date.Date <= endDate).ToList();
