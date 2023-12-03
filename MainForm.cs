@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using TeachersHandsBooks.Core;
 using TeachersHandsBooks.Core.Tables;
 
+
 namespace TeachersHandsBooks
 {
     public partial class MainForm : MaterialForm
@@ -21,7 +22,7 @@ namespace TeachersHandsBooks
         private string TextToPrint;
         private int CurrentIndex = 0;
         private Control OutputControl;
-
+       
 
         private readonly ThemeSettings ThemSet = new ThemeSettings();
         readonly MaterialSkinManager ThemeSkin = MaterialSkinManager.Instance;
@@ -272,153 +273,95 @@ namespace TeachersHandsBooks
             DateTime Data = currentDate.Date;
             label2.Text = Data.ToString("d", new CultureInfo("ru-RU"));
             string dayOfWeekRussian = currentDate.ToString("dddd", new CultureInfo("ru-RU"));
-
+            string formattedDate = currentDate.ToString("d", new CultureInfo("ru-RU"));
 
             var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
+
             if (dayId != null)
             {
                 GridRaspisanie.Columns.Clear();
-                var todayEntries = context.TimeTables
-          .Where(entry => entry.Day.ID == dayId)
-          .OrderBy(entry => entry.Pair.ID) // Сортировка по ID пары из таблицы Pairs
-          .Select(entry => new
-          {
-              Pair = entry.Pair.Pair,
 
-              Group = entry.DisplineWithGroup.Group.NameGroup,
-              Discipline = entry.DisplineWithGroup.Displine.NameDispline,
+                var currentScheduleEntry = context.CurrentsShedules
+                    .FirstOrDefault(schedule => schedule.Data == formattedDate);
 
-
-          })
-
-          .ToList();
-
-
-
-
-                // Группировка по паре и дисциплине, выбор одной записи из каждой группы
-
-                //ПОлучаем все пары
-                var allPairs = context.Pairs
-                  .Select(entry => entry.Pair)
-                  .ToList();
-
-                // Проверяем, если пары уже есть на этот день
-                var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
-
-                // Проверяем наличие отмененных пар для указанной даты
-                var cancelledPairs = context.Modifieds
-                                        .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
-                                        .Select(modified => modified.TimeTable.Pair.Pair)
-                                        .ToList();
-                // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
-                emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
-                DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
-                pairColumn.HeaderText = "Пары";
-                pairColumn.DataPropertyName = "Pair";
-                pairColumn.Name = "Pair";
-                GridRaspisanie.Columns.Add(pairColumn);
-
-                DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
-                disciplineColumn.HeaderText = "Дисциплина";
-                disciplineColumn.DataPropertyName = "Discipline";
-                disciplineColumn.Name = "Discipline";
-                GridRaspisanie.Columns.Add(disciplineColumn);
-
-                DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
-                groupColumn.HeaderText = "Группа";
-                groupColumn.DataPropertyName = "Group";
-                groupColumn.Name = "Group";
-                GridRaspisanie.Columns.Add(groupColumn);
-
-                var temporaryEntries = context.Modifieds
-                  .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
-                  .Select(entry => new
-                  {
-                      Pair = entry.TimeTable.Pair.Pair,
-                      Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
-                      Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
-
-                  })
-
-                  .ToList();
-
-
-                if (temporaryEntries != null)
+                if (currentScheduleEntry != null)
                 {
-                    todayEntries.AddRange(temporaryEntries);
+                    
+                        //ТАК ДОДЕЛАТЬ
 
+                    var allPairs = context.Pairs
+                        .Select(entry => entry.Pair)
+                        .ToList();
+
+                    var existingPairs = currentScheduleEntry.Select(entry => entry.Pair).ToList();
+
+                    var cancelledPairs = context.Modifieds
+                        .Where(modified => modified.Data == formattedDate && modified.isAdded == false)
+                        .Select(modified => modified.TimeTable.Pair.Pair)
+                        .ToList();
+
+                    var emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
+
+                    // Добавление столбцов в DataGridView
+                    AddDataGridViewColumns();
+
+                    var temporaryEntries = context.Modifieds
+                        .Where(entry => entry.Data == formattedDate && entry.isAdded == true)
+                        .Select(entry => new
+                        {
+                            Pair = entry.TimeTable.Pair.Pair,
+                            Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
+                            Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
+                        })
+                        .ToList();
+
+                    if (temporaryEntries != null)
+                    {
+                        // Добавляем временные записи к текущим записям
+                        foreach (var tempEntry in temporaryEntries)
+                        {
+                            currentScheduleEntries.Add(tempEntry);
+                        }
+                    }
+
+                    GridRaspisanie.DataSource = currentScheduleEntries;
+                    GridRaspisanie.ResetBindings();
+
+                    GridRaspisanie.AutoGenerateColumns = false;
+
+                    label1.Text = dayOfWeekRussian;
+                    label1.Font = new Font("Segui UI", 14);
+                    label1.BackColor = Color.Transparent;
+                    GridRaspisanie.ClearSelection();
+                    MarkRowsForCurrentDate();
                 }
-                GridRaspisanie.DataSource = todayEntries;
-                GridRaspisanie.ResetBindings();
-
-
-
-
-                GridRaspisanie.AutoGenerateColumns = false;
-
-                label1.Text = dayOfWeekRussian;
-                label1.Font = new Font("Segui UI", 14);
-                label1.BackColor = Color.Transparent;
-                GridRaspisanie.ClearSelection();
-                MarkRowsForCurrentDate();
+                else
+                {
+                    HandleNoDataForDayOfWeek(dayOfWeekRussian);
+                }
             }
             else
             {
                 if (dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
                 {
-                    GridRaspisanie.Columns.Clear(); // Очищаем столбцы
-
-                    label1.Text = "Воскресенье"; // Устанавливаем текст метки как "Воскресенье"
+                    GridRaspisanie.Columns.Clear();
+                    label1.Text = "Воскресенье";
                     label1.Font = new Font("Segui UI", 14);
                     label1.BackColor = Color.Transparent;
-
-
 
                     DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
                     pairColumn.HeaderText = "Выходной";
                     GridRaspisanie.Columns.Add(pairColumn);
-
-
                 }
                 else
                 {
-                    // Действия при отсутствии данных для других дней недели (не Воскресенье)
                     MessageBox.Show("Нет данных для этого дня.");
                 }
             }
         }
 
-
-
-        public void DisplayScheduleForDay(DayOfWeek dayOfWeek, DateTime date)
-        {
-            DateTime Data = date.Date;
-            label2.Text = Data.ToString("d", new CultureInfo("ru-RU"));
-            string dayOfWeekRussian = date.ToString("dddd", new CultureInfo("ru-RU"));
-
-
-
-            var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
-            if (dayId != null)
+            private void AddDataGridViewColumns()
             {
-                GridRaspisanie.Columns.Clear();
-                var todayEntries = context.TimeTables
-                    .Where(entry => entry.Day.ID == dayId)
-                    .OrderBy(entry => entry.Pair.ID)
-                    .Select(entry => new
-                    {
-                        Group = entry.DisplineWithGroup.Group.NameGroup,
-                        Discipline = entry.DisplineWithGroup.Displine.NameDispline,
-                        Pair = entry.Pair.Pair
-                    })
-                    .ToList();
-                // Получаем все пары из базы данных
-                var allPairs = context.Pairs
-                    .Select(entry => entry.Pair)
-                    .ToList();
-
-
                 DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
                 pairColumn.HeaderText = "Пары";
                 pairColumn.DataPropertyName = "Pair";
@@ -436,330 +379,391 @@ namespace TeachersHandsBooks
                 groupColumn.DataPropertyName = "Group";
                 groupColumn.Name = "Group";
                 GridRaspisanie.Columns.Add(groupColumn);
-
-                // Получение временного расписания из Modifieds, если оно есть
-                var temporaryEntries = context.Modifieds
-                    .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
-                    .Select(entry => new
-                    {
-                        Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
-                        Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
-                        Pair = entry.TimeTable.Pair.Pair
-                    })
-                    .ToList();
-
-
-                // Привязываем результаты к DataGridView
-                GridRaspisanie.AutoGenerateColumns = false;
-
-
-
-                label1.Text = dayOfWeekRussian;
-                label1.Font = new Font("Segui UI", 14);
-                label1.BackColor = Color.Transparent;
-
-                // Проверяем, если пары уже есть на этот день
-                var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
-                // Проверяем наличие отмененных пар для указанной даты
-                var cancelledPairs = context.Modifieds
-                                        .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
-                                        .Select(modified => modified.TimeTable.Pair.Pair)
-                                        .ToList();
-                // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
-                emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
-
-
-                if (temporaryEntries != null)
-                {
-                    todayEntries.AddRange(temporaryEntries);
-
-                }
-
-
-
-                GridRaspisanie.DataSource = todayEntries;
-                GridRaspisanie.ResetBindings();
-                GridRaspisanie.Refresh();
-                MarkRowsForCurrentDate();
             }
-            else
+            private void HandleNoDataForDayOfWeek(string dayOfWeekRussian)
             {
                 if (dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
                 {
+                    GridRaspisanie.Columns.Clear();
+                    label1.Text = "Воскресенье";
+                    label1.Font = new Font("Segui UI", 14);
+                    label1.BackColor = Color.Transparent;
+
                     DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
                     pairColumn.HeaderText = "Выходной";
-                    // Значение прочерка
                     GridRaspisanie.Columns.Add(pairColumn);
+                }
+            }
+
+            public void DisplayScheduleForDay(DayOfWeek dayOfWeek, DateTime date)
+            {
+                DateTime Data = date.Date;
+                label2.Text = Data.ToString("d", new CultureInfo("ru-RU"));
+                string dayOfWeekRussian = date.ToString("dddd", new CultureInfo("ru-RU"));
+
+
+
+                var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
+                if (dayId != null)
+                {
+                    GridRaspisanie.Columns.Clear();
+                    var todayEntries = context.TimeTables
+                        .Where(entry => entry.Day.ID == dayId)
+                        .OrderBy(entry => entry.Pair.ID)
+                        .Select(entry => new
+                        {
+                            Group = entry.DisplineWithGroup.Group.NameGroup,
+                            Discipline = entry.DisplineWithGroup.Displine.NameDispline,
+                            Pair = entry.Pair.Pair
+                        })
+                        .ToList();
+                    // Получаем все пары из базы данных
+                    var allPairs = context.Pairs
+                        .Select(entry => entry.Pair)
+                        .ToList();
+
+
+                    DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                    pairColumn.HeaderText = "Пары";
+                    pairColumn.DataPropertyName = "Pair";
+                    pairColumn.Name = "Pair";
+                    GridRaspisanie.Columns.Add(pairColumn);
+
+                    DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
+                    disciplineColumn.HeaderText = "Дисциплина";
+                    disciplineColumn.DataPropertyName = "Discipline";
+                    disciplineColumn.Name = "Discipline";
+                    GridRaspisanie.Columns.Add(disciplineColumn);
+
+                    DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
+                    groupColumn.HeaderText = "Группа";
+                    groupColumn.DataPropertyName = "Group";
+                    groupColumn.Name = "Group";
+                    GridRaspisanie.Columns.Add(groupColumn);
+
+                    // Получение временного расписания из Modifieds, если оно есть
+                    var temporaryEntries = context.Modifieds
+                        .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
+                        .Select(entry => new
+                        {
+                            Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
+                            Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
+                            Pair = entry.TimeTable.Pair.Pair
+                        })
+                        .ToList();
+
+
+                    // Привязываем результаты к DataGridView
                     GridRaspisanie.AutoGenerateColumns = false;
-                    GridRaspisanie.DataSource = null;
+
+
+
+                    label1.Text = dayOfWeekRussian;
+                    label1.Font = new Font("Segui UI", 14);
+                    label1.BackColor = Color.Transparent;
+
+                    // Проверяем, если пары уже есть на этот день
+                    var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
+                    // Проверяем наличие отмененных пар для указанной даты
+                    var cancelledPairs = context.Modifieds
+                                            .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
+                                            .Select(modified => modified.TimeTable.Pair.Pair)
+                                            .ToList();
+                    // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
+                    emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
+
+
+                    if (temporaryEntries != null)
+                    {
+                        todayEntries.AddRange(temporaryEntries);
+
+                    }
+
+
+
+                    GridRaspisanie.DataSource = todayEntries;
+                    GridRaspisanie.ResetBindings();
+                    GridRaspisanie.Refresh();
+                    MarkRowsForCurrentDate();
+                }
+                else
+                {
+                    if (dayOfWeekRussian.Equals("воскресенье", StringComparison.OrdinalIgnoreCase))
+                    {
+                        DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
+                        pairColumn.HeaderText = "Выходной";
+                        // Значение прочерка
+                        GridRaspisanie.Columns.Add(pairColumn);
+                        GridRaspisanie.AutoGenerateColumns = false;
+                        GridRaspisanie.DataSource = null;
+                    }
+                }
+
+            }
+
+
+            /// <summary>
+            /// Формирование дат, относительно текущего дня
+            /// </summary>
+            /// <param name="currentDate"></param>
+            /// <returns></returns>
+            public LinkedList<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDates(DateTime currentDate)
+            {
+                DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
+
+                LinkedList<(DayOfWeek, DateTime)> daysAndDatesList = new LinkedList<(DayOfWeek, DateTime)>();
+
+                daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
+
+                for (int i = 1; i <= 14; i++)
+                {
+                    currentDate = currentDate.AddDays(1);
+                    currentDayOfWeek = currentDate.DayOfWeek;
+
+                    if (currentDayOfWeek != DayOfWeek.Sunday)
+                    {
+                        daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
+                    }
+                }
+
+                return daysAndDatesList;
+            }
+
+
+            public LinkedList<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDatesPrevious(DateTime currentDate)
+            {
+                DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
+
+                LinkedList<(DayOfWeek, DateTime)> daysAndDatesList = new LinkedList<(DayOfWeek, DateTime)>();
+
+                // Добавляем текущую дату и день недели в список
+                daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
+
+                // Добавляем предыдущие дни относительно текущей даты
+                for (int i = 1; i <= 14; i++)
+                {
+                    currentDate = currentDate.AddDays(-1); // Уменьшаем дату на один день
+                    currentDayOfWeek = currentDate.DayOfWeek;
+
+                    if (currentDayOfWeek != DayOfWeek.Sunday)
+                    {
+                        daysAndDatesList.AddFirst((currentDayOfWeek, currentDate)); // Добавляем день в начало списка
+                    }
+                }
+
+                // Возвращаем список дней
+                return daysAndDatesList;
+            }
+
+            private void Form1_Load(object sender, EventArgs e)
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                BtnChangePairs.Enabled = false;
+                TodayDay();
+
+                TheoryDataGrid.ColumnHeadersDefaultCellStyle = editingForm.SetDataGridViewStyleFromThemes(TheoryDataGrid, ThemSet);
+
+                gifImage = Properties.Resources.LoadPicture;
+                BoxUpdate.Image = gifImage;
+                // SetFontStyleForAllCells(GridRaspisanie, FontStyle.Bold);
+                label1.Font = new Font("Arial", 12, FontStyle.Bold);
+                label2.Font = new Font("Arial", 10, FontStyle.Bold);
+                label1.Text = label1.Text.ToUpper();
+
+
+
+
+                SaveSettings();
+            }
+
+
+
+
+
+            private void BtnSaveChangeTheme_Click_1(object sender, EventArgs e)
+            {
+                SaveSettings();
+            }
+
+            private void SwitchTheme_CheckedChanged(object sender, EventArgs e)
+            {
+                if (SwitchTheme.Checked)
+                {
+                    ThemeSkin.Theme = MaterialSkinManager.Themes.DARK;
+                    LabelSmen.Text = " на светлую тему";
+
+                }
+                else
+                {
+                    ThemeSkin.Theme = MaterialSkinManager.Themes.LIGHT;
+                    LabelSmen.Text = " на тёмную тему";
                 }
             }
 
-        }
-
-
-        /// <summary>
-        /// Формирование дат, относительно текущего дня
-        /// </summary>
-        /// <param name="currentDate"></param>
-        /// <returns></returns>
-        public LinkedList<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDates(DateTime currentDate)
-        {
-            DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
-
-            LinkedList<(DayOfWeek, DateTime)> daysAndDatesList = new LinkedList<(DayOfWeek, DateTime)>();
-
-            daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
-
-            for (int i = 1; i <= 14; i++)
+            private void BtnBlueRad_CheckedChanged(object sender, EventArgs e)
             {
-                currentDate = currentDate.AddDays(1);
-                currentDayOfWeek = currentDate.DayOfWeek;
+                ThemeSkin.ColorScheme = new ColorScheme(Primary.Blue800, Primary.Blue700, Primary.Blue600, Accent.LightBlue700, TextShade.WHITE);
+            }
 
-                if (currentDayOfWeek != DayOfWeek.Sunday)
+            private void BtnRedRad_CheckedChanged(object sender, EventArgs e)
+            {
+                ThemeSkin.ColorScheme = new ColorScheme(Primary.Red700, Primary.Red600, Primary.Red500, Accent.Red200, TextShade.WHITE);
+            }
+
+            private void BtnOrangeRad_CheckedChanged(object sender, EventArgs e)
+            {
+                ThemeSkin.ColorScheme = new ColorScheme(Primary.Orange800, Primary.Orange700, Primary.Orange500, Accent.Orange200, TextShade.WHITE);
+            }
+
+            private void BtnGreenRad_CheckedChanged_1(object sender, EventArgs e)
+            {
+                ThemeSkin.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green500, Primary.LightGreen700, Accent.Green700, TextShade.WHITE);
+            }
+
+            private void FormRasp_Click(object sender, EventArgs e)
+            {
+
+            }
+
+            private void FormRasp_MouseEnter(object sender, EventArgs e)
+            {
+                editingForm.SetBorderColorFromTheme(FormRasp, ThemSet);
+            }
+
+            private void FormRasp_MouseLeave(object sender, EventArgs e)
+            {
+                FormRasp.BackColor = Color.Transparent;
+            }
+
+            private void BtnDispAdd_Click(object sender, EventArgs e)
+            {
+
+            }
+
+            private void BtnDispAdd_MouseEnter(object sender, EventArgs e)
+            {
+                editingForm.SetBorderColorFromTheme(BtnDispAdd, ThemSet);
+            }
+
+            private void BtnDispAdd_MouseLeave(object sender, EventArgs e)
+            {
+                BtnDispAdd.BackColor = Color.Transparent;
+            }
+
+
+
+            private void BtnAddGroup_MouseEnter(object sender, EventArgs e)
+            {
+                editingForm.SetBorderColorFromTheme(BtnAddGroup, ThemSet);
+            }
+
+            private void BtnAddGroup_MouseLeave(object sender, EventArgs e)
+            {
+                BtnAddGroup.BackColor = Color.Transparent;
+            }
+
+            private void BtnConnectionDispGroup_MouseEnter(object sender, EventArgs e)
+            {
+                editingForm.SetBorderColorFromTheme(BtnConnectionDispGroup, ThemSet);
+            }
+
+            private void BtnConnectionDispGroup_MouseLeave(object sender, EventArgs e)
+            {
+                BtnConnectionDispGroup.BackColor = Color.Transparent;
+            }
+
+            private void BtnAddGroup_Click_1(object sender, EventArgs e)
+            {
+                FormAddGroup Group = new FormAddGroup(ThemSet);
+                Group.ShowDialog();
+            }
+
+            private void BtnDispAdd_Click_1(object sender, EventArgs e)
+            {
+                FormDisplineAdd AddDispline = new FormDisplineAdd(ThemSet);
+                AddDispline.ShowDialog();
+            }
+
+            private void BtnConnectionDispGroup_Click(object sender, EventArgs e)
+            {
+                FormAddKTP Ktp = new FormAddKTP(ThemSet);
+                Ktp.ShowDialog();
+            }
+
+            private void FormRasp_Click_1(object sender, EventArgs e)
+            {
+                MainForm mainFormInstance = new MainForm();
+                FormationRasp Rasp = new FormationRasp(ThemSet, mainFormInstance);
+                Rasp.Show();
+            }
+
+            private void GridRaspisanie_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+            {
+
+            }
+
+            private void GroupAddBOx_Click(object sender, EventArgs e)
+            {
+
+            }
+            private void StartAnimate()
+            {
+                if (BoxUpdate.Image == gifImage)
                 {
-                    daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
+                    Timer timer = new Timer();
+                    timer.Interval = 5000; // 5000 миллисекунд = 5 секунд
+
+                    // Воспроизводим анимацию в течение 5 секунд
+                    BoxUpdate.Image = Properties.Resources.dsds; // Очищаем изображение
+                    timer.Tick += (s, args) =>
+                    {
+                        BoxUpdate.Image = gifImage; // Останавливаем анимацию
+                        timer.Stop(); // Останавливаем таймер
+                        timer.Dispose(); // Освобождаем ресурсы таймера
+                    };
+                    timer.Start(); // Запускаем таймер
                 }
             }
-
-            return daysAndDatesList;
-        }
-
-
-        public LinkedList<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDatesPrevious(DateTime currentDate)
-        {
-            DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
-
-            LinkedList<(DayOfWeek, DateTime)> daysAndDatesList = new LinkedList<(DayOfWeek, DateTime)>();
-
-            // Добавляем текущую дату и день недели в список
-            daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
-
-            // Добавляем предыдущие дни относительно текущей даты
-            for (int i = 1; i <= 14; i++)
+            private void BoxUpdate_Click(object sender, EventArgs e)
             {
-                currentDate = currentDate.AddDays(-1); // Уменьшаем дату на один день
-                currentDayOfWeek = currentDate.DayOfWeek;
+                StartAnimate();
+                currentDate = DateTime.Now; // Обновляем текущую дату
+                daysAndDatesList = GenerateDaysAndDates(currentDate); // Обновляем список дней и дат начиная с новой текущей даты
+                daysAndDatesPrevious = GenerateDaysAndDatesPrevious(currentDate);
+                DisplayScheduleForDay(currentDate.DayOfWeek, currentDate); // Показываем расписание для текущего дня
+                TodayDay();
 
-                if (currentDayOfWeek != DayOfWeek.Sunday)
+                foreach (var node in daysAndDatesList)
                 {
-                    daysAndDatesList.AddFirst((currentDayOfWeek, currentDate)); // Добавляем день в начало списка
+                    if (node.Date.Date == currentDate.Date)
+                    {
+                        currentNode = daysAndDatesList.Find(node);
+                        break;
+                    }
                 }
+
             }
 
-            // Возвращаем список дней
-            return daysAndDatesList;
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-            BtnChangePairs.Enabled = false;
-            TodayDay();
-
-            TheoryDataGrid.ColumnHeadersDefaultCellStyle = editingForm.SetDataGridViewStyleFromThemes(TheoryDataGrid, ThemSet);
-
-            gifImage = Properties.Resources.LoadPicture;
-            BoxUpdate.Image = gifImage;
-            // SetFontStyleForAllCells(GridRaspisanie, FontStyle.Bold);
-            label1.Font = new Font("Arial", 12, FontStyle.Bold);
-            label2.Font = new Font("Arial", 10, FontStyle.Bold);
-            label1.Text = label1.Text.ToUpper();
-
-
-
-
-            SaveSettings();
-        }
-
-
-
-
-
-        private void BtnSaveChangeTheme_Click_1(object sender, EventArgs e)
-        {
-            SaveSettings();
-        }
-
-        private void SwitchTheme_CheckedChanged(object sender, EventArgs e)
-        {
-            if (SwitchTheme.Checked)
+            private void BtnPreviev_MouseEnter(object sender, EventArgs e)
             {
-                ThemeSkin.Theme = MaterialSkinManager.Themes.DARK;
-                LabelSmen.Text = " на светлую тему";
-
+                editingForm.SetBorderColorFromTheme(BtnPreviev, ThemSet);
             }
-            else
+
+            private void BtnNext_MouseEnter(object sender, EventArgs e)
             {
-                ThemeSkin.Theme = MaterialSkinManager.Themes.LIGHT;
-                LabelSmen.Text = " на тёмную тему";
+                editingForm.SetBorderColorFromTheme(BtnNext, ThemSet);
             }
-        }
 
-        private void BtnBlueRad_CheckedChanged(object sender, EventArgs e)
-        {
-            ThemeSkin.ColorScheme = new ColorScheme(Primary.Blue800, Primary.Blue700, Primary.Blue600, Accent.LightBlue700, TextShade.WHITE);
-        }
-
-        private void BtnRedRad_CheckedChanged(object sender, EventArgs e)
-        {
-            ThemeSkin.ColorScheme = new ColorScheme(Primary.Red700, Primary.Red600, Primary.Red500, Accent.Red200, TextShade.WHITE);
-        }
-
-        private void BtnOrangeRad_CheckedChanged(object sender, EventArgs e)
-        {
-            ThemeSkin.ColorScheme = new ColorScheme(Primary.Orange800, Primary.Orange700, Primary.Orange500, Accent.Orange200, TextShade.WHITE);
-        }
-
-        private void BtnGreenRad_CheckedChanged_1(object sender, EventArgs e)
-        {
-            ThemeSkin.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green500, Primary.LightGreen700, Accent.Green700, TextShade.WHITE);
-        }
-
-        private void FormRasp_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FormRasp_MouseEnter(object sender, EventArgs e)
-        {
-            editingForm.SetBorderColorFromTheme(FormRasp, ThemSet);
-        }
-
-        private void FormRasp_MouseLeave(object sender, EventArgs e)
-        {
-            FormRasp.BackColor = Color.Transparent;
-        }
-
-        private void BtnDispAdd_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnDispAdd_MouseEnter(object sender, EventArgs e)
-        {
-            editingForm.SetBorderColorFromTheme(BtnDispAdd, ThemSet);
-        }
-
-        private void BtnDispAdd_MouseLeave(object sender, EventArgs e)
-        {
-            BtnDispAdd.BackColor = Color.Transparent;
-        }
-
-
-
-        private void BtnAddGroup_MouseEnter(object sender, EventArgs e)
-        {
-            editingForm.SetBorderColorFromTheme(BtnAddGroup, ThemSet);
-        }
-
-        private void BtnAddGroup_MouseLeave(object sender, EventArgs e)
-        {
-            BtnAddGroup.BackColor = Color.Transparent;
-        }
-
-        private void BtnConnectionDispGroup_MouseEnter(object sender, EventArgs e)
-        {
-            editingForm.SetBorderColorFromTheme(BtnConnectionDispGroup, ThemSet);
-        }
-
-        private void BtnConnectionDispGroup_MouseLeave(object sender, EventArgs e)
-        {
-            BtnConnectionDispGroup.BackColor = Color.Transparent;
-        }
-
-        private void BtnAddGroup_Click_1(object sender, EventArgs e)
-        {
-            FormAddGroup Group = new FormAddGroup(ThemSet);
-            Group.ShowDialog();
-        }
-
-        private void BtnDispAdd_Click_1(object sender, EventArgs e)
-        {
-            FormDisplineAdd AddDispline = new FormDisplineAdd(ThemSet);
-            AddDispline.ShowDialog();
-        }
-
-        private void BtnConnectionDispGroup_Click(object sender, EventArgs e)
-        {
-            FormAddKTP Ktp = new FormAddKTP(ThemSet);
-            Ktp.ShowDialog();
-        }
-
-        private void FormRasp_Click_1(object sender, EventArgs e)
-        {
-            MainForm mainFormInstance = new MainForm();
-            FormationRasp Rasp = new FormationRasp(ThemSet, mainFormInstance);
-            Rasp.Show();
-        }
-
-        private void GridRaspisanie_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
-        {
-
-        }
-
-        private void GroupAddBOx_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void StartAnimate()
-        {
-            if (BoxUpdate.Image == gifImage)
+            private void BtnPreviev_MouseLeave(object sender, EventArgs e)
             {
-                Timer timer = new Timer();
-                timer.Interval = 5000; // 5000 миллисекунд = 5 секунд
-
-                // Воспроизводим анимацию в течение 5 секунд
-                BoxUpdate.Image = Properties.Resources.dsds; // Очищаем изображение
-                timer.Tick += (s, args) =>
-                {
-                    BoxUpdate.Image = gifImage; // Останавливаем анимацию
-                    timer.Stop(); // Останавливаем таймер
-                    timer.Dispose(); // Освобождаем ресурсы таймера
-                };
-                timer.Start(); // Запускаем таймер
+                BtnPreviev.BackColor = Color.Transparent;
             }
-        }
-        private void BoxUpdate_Click(object sender, EventArgs e)
-        {
-            StartAnimate();
-            currentDate = DateTime.Now; // Обновляем текущую дату
-            daysAndDatesList = GenerateDaysAndDates(currentDate); // Обновляем список дней и дат начиная с новой текущей даты
-            daysAndDatesPrevious = GenerateDaysAndDatesPrevious(currentDate);
-            DisplayScheduleForDay(currentDate.DayOfWeek, currentDate); // Показываем расписание для текущего дня
-            TodayDay();
 
-            foreach (var node in daysAndDatesList)
+            private void BtnNext_MouseLeave(object sender, EventArgs e)
             {
-                if (node.Date.Date == currentDate.Date)
-                {
-                    currentNode = daysAndDatesList.Find(node);
-                    break;
-                }
+                BtnNext.BackColor = Color.Transparent;
             }
-
-        }
-
-        private void BtnPreviev_MouseEnter(object sender, EventArgs e)
-        {
-            editingForm.SetBorderColorFromTheme(BtnPreviev, ThemSet);
-        }
-
-        private void BtnNext_MouseEnter(object sender, EventArgs e)
-        {
-            editingForm.SetBorderColorFromTheme(BtnNext, ThemSet);
-        }
-
-        private void BtnPreviev_MouseLeave(object sender, EventArgs e)
-        {
-            BtnPreviev.BackColor = Color.Transparent;
-        }
-
-        private void BtnNext_MouseLeave(object sender, EventArgs e)
-        {
-            BtnNext.BackColor = Color.Transparent;
-        }
         private LinkedListNode<(DayOfWeek WeekDay, DateTime Date)> currentNode; // Создаем переменную для хранения текущего узла
 
         private void BtnNext_Click(object sender, EventArgs e)
