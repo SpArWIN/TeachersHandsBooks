@@ -154,11 +154,11 @@ namespace TeachersHandsBooks
 
             return count;
         }
-       
 
-            // Метод для получения следующей даты, исключая воскресенье
 
-            private List<DateTime> GetNonSundayDatesList(DateTime startDate, int numberOfDays)
+        // Метод для получения следующей даты, исключая воскресенье
+
+        private List<DateTime> GetNonSundayDatesList(DateTime startDate, int numberOfDays)
         {
             List<DateTime> datesList = new List<DateTime>();
             DateTime currentDate = startDate;
@@ -414,6 +414,6 @@ namespace TeachersHandsBooks
             return false;
         }
     }
-    }
+}
 
 

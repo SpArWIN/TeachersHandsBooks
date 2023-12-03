@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace TeachersHandsBooks.Core.Tables
 {
@@ -53,7 +51,7 @@ namespace TeachersHandsBooks.Core.Tables
 
 
 
-    
+
         //Метод получения дней недели из БД
         public static DayOfWeek GetDayOfWeekFromRussian(string dayOfWeekRussian)
         {
