@@ -155,7 +155,7 @@ namespace TeachersHandsBooks
             this.guna2CircleProgressBar1.Animated = true;
             this.guna2CircleProgressBar1.AnimationSpeed = 0.8F;
             this.guna2CircleProgressBar1.Controls.Add(this.label5);
-            this.guna2CircleProgressBar1.Location = new System.Drawing.Point(255, 67);
+            this.guna2CircleProgressBar1.Location = new System.Drawing.Point(282, 73);
             this.guna2CircleProgressBar1.Name = "guna2CircleProgressBar1";
             this.guna2CircleProgressBar1.ProgressColor = System.Drawing.Color.Green;
             this.guna2CircleProgressBar1.ProgressColor2 = System.Drawing.Color.Lime;

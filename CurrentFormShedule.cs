@@ -116,6 +116,8 @@ namespace TeachersHandsBooks
         private void CurrentFormShedule_Load(object sender, EventArgs e)
         {
             TimePicerCurrentDay.Value = DateTime.Now.Date;
+            TimePickerNext.Value = DateTime.Now.Date;
+            TimePickerNext.Enabled = false;
             ShowDiap();
 
         }
@@ -141,7 +143,7 @@ namespace TeachersHandsBooks
                     break;
             }
 
-            for (int i = 0; i < daysToAdd; i++)
+            for (int i = 0; i <= daysToAdd; i++)
             {
                 if (currentDate.DayOfWeek != DayOfWeek.Sunday)
                 {
@@ -161,7 +163,7 @@ namespace TeachersHandsBooks
             List<DateTime> datesList = new List<DateTime>();
             DateTime currentDate = startDate;
 
-            for (int i = 0; i < numberOfDays; i++)
+            for (int i = 0; i <= numberOfDays; i++)
             {
                 if (currentDate.DayOfWeek != DayOfWeek.Sunday)
                 {
@@ -179,6 +181,7 @@ namespace TeachersHandsBooks
         {
             if (ComboxFormingItems.SelectedIndex != -1)
             {
+                TimePickerNext.Enabled = true;
                 BtnForming.Enabled = true;
                 // Получаем значения диапазона
                 string selectedDescription = ComboxFormingItems.SelectedItem.ToString();
@@ -350,7 +353,8 @@ namespace TeachersHandsBooks
                     {
                         // Если записей нет, добавляем их
                         CurrentShedule.InsertCurrentData(selectedDateList);
-                        MessageBox.Show("Записи успешно добавлены", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"Расписание с {TimePicerCurrentDay.Value.Date.ToShortDateString()} по {TimePickerNext.Value.Date.ToShortDateString()} было успешно сформировано", "Создание расписания", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Расписание успешно сформировано.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
@@ -361,7 +365,7 @@ namespace TeachersHandsBooks
                         {
                             // Если есть новые записи в TimeTable, добавляем их в CurrentShedule
                             CheckEmtyResponse(selectedDateList);
-                            MessageBox.Show("Новые записи добавлены", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("На новые записи сформированы даты ", "Обновление", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
