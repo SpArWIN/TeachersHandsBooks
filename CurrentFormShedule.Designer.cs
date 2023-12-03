@@ -155,7 +155,7 @@ namespace TeachersHandsBooks
             this.guna2CircleProgressBar1.Animated = true;
             this.guna2CircleProgressBar1.AnimationSpeed = 0.8F;
             this.guna2CircleProgressBar1.Controls.Add(this.label5);
-            this.guna2CircleProgressBar1.Location = new System.Drawing.Point(282, 73);
+            this.guna2CircleProgressBar1.Location = new System.Drawing.Point(258, 73);
             this.guna2CircleProgressBar1.Name = "guna2CircleProgressBar1";
             this.guna2CircleProgressBar1.ProgressColor = System.Drawing.Color.Green;
             this.guna2CircleProgressBar1.ProgressColor2 = System.Drawing.Color.Lime;
@@ -168,10 +168,10 @@ namespace TeachersHandsBooks
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(22, 73);
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(28, 70);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(170, 20);
+            this.label5.Size = new System.Drawing.Size(151, 17);
             this.label5.TabIndex = 0;
             this.label5.Text = "Загрузка расписания...";
             // 
