@@ -56,8 +56,9 @@ namespace TeachersHandsBooks
                 // Если достигнут максимум, останавливаем анимацию
                 progressTimer.Stop();
                 guna2CircleProgressBar1.Visible = false;
-                this.Close();
-                MessageBox.Show($"Расписание с {TimePicerCurrentDay.Value.Date.ToShortDateString()} по {TimePickerNext.Value.Date.ToShortDateString()} было успешно сформировано", "Создание расписания", MessageBoxButtons.OK, MessageBoxIcon.Information);
+              
+              
+               
             }
             else
             {
@@ -174,30 +175,66 @@ namespace TeachersHandsBooks
 
             return datesList;
         }
+        /// <summary>
+        /// Метод, который возвращает список диапазона дат из таблицы, если там они вообще есть
+        /// </summary>
+        /// <returns></returns>
+        private List<DateTime> GetFirstAndLastUniqueDatesFromCurrentShedule()
+        {
 
+            {
+                List<DateTime> uniqueDates = new List<DateTime>();
 
+                // Получаем первую уникальную дату из таблицы CurrentShedule
+                string firstDateString = context.CurrentsShedules.OrderBy(cs => cs.Data).Select(cs => cs.Data).FirstOrDefault();
+                DateTime firstDate;
+                if (DateTime.TryParse(firstDateString, out firstDate))
+                {
+                    uniqueDates.Add(firstDate);
+                }
 
+                // Получаем последнюю уникальную дату из таблицы CurrentShedule
+                string lastDateString = context.CurrentsShedules.OrderByDescending(cs => cs.Data).Select(cs => cs.Data).FirstOrDefault();
+                DateTime lastDate;
+                if (DateTime.TryParse(lastDateString, out lastDate))
+                {
+                    uniqueDates.Add(lastDate);
+                }
+
+                return uniqueDates;
+            }
+        }
+        // МНЕ НЕОБХОДИМО ДОПИЛИТЬ ТАКИМ ОБРАЗОМ, ЧТОБЫ ЛИБО ПОВТОРНОГО ВЫБОРА ФОРМИРОВАНИЯ ВОВСЕ НЕ БЫЛО, ЛИБО КАК ТО ПО ДРУГОМУ.
+        private bool existingRecordsForPreviousRange;
+        private DateTime lastDateOfPreviousRange;
+        private string LastOrCurrentRagne;
         private void ComboxFormingItems_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ComboxFormingItems.SelectedIndex != -1)
             {
+                TransmissionOfInformation.DateList = null;
                 TimePickerNext.Enabled = true;
                 BtnForming.Enabled = true;
                 // Получаем значения диапазона
                 string selectedDescription = ComboxFormingItems.SelectedItem.ToString();
                 WeekRange selectedRange = GetEnumValueFromDescription<WeekRange>(selectedDescription);
-
+                
                 // Получаем предыдущий диапазон дат
                 int previousNumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, TimePicerCurrentDay.Value);
-                List<DateTime> previousDateList = GetNonSundayDatesList(TimePicerCurrentDay.Value, previousNumberShift);
+                List<DateTime> previousDateList = GetFirstAndLastUniqueDatesFromCurrentShedule();
 
                 // Проверяем наличие записей для предыдущего диапазона дат в таблице CurrentShedule
-                bool existingRecordsForPreviousRange = AreEntriesExistingForRange(previousDateList);
+                existingRecordsForPreviousRange = AreEntriesExistingForRange(previousDateList);
 
                 if (existingRecordsForPreviousRange)
                 {
                     // Используем последнюю дату из предыдущего диапазона для нового диапазона
-                    DateTime lastDateOfPreviousRange = previousDateList.Last();
+                lastDateOfPreviousRange = previousDateList.Last();
+                    if(lastDateOfPreviousRange != null)
+                    {
+                        LastOrCurrentRagne = previousDateList.Last().ToString("dd.MM.yyyy");
+                    }
+                    
                     int NumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, lastDateOfPreviousRange.AddDays(1));
 
                     // Устанавливаем дату в TimePickerNext, пропуская воскресенье
@@ -210,6 +247,7 @@ namespace TeachersHandsBooks
                 {
                     // Передаем новый диапазон дат
                     int NumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, TimePicerCurrentDay.Value);
+                    LastOrCurrentRagne = TimePicerCurrentDay.Value.ToString("dd.MM.yyyy");
                     TransmissionOfInformation.DateList = GetNonSundayDatesList(TimePicerCurrentDay.Value, NumberShift);
                     TimePickerNext.Value = TransmissionOfInformation.DateList.Last();
                 }
@@ -333,6 +371,7 @@ namespace TeachersHandsBooks
         private void BtnForming_Click(object sender, EventArgs e)
         {
             bool record = CheckResponse();
+          
             if (!record)
             {
                 MessageBox.Show("Шаблон не был загружен", "Отмена операции", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -355,8 +394,21 @@ namespace TeachersHandsBooks
                     {
                         // Если записей нет, добавляем их
                         CurrentShedule.InsertCurrentData(selectedDateList);
-                        MessageBox.Show($"Расписание с {TimePicerCurrentDay.Value.Date.ToShortDateString()} по {TimePickerNext.Value.Date.ToShortDateString()} было успешно сформировано", "Создание расписания", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        MessageBox.Show("Расписание успешно сформировано.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if(lastDateOfPreviousRange == null)
+                        {
+                            MessageBox.Show($"Расписание с {TimePicerCurrentDay.Value.Date.ToShortDateString()} по {TimePickerNext.Value.Date.ToShortDateString()} было успешно сформировано", "Создание расписания", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Расписание успешно сформировано.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                          
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Расписание с {LastOrCurrentRagne} по {TimePickerNext.Value.Date.ToShortDateString()} было успешно сформировано", "Создание расписания", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            this.Close();
+                        }
+
+
+                       
+                       
                     }
                     else
                     {

@@ -34,7 +34,7 @@ namespace TeachersHandsBooks
         // для гифки
         private Image gifImage;
         private DateTime currentDate;
-        private LinkedList<(DayOfWeek WeekDay, DateTime Date)> daysAndDatesList; //Даты вперед
+        private LinkedList<(DayOfWeek WeekDay, DateTime Date)> daysAndDatesList ; //Даты вперед
         private LinkedList<(DayOfWeek WeekDay, DateTime Date)> daysAndDatesPrevious; // Даты назад
 
         public MainForm()
@@ -55,8 +55,9 @@ namespace TeachersHandsBooks
 
             GroupAddBOx.Font = new Font("Segoe UI", 14, FontStyle.Bold | FontStyle.Italic);
             currentDate = DateTime.Now;
-            daysAndDatesList = GenerateDaysAndDates(currentDate);
-            daysAndDatesPrevious = GenerateDaysAndDatesPrevious(currentDate);
+           
+            currentNode = GenerateDaysAndDates();
+           
             PrintTimer = new Timer();
             PrintTimer.Interval = 50; // Интервал между печатью символов (в миллисекундах)
             PrintTimer.Tick += PrintTimer_Tick;
@@ -273,6 +274,7 @@ namespace TeachersHandsBooks
             DateTime Data = currentDate.Date;
             label2.Text = Data.ToString("d", new CultureInfo("ru-RU"));
             string dayOfWeekRussian = currentDate.ToString("dddd", new CultureInfo("ru-RU"));
+            label1.Text = dayOfWeekRussian;
             string formattedDate = currentDate.ToString("d", new CultureInfo("ru-RU"));
 
             var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
@@ -287,44 +289,54 @@ namespace TeachersHandsBooks
                 if (currentScheduleEntry != null)
                 {
                     
-                        //ТАК ДОДЕЛАТЬ
+                      
 
-                    var allPairs = context.Pairs
+                      var allPairs = context.Pairs
                         .Select(entry => entry.Pair)
                         .ToList();
 
-                    var existingPairs = currentScheduleEntry.Select(entry => entry.Pair).ToList();
 
-                    var cancelledPairs = context.Modifieds
-                        .Where(modified => modified.Data == formattedDate && modified.isAdded == false)
-                        .Select(modified => modified.TimeTable.Pair.Pair)
-                        .ToList();
+                                    var temporaryEntries = context.CurrentsShedules
+                    .Where(entry => entry.Data == formattedDate)
+                    .Select(entry => new
+                    {
+                        Pair = entry.TimeTables.Pair.Pair,
+                        Group = entry.TimeTables.DisplineWithGroup.Group.NameGroup,
+                        Discipline = entry.TimeTables.DisplineWithGroup.Displine.NameDispline,
+                    })
+                    .ToList();
 
-                    var emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
+                    // Это парыЮ которые попадают в список доступных, если их нет
+                    //var cancelledPairs = context.Modifieds
+                    //    .Where(modified => modified.Data == formattedDate && modified.isAdded == false)
+                    //    .Select(modified => modified.TimeTable.Pair.Pair)
+                    //    .ToList();
+
+                    //  var emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
 
                     // Добавление столбцов в DataGridView
                     AddDataGridViewColumns();
 
-                    var temporaryEntries = context.Modifieds
-                        .Where(entry => entry.Data == formattedDate && entry.isAdded == true)
-                        .Select(entry => new
-                        {
-                            Pair = entry.TimeTable.Pair.Pair,
-                            Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
-                            Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
-                        })
-                        .ToList();
+                    //var temporaryEntries = context.Modifieds
+                    //    .Where(entry => entry.Data == formattedDate && entry.isAdded == true)
+                    //    .Select(entry => new
+                    //    {
+                    //        Pair = entry.TimeTable.Pair.Pair,
+                    //        Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
+                    //        Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
+                    //    })
+                    //    .ToList();
 
-                    if (temporaryEntries != null)
-                    {
-                        // Добавляем временные записи к текущим записям
-                        foreach (var tempEntry in temporaryEntries)
-                        {
-                            currentScheduleEntries.Add(tempEntry);
-                        }
-                    }
+                    //if (temporaryEntries != null)
+                    //{
+                    //    // Добавляем временные записи к текущим записям
+                    //    foreach (var tempEntry in temporaryEntries)
+                    //    {
+                    //        currentScheduleEntries.Add(tempEntry);
+                    //    }
+                    //}
 
-                    GridRaspisanie.DataSource = currentScheduleEntries;
+                    GridRaspisanie.DataSource = temporaryEntries;
                     GridRaspisanie.ResetBindings();
 
                     GridRaspisanie.AutoGenerateColumns = false;
@@ -337,7 +349,10 @@ namespace TeachersHandsBooks
                 }
                 else
                 {
-                    HandleNoDataForDayOfWeek(dayOfWeekRussian);
+                    //   HandleNoDataForDayOfWeek(dayOfWeekRussian);
+                    BtnNext.Enabled = false;
+                    BtnPreviev.Enabled = false;
+
                 }
             }
             else
@@ -395,93 +410,69 @@ namespace TeachersHandsBooks
                 }
             }
 
-            public void DisplayScheduleForDay(DayOfWeek dayOfWeek, DateTime date)
+        public void DisplayScheduleForDay(LinkedListNode<(DayOfWeek WeekDay, DateTime Date)> currentNode)
+        {
+
+            if (currentNode != null)
             {
+                DayOfWeek dayOfWeek = currentNode.Value.WeekDay;
+                DateTime date = currentNode.Value.Date;
+
                 DateTime Data = date.Date;
                 label2.Text = Data.ToString("d", new CultureInfo("ru-RU"));
                 string dayOfWeekRussian = date.ToString("dddd", new CultureInfo("ru-RU"));
 
-
-
                 var dayId = context.DayTables.FirstOrDefault(day => day.Day.Equals(dayOfWeekRussian, StringComparison.OrdinalIgnoreCase))?.ID;
+
                 if (dayId != null)
                 {
                     GridRaspisanie.Columns.Clear();
-                    var todayEntries = context.TimeTables
-                        .Where(entry => entry.Day.ID == dayId)
-                        .OrderBy(entry => entry.Pair.ID)
+
+                    var temporaryEntries = context.CurrentsShedules
+                        .Where(entry => entry.Data == label2.Text && entry.TimeTables.Day.Day == dayOfWeekRussian)
                         .Select(entry => new
                         {
-                            Group = entry.DisplineWithGroup.Group.NameGroup,
-                            Discipline = entry.DisplineWithGroup.Displine.NameDispline,
-                            Pair = entry.Pair.Pair
+                            Pair = entry.TimeTables.Pair.Pair,
+                            Group = entry.TimeTables.DisplineWithGroup.Group.NameGroup,
+                            Discipline = entry.TimeTables.DisplineWithGroup.Displine.NameDispline,
                         })
                         .ToList();
-                    // Получаем все пары из базы данных
+
                     var allPairs = context.Pairs
                         .Select(entry => entry.Pair)
                         .ToList();
 
-
-                    DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
-                    pairColumn.HeaderText = "Пары";
-                    pairColumn.DataPropertyName = "Pair";
-                    pairColumn.Name = "Pair";
-                    GridRaspisanie.Columns.Add(pairColumn);
-
-                    DataGridViewColumn disciplineColumn = new DataGridViewTextBoxColumn();
-                    disciplineColumn.HeaderText = "Дисциплина";
-                    disciplineColumn.DataPropertyName = "Discipline";
-                    disciplineColumn.Name = "Discipline";
-                    GridRaspisanie.Columns.Add(disciplineColumn);
-
-                    DataGridViewColumn groupColumn = new DataGridViewTextBoxColumn();
-                    groupColumn.HeaderText = "Группа";
-                    groupColumn.DataPropertyName = "Group";
-                    groupColumn.Name = "Group";
-                    GridRaspisanie.Columns.Add(groupColumn);
-
-                    // Получение временного расписания из Modifieds, если оно есть
-                    var temporaryEntries = context.Modifieds
-                        .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
-                        .Select(entry => new
-                        {
-                            Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
-                            Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
-                            Pair = entry.TimeTable.Pair.Pair
-                        })
-                        .ToList();
-
-
-                    // Привязываем результаты к DataGridView
                     GridRaspisanie.AutoGenerateColumns = false;
-
-
 
                     label1.Text = dayOfWeekRussian;
                     label1.Font = new Font("Segui UI", 14);
                     label1.BackColor = Color.Transparent;
+                    AddDataGridViewColumns();
+
+                    GridRaspisanie.DataSource = temporaryEntries;
+                    GridRaspisanie.ResetBindings();
+                    GridRaspisanie.Refresh();
 
                     // Проверяем, если пары уже есть на этот день
-                    var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
-                    // Проверяем наличие отмененных пар для указанной даты
-                    var cancelledPairs = context.Modifieds
-                                            .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
-                                            .Select(modified => modified.TimeTable.Pair.Pair)
-                                            .ToList();
-                    // Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
-                    emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
+                    //var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
+                    //// Проверяем наличие отмененных пар для указанной даты
+                    //var cancelledPairs = context.Modifieds
+                    //                        .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
+                    //                        .Select(modified => modified.TimeTable.Pair.Pair)
+                    //                        .ToList();
+                    //// Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
+                    //emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
 
 
-                    if (temporaryEntries != null)
-                    {
-                        todayEntries.AddRange(temporaryEntries);
+                    //if (temporaryEntries != null)
+                    //{
+                    //    todayEntries.AddRange(temporaryEntries);
 
-                    }
+                    //}
 
 
 
-                    GridRaspisanie.DataSource = todayEntries;
+                    GridRaspisanie.DataSource = temporaryEntries;
                     GridRaspisanie.ResetBindings();
                     GridRaspisanie.Refresh();
                     MarkRowsForCurrentDate();
@@ -502,32 +493,43 @@ namespace TeachersHandsBooks
             }
 
 
+        }
+
             /// <summary>
             /// Формирование дат, относительно текущего дня
             /// </summary>
             /// <param name="currentDate"></param>
             /// <returns></returns>
-            public LinkedList<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDates(DateTime currentDate)
+            public LinkedListNode<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDates()
             {
-                DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
+               daysAndDatesList = new LinkedList<(DayOfWeek, DateTime)>();
 
-                LinkedList<(DayOfWeek, DateTime)> daysAndDatesList = new LinkedList<(DayOfWeek, DateTime)>();
-
-                daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
-
-                for (int i = 1; i <= 14; i++)
+            // Получаем уникальные даты из таблицы CurrentShedule
+            var uniqueDates = context.CurrentsShedules
+      .Select(x => x.Data)
+      .Distinct()
+      .OrderBy(dateString => dateString) // Сохраняем уникальные даты в том порядке, в котором они появляются в базе данных
+      .ToList();
+            foreach (var dateString in uniqueDates)
                 {
-                    currentDate = currentDate.AddDays(1);
-                    currentDayOfWeek = currentDate.DayOfWeek;
-
-                    if (currentDayOfWeek != DayOfWeek.Sunday)
+                    if (DateTime.TryParse(dateString, out DateTime date))
                     {
-                        daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
+                        DayOfWeek currentDayOfWeek = date.DayOfWeek;
+                        daysAndDatesList.AddLast((currentDayOfWeek, date));
+                    }
+                    else
+                    {
+                        // Обработка ошибок преобразования даты
                     }
                 }
 
-                return daysAndDatesList;
+                // Создаем LinkedList из списка дней и дат
+                var linkedList = new LinkedList<(DayOfWeek WeekDay, DateTime Date)>(daysAndDatesList);
+
+                // Возвращаем первый узел списка
+                return linkedList.First;
             }
+
 
 
             public LinkedList<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDatesPrevious(DateTime currentDate)
@@ -554,6 +556,7 @@ namespace TeachersHandsBooks
                 // Возвращаем список дней
                 return daysAndDatesList;
             }
+        
 
             private void Form1_Load(object sender, EventArgs e)
             {
@@ -729,21 +732,27 @@ namespace TeachersHandsBooks
             {
                 StartAnimate();
                 currentDate = DateTime.Now; // Обновляем текущую дату
-                daysAndDatesList = GenerateDaysAndDates(currentDate); // Обновляем список дней и дат начиная с новой текущей даты
-                daysAndDatesPrevious = GenerateDaysAndDatesPrevious(currentDate);
-                DisplayScheduleForDay(currentDate.DayOfWeek, currentDate); // Показываем расписание для текущего дня
+                
+             
+               
                 TodayDay();
-
-                foreach (var node in daysAndDatesList)
-                {
-                    if (node.Date.Date == currentDate.Date)
-                    {
-                        currentNode = daysAndDatesList.Find(node);
-                        break;
-                    }
-                }
-
+            currentNode = daysAndDatesList.First;
+            while (currentNode != null && currentNode.Value.Date.Date != currentDate.Date)
+            {
+                currentNode = currentNode.Next;
+                BtnNext.Enabled = true;
             }
+
+            // Если узел не найден, устанавливаем текущий узел в начало списка
+            if (currentNode == null)
+            {
+                currentNode = daysAndDatesList.First;
+                BtnNext.Enabled = true;
+            }
+
+       
+
+        }
 
             private void BtnPreviev_MouseEnter(object sender, EventArgs e)
             {
@@ -764,23 +773,34 @@ namespace TeachersHandsBooks
             {
                 BtnNext.BackColor = Color.Transparent;
             }
-        private LinkedListNode<(DayOfWeek WeekDay, DateTime Date)> currentNode; // Создаем переменную для хранения текущего узла
+        private LinkedListNode<(DayOfWeek WeekDay, DateTime Date)> currentNode;  // Создаем переменную для хранения текущего узла
 
         private void BtnNext_Click(object sender, EventArgs e)
         {
             if (currentNode?.Next != null)
             {
+                
                 currentNode = currentNode.Next; // Переходим к следующему узлу
-                var nextDay = currentNode.Value;
-
+                
+                
                 // Вызываем метод для отображения расписания для следующего дня
-                DisplayScheduleForDay(nextDay.WeekDay, nextDay.Date);
+                DisplayScheduleForDay(currentNode);
+                BtnPreviev.Enabled = true;
             }
             else
             {
+                // Если достигнут конец списка, вернемся в самое начало
+                if (currentNode == null)
+                {
+                    currentNode = GenerateDaysAndDates(); // Переходим в начало списка
+                    
+                }
+                else
+                {
+                    currentNode = currentNode.List.First; // Переходим к первому узлу списка
+                }
 
-
-                currentNode = daysAndDatesList.First;
+                DisplayScheduleForDay(currentNode);
             }
         }
 
@@ -806,15 +826,20 @@ namespace TeachersHandsBooks
                 var previousDay = currentNode.Value;
 
                 // Вызываем метод для отображения расписания для следующего дня
-                DisplayScheduleForDay(previousDay.WeekDay, previousDay.Date);
+                DisplayScheduleForDay(currentNode);
+            }
+            if (currentNode == null)
+            {
+                currentNode = GenerateDaysAndDates().List.Last; // Переходим в конец списка
             }
             else
             {
-
-
-                currentNode = daysAndDatesList.First;
+                currentNode = currentNode.List.Last; // Переходим к последнему узлу списка
             }
+
+            DisplayScheduleForDay(currentNode);
         }
+    
 
         private void BtnChangePairs_MouseEnter(object sender, EventArgs e)
         {
