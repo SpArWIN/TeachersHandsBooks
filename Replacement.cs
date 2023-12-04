@@ -183,41 +183,30 @@ namespace TeachersHandsBooks
                 int disciplineId = GetDisciplineId(Discipline);
                 int groupId = GetGroupId(Group);
 
-                int TimeTableID = GetTimeTableId(Pair, Discipline, Group);
-                // Проверка наличия записи в ModifiedSchedule
-                var existingEntry = context.Modifieds.FirstOrDefault(entry =>
-                    entry.TimeTable.ID == TimeTableID &&
-                    entry.Data == label1.Text &&
-                    entry.isAdded == false);
 
-                if (existingEntry != null)
+                var ChangesID = context.CurrentsShedules
+       .Where(Rows => Rows.Data == label1.Text && Rows.TimeTables.Pair.Pair == Pair)
+       .ToList();
+                foreach(var D in ChangesID)
                 {
-                    MessageBox.Show("Выбранная пара уже была отменена, ошибка повторной операции", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    context.CurrentsShedules.Remove(D);
                 }
-                else
-                {
+                context.SaveChanges();
+                //int TimeTableID = GetTimeTableId(Pair, Discipline, Group);
 
 
-                    var timeTable = context.TimeTables.FirstOrDefault(tt => tt.ID == TimeTableID);
+                guna2CircleProgressBar1.Visible = true;
+                currentProgress = 0;
+                guna2CircleProgressBar1.Value = currentProgress;
+                progressTimer.Start();
+                MessageBox.Show("Пара была отменена на " + label1.Text + " обновите таблицу ", "Информирование", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    ModifiedSchedule newEntry = new ModifiedSchedule
-                    {
-                        TimeTable = timeTable,
-                        Data = label1.Text,
-                        isAdded = false
-                    };
+                this.Close();
 
-                    context.Modifieds.Add(newEntry);
-                    context.SaveChanges();
-                    guna2CircleProgressBar1.Visible = true;
-                    currentProgress = 0;
-                    guna2CircleProgressBar1.Value = currentProgress;
-                    progressTimer.Start();
-                    MessageBox.Show("Пара была отменена на " + label1.Text + " обновите таблицу ", "Информирование", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    this.Close();
-                }
+
             }
+            
         }
 
         private void BtnAddRows_Click(object sender, EventArgs e)
