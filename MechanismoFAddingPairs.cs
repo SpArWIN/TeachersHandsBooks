@@ -148,42 +148,52 @@ namespace TeachersHandsBooks
             string disciplineName = GridAddPair.Rows[0].Cells[1].Value?.ToString();
             string groupName = GridAddPair.Rows[0].Cells[2].Value?.ToString();
 
-            int TimeTableID = GetTimeTableId(pairName, disciplineName, groupName);
-
-
-
-            if (res == DialogResult.Yes)
+            //int TimeTableID = GetTimeTableId(pairName, disciplineName, groupName);
+            if(res == DialogResult.Yes)
             {
-                // Проверка наличия записи в ModifiedSchedule
-                var existingEntry = context.Modifieds.FirstOrDefault(entry =>
-                    entry.TimeTable.ID == TimeTableID &&
-                    entry.Data == DataLabel.Text &&
-                    entry.isAdded == true);
-                if (existingEntry != null)
-                {
-                    MessageBox.Show("Повторная попытка добавления уже добавленной пары", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                }
-                else
+            
+
+
+
+            var matchingPairs = context.Pairs
+        .Where(p => p.Pair == pairName)
+        .FirstOrDefault();
+
+
+
+                if (matchingPairs != null)
                 {
-                    var TimetablesAdd = context.TimeTables.FirstOrDefault(Tt => Tt.ID == TimeTableID);
-                    ModifiedSchedule AddEntry = new ModifiedSchedule
+                    var groupDisciplineRelation = context.ConnectWithGroup
+                        .FirstOrDefault(dwg => dwg.Group.NameGroup == groupName && dwg.Displine.NameDispline == disciplineName);
+
+                    if (groupDisciplineRelation != null)
                     {
-                        TimeTable = TimetablesAdd,
-                        Data = DataLabel.Text,
-                        isAdded = true
+                        // Получение ID пары и связи группы с дисциплиной
+                        int pairID = matchingPairs.ID;
+                        int groupDisciplineTableID = groupDisciplineRelation.IDW;
 
-                    };
-                    context.Modifieds.Add(AddEntry);
-                    context.SaveChanges();
-                    guna2CircleProgressBar1.Visible = true;
-                    currentProgress = 0;
-                    guna2CircleProgressBar1.Value = currentProgress;
-                    progressTimer.Start();
-                    MessageBox.Show("Пара была добавлена на " + DataLabel.Text + "обновите таблицу", "Информирование", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.Close();
+                        // Создание новой записи Changes
+                        Changes Chans = new Changes
+                        {
+                            Data = DataLabel.Text,
+                            DW_ID = new DisplineWithGroup { IDW = groupDisciplineTableID },
+                            Pair_ID = new NumberPair { ID = pairID }
+                        };
+
+                        // Добавление новой записи в базу данных
+                        context.ChangesTables.Add(Chans);
+                        context.SaveChanges();
+                    }
+
                 }
+
             }
+
+
+
+          
+            
         }
 
         private void GridAddPair_CellValueChanged(object sender, DataGridViewCellEventArgs e)

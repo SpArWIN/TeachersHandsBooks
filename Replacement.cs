@@ -192,7 +192,7 @@ namespace TeachersHandsBooks
                     context.CurrentsShedules.Remove(D);
                 }
                 context.SaveChanges();
-                //int TimeTableID = GetTimeTableId(Pair, Discipline, Group);
+            
 
 
                 guna2CircleProgressBar1.Visible = true;
