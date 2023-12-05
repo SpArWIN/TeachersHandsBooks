@@ -906,6 +906,11 @@ namespace TeachersHandsBooks
                 PrintTimer.Start();
 
             }
+            if(MainTabControl.SelectedTab == HomePage)
+            {
+                TheoryDataGrid.Rows.Clear();
+             
+            }
         }
 
         //метод получения ID из TimeTable
@@ -1039,6 +1044,8 @@ namespace TeachersHandsBooks
             // Открываем файл Excel с помощью EPPlus
             using (var package = new ExcelPackage(new FileInfo(filePath)))
             {
+                dataGridView.Rows.Clear();
+                dataGridView.Columns.Clear();
                 try
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
@@ -1049,7 +1056,14 @@ namespace TeachersHandsBooks
                     DataGridViewTextBoxColumn topicColumn = new DataGridViewTextBoxColumn();
                     topicColumn.HeaderText = "Тема занятия";
                     topicColumn.Name = "Topic";
+                    topicColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dataGridView.Columns.Add(topicColumn);
+
+                    DataGridViewTextBoxColumn HomeQUest = new DataGridViewTextBoxColumn();
+                    HomeQUest.HeaderText = "Домашнее задание";
+                    HomeQUest.Name = "HomeQuest";
+                    dataGridView.Columns.Add(HomeQUest);
+
 
                     DataGridViewTextBoxColumn VidColumn = new DataGridViewTextBoxColumn();
                     VidColumn.HeaderText = "Вид занятия";
@@ -1061,70 +1075,70 @@ namespace TeachersHandsBooks
                     notesColumn.Name = "Prim";
                     notesColumn.Width = 300;
                     dataGridView.Columns.Add(notesColumn);
-
-
+                    dataGridView.AutoResizeColumn(topicColumn.Index, DataGridViewAutoSizeColumnMode.AllCells);
+                    dataGridView.AutoResizeColumn(HomeQUest.Index, DataGridViewAutoSizeColumnMode.AllCells);
+                    dataGridView.AutoResizeColumn(VidColumn.Index, DataGridViewAutoSizeColumnMode.AllCells);
+                    dataGridView.AutoResizeColumn(notesColumn.Index, DataGridViewAutoSizeColumnMode.AllCells);
 
                     while (true)
                     {
                         string cellValue = worksheet.Cells[$"N{rowNumber}"].Text;
-                        if (string.IsNullOrEmpty(cellValue))
+
+                        // Если ячейка пустая и Prosmotr == true, записываем значение из label2.Text
+                        if (Prosmotr && string.IsNullOrEmpty(cellValue))
                         {
                             worksheet.Cells[$"N{rowNumber}"].Value = label2.Text;
                             cellValue = worksheet.Cells[$"N{rowNumber}"].Text;
                         }
 
-                        // Сравниваем значение в ячейке с текущей датой из label2.Text
+                        // Отобразить значение из ячейки N в dataGridView, если оно соответствует label2.Text
                         if (cellValue == label2.Text)
                         {
-                            // Ничего не делаем с колонками здесь, так как они уже добавлены ранее
-
-                            // Считываем данные из соответствующих ячеек D{i}, F{i}
                             string lessonTopic = worksheet.Cells[$"D{rowNumber}"].Value?.ToString();
+                            string HomeQuest = worksheet.Cells[$"G{rowNumber}"].Value?.ToString();
                             string lessonType = worksheet.Cells[$"F{rowNumber}"].Value?.ToString();
 
-                            dataGridView.Rows.Add(lessonTopic, lessonType);
-
-
+                            dataGridView.Rows.Add(lessonTopic, HomeQuest, lessonType);
                             break;
                         }
 
                         rowNumber++;
+                        package.Save();
+                        if (!Prosmotr)
+                        {
+
+                            break;
+                        }
+
+
                     }
-                    package.Save();
-
-
                 }
+                
                 catch (IndexOutOfRangeException)
                 {
                     MessageBox.Show("Не удаётся получить доступ к нужному листу, убедитесь в корректности файла", "Ошибка операции чтения", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+                
             }
+           
+            
         }
-
+        private bool Prosmotr = false;
         private void GridRaspisanie_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+
+
+
+
             DataGridViewRow selectedRow = GridRaspisanie.SelectedRows[0];
             string pairValue = selectedRow.Cells["pair"].Value?.ToString();
             string disciplineValue = selectedRow.Cells["Discipline"].Value?.ToString();
             string groupValue = selectedRow.Cells["Group"].Value?.ToString();
 
-            bool isDataInCancelledPairs = context.Modifieds
-    .Any(modified => modified.Data == label2.Text &&
-                     modified.isAdded == false &&
-                     modified.TimeTable.Pair.Pair == pairValue &&
-                     modified.TimeTable.DisplineWithGroup.Displine.NameDispline == disciplineValue &&
-                     modified.TimeTable.DisplineWithGroup.Group.NameGroup == groupValue);
+           
 
-            if (isDataInCancelledPairs)
-            {
-                MessageBox.Show("Пара была отменена, урок недоступен", "Отмена операции", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            else
-            {
-
-
+           
 
                 var ktpInfo = context.ConnectWithGroup
                     .Where(d => d.Displine.NameDispline == disciplineValue && d.Group.NameGroup == groupValue)
@@ -1133,6 +1147,12 @@ namespace TeachersHandsBooks
                         KTP_Name = d.KTP.NameKTP // Предположим, что KTP - это свойство навигации к таблице KTP
                     })
         .FirstOrDefault();
+
+           
+
+            
+
+                Prosmotr = true;
                 if (ktpInfo != null)
                 {
                     string ktpName = ktpInfo.KTP_Name;
@@ -1146,17 +1166,42 @@ namespace TeachersHandsBooks
                 }
 
 
-                if (KtpPath != null)
+            if (KtpPath != null)
+            {
+
+                DialogResult res = MessageBox.Show("Открыть урок или открыть в режиме просмотра?", "Уточнение", MessageBoxButtons.YesNo);
+
+                if (res == DialogResult.Yes)
                 {
+
+
                     MainTabControl.SelectTab(Theory);
                     TheoryDataGrid.Visible = true;
+
                     ProcessExcelFileAndPopulateDataGridView(KtpPath, TheoryDataGrid);
+                    TheoryDataGrid.Enabled = true;
                 }
                 else
                 {
-                    TheoryDataGrid.Visible = false;
+                    Prosmotr = false;
+                    MainTabControl.SelectTab(Theory);
+                    TheoryDataGrid.Visible = true;
+                    ProcessExcelFileAndPopulateDataGridView(KtpPath, TheoryDataGrid);
+                    TheoryDataGrid.Enabled = false;
                 }
+
+
+               
+
+
             }
+            else
+            {
+                TheoryDataGrid.Visible = false;
+            }
+            
+           
+            
         }
 
         private void GridRaspisanie_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -1185,7 +1230,7 @@ namespace TeachersHandsBooks
             currentFormShedule.ShowDialog();
         }
 
-
+       
     }
 
 

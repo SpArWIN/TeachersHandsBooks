@@ -148,11 +148,8 @@ namespace TeachersHandsBooks
             string disciplineName = GridAddPair.Rows[0].Cells[1].Value?.ToString();
             string groupName = GridAddPair.Rows[0].Cells[2].Value?.ToString();
 
-            //int TimeTableID = GetTimeTableId(pairName, disciplineName, groupName);
             if(res == DialogResult.Yes)
-            {
-
-            
+            {     
 
 
 
