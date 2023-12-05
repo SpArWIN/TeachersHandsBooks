@@ -200,21 +200,14 @@ namespace TeachersHandsBooks
             }
         }
 
-
-        private void MarkRowsForCurrentDate()
+        private void MarkRowsCur()
         {
-            // Проверка наличия записи для текущей даты в базе данных
-            var entriesForCurrentDate = context.Modifieds
-     .Where(entry => entry.Data == label2.Text)
-     .ToList();
+            var changesForCurrentDate = context.ChangesTables
+    .Where(change => change.Data == label2.Text)
+    .ToList();
 
-
-            var entriesForAddCurrentDate = context.Modifieds
-      .Where(entry => entry.Data == label2.Text && entry.isAdded == true)
-      .ToList();
-
-            // Мы проходимся по целой коллекции ID, и выясняем наши условия
-            foreach (var entry in entriesForCurrentDate)
+            // Проходимся по записям из таблицы Changes и отмечаем соответствующие строки в GridRaspisanie
+            foreach (var change in changesForCurrentDate)
             {
                 for (int i = 0; i < GridRaspisanie.Rows.Count; i++)
                 {
@@ -223,50 +216,19 @@ namespace TeachersHandsBooks
                     string group = row.Cells["Group"].Value?.ToString();
                     string discipline = row.Cells["Discipline"].Value?.ToString();
 
-
-                    if (pair == entry.TimeTable.Pair.Pair &&
-                        discipline == entry.TimeTable.DisplineWithGroup.Displine.NameDispline &&
-                        group == entry.TimeTable.DisplineWithGroup.Group.NameGroup)
-                    {
-                        if (entry.isAdded == false)
-                        {
-                            row.DefaultCellStyle.BackColor = Color.Brown;
-                            row.ReadOnly = true;
-                            row.Frozen = true;
-
-                        }
-                        else if (entry.isAdded == true)
-                        {
-                            row.DefaultCellStyle.BackColor = Color.Green;
-                        }
-                    }
-                }
-            }
-
-            foreach (var entary in entriesForAddCurrentDate)
-            {
-
-                for (int i = 0; i < GridRaspisanie.RowCount; i++)
-                {
-                    DataGridViewRow row = GridRaspisanie.Rows[i];
-
-
-                    string pair = row.Cells["Pair"].Value?.ToString();
-                    string discipline = row.Cells["Discipline"].Value?.ToString();
-                    string group = row.Cells["Group"].Value?.ToString();
-
-                    if (pair == entary.TimeTable.Pair.Pair &&
-                        discipline == entary.TimeTable.DisplineWithGroup.Displine.NameDispline &&
-                        group == entary.TimeTable.DisplineWithGroup.Group.NameGroup)
+                    // Сравниваем данные из GridRaspisanie с данными из таблицы Changes для текущей даты
+                    if (pair == change.Pair.Pair
+                        && discipline == change.WithGroup.Displine.NameDispline
+                        && group == change.WithGroup.Group.NameGroup)
                     {
                         row.DefaultCellStyle.BackColor = Color.Green;
-
                     }
                 }
-
             }
-
         }
+        
+
+          
         public void TodayDay()
         {
 
@@ -290,13 +252,19 @@ namespace TeachersHandsBooks
                 {
                     
                       
-
+                    //Все пары
                       var allPairs = context.Pairs
                         .Select(entry => entry.Pair)
                         .ToList();
+                    //пары текущие
+                    var existingPairs = context.CurrentsShedules
+    .Where(entry => entry.Data == formattedDate)
+    .Select(entry => entry.TimeTables.Pair.Pair)
+    .ToList();
 
 
-                                    var temporaryEntries = context.CurrentsShedules
+                    //Вытянутые текущие данные бд
+                    var temporaryEntries = context.CurrentsShedules
                     .Where(entry => entry.Data == formattedDate)
                     .Select(entry => new
                     {
@@ -306,35 +274,37 @@ namespace TeachersHandsBooks
                     })
                     .ToList();
 
-                    // Это парыЮ которые попадают в список доступных, если их нет
-                    //var cancelledPairs = context.Modifieds
-                    //    .Where(modified => modified.Data == formattedDate && modified.isAdded == false)
-                    //    .Select(modified => modified.TimeTable.Pair.Pair)
-                    //    .ToList();
+                    // Запрос на получение отмененных пар для определенного дня
+                    var CancelledPair = context.TimeTables
+                        .Where(pair => pair.Day.Day == formattedDate)
+                        .Select(pair => pair.Pair.Pair)
+                        .ToList();
 
-                    //  var emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
+               
+
+                     emptyPairsForDay = allPairs.Except(existingPairs).Union(CancelledPair).ToList();
 
                     // Добавление столбцов в DataGridView
                     AddDataGridViewColumns();
 
-                    //var temporaryEntries = context.Modifieds
-                    //    .Where(entry => entry.Data == formattedDate && entry.isAdded == true)
-                    //    .Select(entry => new
-                    //    {
-                    //        Pair = entry.TimeTable.Pair.Pair,
-                    //        Group = entry.TimeTable.DisplineWithGroup.Group.NameGroup,
-                    //        Discipline = entry.TimeTable.DisplineWithGroup.Displine.NameDispline,
-                    //    })
-                    //    .ToList();
+                 
+                    //Добавление
+                    var changesForCurrentDate = context.ChangesTables
+ .Where(change => change.Data == label2.Text)
+ .ToList();
+                    if (changesForCurrentDate.Count > 0)
+                    {
+                        var additionalEntries = changesForCurrentDate
+                            .Select(change => new
+                            {
+                                Pair = change.Pair.Pair,
+                                Group = change.WithGroup.Group.NameGroup,
+                                Discipline = change.WithGroup.Displine.NameDispline,
+                            })
+                            .ToList();
 
-                    //if (temporaryEntries != null)
-                    //{
-                    //    // Добавляем временные записи к текущим записям
-                    //    foreach (var tempEntry in temporaryEntries)
-                    //    {
-                    //        currentScheduleEntries.Add(tempEntry);
-                    //    }
-                    //}
+                        temporaryEntries.AddRange(additionalEntries);
+                    }
 
                     GridRaspisanie.DataSource = temporaryEntries;
                     GridRaspisanie.ResetBindings();
@@ -345,7 +315,8 @@ namespace TeachersHandsBooks
                     label1.Font = new Font("Segui UI", 14);
                     label1.BackColor = Color.Transparent;
                     GridRaspisanie.ClearSelection();
-                    MarkRowsForCurrentDate();
+                   
+                    MarkRowsCur();
                 }
                 else
                 {
@@ -437,10 +408,41 @@ namespace TeachersHandsBooks
                             Discipline = entry.TimeTables.DisplineWithGroup.Displine.NameDispline,
                         })
                         .ToList();
-
+                    //Все пары
                     var allPairs = context.Pairs
                         .Select(entry => entry.Pair)
                         .ToList();
+
+
+                    var existingPairs = context.CurrentsShedules
+.Where(entry => entry.Data == label2.Text)
+.Select(entry => entry.TimeTables.Pair.Pair)
+.ToList();
+                    //Отмененные пары
+                    var CancelledPair = context.TimeTables
+                        .Where(pair => pair.Day.Day == label2.Text)
+                        .Select(pair => pair.Pair.Pair)
+                        .ToList();
+                    emptyPairsForDay = allPairs.Except(existingPairs).Union(CancelledPair).ToList();
+
+                    var changesForCurrentDate = context.ChangesTables
+.Where(change => change.Data == label2.Text)
+.ToList();
+                    if (changesForCurrentDate.Count > 0)
+                    {
+                        var additionalEntries = changesForCurrentDate
+                            .Select(change => new
+                            {
+                                Pair = change.Pair.Pair,
+                                Group = change.WithGroup.Group.NameGroup,
+                                Discipline = change.WithGroup.Displine.NameDispline,
+                            })
+                            .ToList();
+
+                        temporaryEntries.AddRange(additionalEntries);
+                    }
+
+
 
                     GridRaspisanie.AutoGenerateColumns = false;
 
@@ -472,10 +474,8 @@ namespace TeachersHandsBooks
 
 
 
-                    GridRaspisanie.DataSource = temporaryEntries;
-                    GridRaspisanie.ResetBindings();
-                    GridRaspisanie.Refresh();
-                    MarkRowsForCurrentDate();
+                    MarkRowsCur();
+                  //  MarkRowsForCurrentDate();
                 }
                 else
                 {

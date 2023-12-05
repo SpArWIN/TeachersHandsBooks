@@ -137,7 +137,7 @@ namespace TeachersHandsBooks
             this.BtnForming.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.BtnForming.HighEmphasis = true;
             this.BtnForming.Icon = null;
-            this.BtnForming.Location = new System.Drawing.Point(270, 279);
+            this.BtnForming.Location = new System.Drawing.Point(279, 294);
             this.BtnForming.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.BtnForming.MouseState = MaterialSkin.MouseState.HOVER;
             this.BtnForming.Name = "BtnForming";

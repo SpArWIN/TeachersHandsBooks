@@ -125,6 +125,7 @@ namespace TeachersHandsBooks
             this.Controls.Add(this.DispBoxAdd);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.flowLayoutPanel1);
+            this.MinimumSize = new System.Drawing.Size(800, 450);
             this.Name = "FormDisplineAdd";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Добавление дисциплин";

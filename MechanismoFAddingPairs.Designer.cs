@@ -197,6 +197,7 @@ namespace TeachersHandsBooks
             this.Controls.Add(this.DataLabel);
             this.Controls.Add(this.BtnAddPairs);
             this.Controls.Add(this.GridAddPair);
+            this.MinimumSize = new System.Drawing.Size(624, 306);
             this.Name = "MechanismoFAddingPairs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Редактирование расписания";

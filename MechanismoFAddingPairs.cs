@@ -177,15 +177,17 @@ namespace TeachersHandsBooks
                         Changes Chans = new Changes
                         {
                             Data = DataLabel.Text,
-                            DW_ID = new DisplineWithGroup { IDW = groupDisciplineTableID },
-                            Pair_ID = new NumberPair { ID = pairID }
+                            With_ID = groupDisciplineTableID,
+                            Pair_ID = pairID
+                            
                         };
 
                         // Добавление новой записи в базу данных
                         context.ChangesTables.Add(Chans);
                         context.SaveChanges();
                     }
-
+                    MessageBox.Show("Пара на " + DataLabel.Text + " была успешно добавлена", "Добавление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
                 }
 
             }
