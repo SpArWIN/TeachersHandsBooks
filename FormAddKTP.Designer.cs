@@ -35,7 +35,7 @@ namespace TeachersHandsBooks
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.KTPPath = new MaterialSkin.Controls.MaterialCard();
             this.label1 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.OpenDialog = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.BtnCreateAdd = new MaterialSkin.Controls.MaterialButton();
             this.GridKTPControll = new Guna.UI2.WinForms.Guna2DataGridView();
@@ -74,18 +74,18 @@ namespace TeachersHandsBooks
             this.label1.TabIndex = 4;
             this.label1.Text = "Выберите КТП";
             // 
-            // label4
+            // OpenDialog
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(633, 78);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(27, 25);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "...";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
+            this.OpenDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.OpenDialog.AutoSize = true;
+            this.OpenDialog.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OpenDialog.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.OpenDialog.Location = new System.Drawing.Point(633, 78);
+            this.OpenDialog.Name = "OpenDialog";
+            this.OpenDialog.Size = new System.Drawing.Size(27, 25);
+            this.OpenDialog.TabIndex = 6;
+            this.OpenDialog.Text = "...";
+            this.OpenDialog.Click += new System.EventHandler(this.label4_Click);
             // 
             // openFileDialog1
             // 
@@ -231,7 +231,7 @@ namespace TeachersHandsBooks
             this.guna2CircleProgressBar1.Animated = true;
             this.guna2CircleProgressBar1.AnimationSpeed = 0.8F;
             this.guna2CircleProgressBar1.Controls.Add(this.label5);
-            this.guna2CircleProgressBar1.Location = new System.Drawing.Point(257, 105);
+            this.guna2CircleProgressBar1.Location = new System.Drawing.Point(243, 129);
             this.guna2CircleProgressBar1.Name = "guna2CircleProgressBar1";
             this.guna2CircleProgressBar1.ProgressColor = System.Drawing.Color.Green;
             this.guna2CircleProgressBar1.ProgressColor2 = System.Drawing.Color.Lime;
@@ -259,7 +259,7 @@ namespace TeachersHandsBooks
             this.Controls.Add(this.guna2CircleProgressBar1);
             this.Controls.Add(this.GridKTPControll);
             this.Controls.Add(this.BtnCreateAdd);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.OpenDialog);
             this.Controls.Add(this.KTPPath);
             this.Controls.Add(this.label1);
             this.MinimumSize = new System.Drawing.Size(800, 450);
@@ -279,7 +279,7 @@ namespace TeachersHandsBooks
 
         private MaterialSkin.Controls.MaterialCard KTPPath;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label OpenDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private MaterialSkin.Controls.MaterialButton BtnCreateAdd;
         private Guna.UI2.WinForms.Guna2DataGridView GridKTPControll;

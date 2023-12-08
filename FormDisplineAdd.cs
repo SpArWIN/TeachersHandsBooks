@@ -40,7 +40,7 @@ namespace TeachersHandsBooks
             Size textSize = TextRenderer.MeasureText(DisplineName, grouplabel.Font);
             card.Size = new Size(textSize.Width + 20, 37);
             card.Controls.Add(grouplabel);
-            flowLayoutPanel1.Controls.Add(card);
+            GroupDisplinePanel.Controls.Add(card);
 
             return card;
         }
@@ -97,7 +97,7 @@ namespace TeachersHandsBooks
 
         private void RefreshGroupDisplay()
         {
-            flowLayoutPanel1.Controls.Clear();
+            GroupDisplinePanel.Controls.Clear();
 
 
             var Displine = context.Displines.ToList();

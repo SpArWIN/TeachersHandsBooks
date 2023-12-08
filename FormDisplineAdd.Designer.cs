@@ -31,7 +31,7 @@ namespace TeachersHandsBooks
         {
             this.DispBoxAdd = new MaterialSkin.Controls.MaterialTextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.GroupDisplinePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.BtnDeleteDispline = new MaterialSkin.Controls.MaterialButton();
             this.BtnAddDisp = new MaterialSkin.Controls.MaterialButton();
             this.SuspendLayout();
@@ -64,13 +64,13 @@ namespace TeachersHandsBooks
             this.label1.TabIndex = 3;
             this.label1.Text = "Список дисциплин";
             // 
-            // flowLayoutPanel1
+            // GroupDisplinePanel
             // 
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(28, 132);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(728, 255);
-            this.flowLayoutPanel1.TabIndex = 4;
+            this.GroupDisplinePanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.GroupDisplinePanel.Location = new System.Drawing.Point(28, 132);
+            this.GroupDisplinePanel.Name = "GroupDisplinePanel";
+            this.GroupDisplinePanel.Size = new System.Drawing.Size(728, 255);
+            this.GroupDisplinePanel.TabIndex = 4;
             // 
             // BtnDeleteDispline
             // 
@@ -124,7 +124,7 @@ namespace TeachersHandsBooks
             this.Controls.Add(this.BtnAddDisp);
             this.Controls.Add(this.DispBoxAdd);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.GroupDisplinePanel);
             this.MinimumSize = new System.Drawing.Size(800, 450);
             this.Name = "FormDisplineAdd";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -139,7 +139,7 @@ namespace TeachersHandsBooks
 
         public MaterialSkin.Controls.MaterialTextBox DispBoxAdd;
         public System.Windows.Forms.Label label1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel GroupDisplinePanel;
         private MaterialSkin.Controls.MaterialButton BtnDeleteDispline;
         private MaterialSkin.Controls.MaterialButton BtnAddDisp;
     }

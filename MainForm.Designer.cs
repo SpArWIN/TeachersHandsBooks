@@ -209,7 +209,6 @@ namespace TeachersHandsBooks
             this.GridRaspisanie.ThemeStyle.RowsStyle.Height = 35;
             this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.GridRaspisanie.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-
             this.GridRaspisanie.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridRaspisanie_CellDoubleClick);
             this.GridRaspisanie.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.GridRaspisanie_CellFormatting);
             this.GridRaspisanie.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.GridRaspisanie_CellMouseDown);
