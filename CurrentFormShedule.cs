@@ -204,7 +204,7 @@ namespace TeachersHandsBooks
                 return uniqueDates;
             }
         }
-        // МНЕ НЕОБХОДИМО ДОПИЛИТЬ ТАКИМ ОБРАЗОМ, ЧТОБЫ ЛИБО ПОВТОРНОГО ВЫБОРА ФОРМИРОВАНИЯ ВОВСЕ НЕ БЫЛО, ЛИБО КАК ТО ПО ДРУГОМУ.
+        
         private bool existingRecordsForPreviousRange;
         private DateTime lastDateOfPreviousRange;
         private string LastOrCurrentRagne;
@@ -235,11 +235,11 @@ namespace TeachersHandsBooks
                         LastOrCurrentRagne = previousDateList.Last().ToString("dd.MM.yyyy");
                     }
                     
-                    int NumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, lastDateOfPreviousRange.AddDays(1));
+                  //  int NumberShift = GetNonSundayDatesCountForWeekRange(selectedRange, lastDateOfPreviousRange.AddDays(1));
 
                     // Устанавливаем дату в TimePickerNext, пропуская воскресенье
-                    TransmissionOfInformation.DateList = GetNonSundayDatesList(lastDateOfPreviousRange.AddDays(1), NumberShift);
-                    TimePickerNext.Value = lastDateOfPreviousRange.AddDays(NumberShift);
+                    TransmissionOfInformation.DateList = GetNonSundayDatesList(lastDateOfPreviousRange.AddDays(1), previousNumberShift);
+                    TimePickerNext.Value = lastDateOfPreviousRange.AddDays(previousNumberShift);
 
 
                 }

@@ -40,6 +40,7 @@ namespace TeachersHandsBooks
                 });
             }
         }
+        //метод создания плашек с именами групп
         private MaterialCard CreateMaterialCard(string groupName)
         {
             MaterialCard card = new MaterialCard();
@@ -69,7 +70,7 @@ namespace TeachersHandsBooks
             BtnDeleteGroup.Enabled = true;
 
         }
-
+        //Запрос на отображение списка групп из базы данных
         private void VisGroup()
         {
             var group = context.Groups.ToList();

@@ -50,7 +50,7 @@ namespace TeachersHandsBooks.Core.Tables
             }
         }
 
-
+        //метод получения пути к файлу ктп основываясь на группе и дисциплине
         public static string GetPathKTP(string NameGroup, string DisplineName, string KtpNameFiles)
         {
             string ReturnedFilePath;
@@ -95,7 +95,7 @@ namespace TeachersHandsBooks.Core.Tables
 
 
 
-
+        //Метод создания папок
         public static void CreateFolders(string NameGroup, string NameDispline, string KtpPath)
         {
             using (var context = new DatabaseContext())
@@ -127,7 +127,7 @@ namespace TeachersHandsBooks.Core.Tables
             }
 
         }
-
+        //метод создания связи в таблице DisplineWithGroup
         public static void AddCon(int IDGroup, int IdDispline, int IDKTP)
         {
             using (var context = new DatabaseContext())

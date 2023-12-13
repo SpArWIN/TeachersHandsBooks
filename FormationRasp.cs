@@ -230,7 +230,7 @@ namespace TeachersHandsBooks
 
             btnFormRasp.Name = "BtnFormRasp";
             btnFormRasp.Text = "Сформировать";
-            btnFormRasp.Location = new Point(20, 70); // Укажите координаты положения кнопки на форме
+            btnFormRasp.Location = new Point(20, 70); 
             btnFormRasp.Cursor = Cursors.Hand;
             // Добавление обработчика события нажатия на кнопку
             btnFormRasp.Click += BtnFormRasp_Click;
@@ -241,8 +241,6 @@ namespace TeachersHandsBooks
 
         private void BtnFormRasp_Click(object sender, EventArgs e)
         {
-
-
             bool isAnyCellFilled = false;
 
             foreach (DataGridViewRow row in GridRasp.Rows)
@@ -273,15 +271,7 @@ namespace TeachersHandsBooks
                 currentProgress = 0;
                 guna2CircleProgressBar1.Value = currentProgress;
                 progressTimer.Start();
-
-
-
-
             }
-
-
-
-
         }
 
         private List<DisplineWithGroup> GetDisplineWithGroupsById(int disciplineId, int groupId)
@@ -336,8 +326,10 @@ namespace TeachersHandsBooks
 
         }
         private List<(string DayOfWeek, string Discipline, string Pair)> previouslySelectedEntries = new List<(string, string, string)>();
+        //Метод организации сбора из таблицы
         private void CollectDataGridViewData(DataGridView datagrid)
-        {
+        { 
+            //Иницализируем коллекцию из списков строк, для последующей передачи
             List<int> disciplineIds = new List<int>();
             List<string> Displines = new List<string>();
             List<string> pairs = new List<string>();
@@ -377,27 +369,17 @@ namespace TeachersHandsBooks
                         }
                         else
                         {
-                            //string DayOfWeekNull = datagrid.Columns[columnIndex].HeaderText;
-                            //EmptyCellsList.Add(new EmptyCellInfo
-                            //{
-                            //    DayOfWeek = DayOfWeekNull, 
-                            //    Pair = datagrid.Rows[rowIndex].Cells["PairsColumn"].Value?.ToString() 
-                            //});
+                          
                         }
                     }
 
 
                 }
-
-
-
-
-
             }
             AddTimeTableRecords(disciplineIds, daysOfWeek, pairs);
         }
 
-
+      //  ID дисциплины
         private int GetDisciplineIdByName(string disciplines)
         {
             var discipline = context.Displines
@@ -418,17 +400,16 @@ namespace TeachersHandsBooks
         {
             for (int i = 0; i < disciplineIds.Count; i++)
             {
-
                 var disciplineId = disciplineIds[i];
                 var groupId = selectedGroupId;
                 var disciplineWithGroup = GetDisplineWithGroupsById(disciplineId, groupId);
-                //  var dayTable = GetDayTableByName(new List<string> { daysOfWeek[i] });
                 var dayOfWeek = daysOfWeek[i];
                 var numberPair = GetNumberPairByName(new List<string> { pairs[i] });
                 foreach (var disciplineGroup in disciplineWithGroup)
                 {
                     foreach (var pair in numberPair)
                     {
+                        //Запрос на проверку, существует ли такая запись в таблице постоянного расписания
                         var existingRecord = context.TimeTables.FirstOrDefault(record =>
                      record.DisplineWithGroup.IDW == disciplineGroup.IDW &&
                      record.Day.Day == dayOfWeek &&
@@ -438,8 +419,6 @@ namespace TeachersHandsBooks
 
                         if (existingRecord == null)
                         {
-
-
                             TimeTable newRecord = new TimeTable
                             {
                                 DisplineWithGroup = disciplineGroup,

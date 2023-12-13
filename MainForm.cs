@@ -39,7 +39,9 @@ namespace TeachersHandsBooks
 
         public MainForm()
         {
+        
             InitializeComponent();
+          
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
@@ -185,18 +187,11 @@ namespace TeachersHandsBooks
             if (SwitchTheme.Checked)
             {
                 GroupAddBOx.FillColor = Color.Transparent;
-                //  GridRaspisanie.BackgroundColor = Color.FromArgb(214, 214, 214);
-                //   GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Dark;
-
-
-
 
             }
             else if (!SwitchTheme.Checked)
             {
                 GroupAddBOx.FillColor = Color.WhiteSmoke;
-                //  GridRaspisanie.BackgroundColor = Color.FromArgb(214, 214, 214);
-                //  GridRaspisanie.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
             }
         }
 
@@ -228,7 +223,7 @@ namespace TeachersHandsBooks
         }
         
 
-          
+          //Метод отображения текущего расписания дня
         public void TodayDay()
         {
 
@@ -244,7 +239,7 @@ namespace TeachersHandsBooks
             if (dayId != null)
             {
                 GridRaspisanie.Columns.Clear();
-
+                //Обращение к таблице на получение значений по дате
                 var currentScheduleEntry = context.CurrentsShedules
                     .FirstOrDefault(schedule => schedule.Data == formattedDate);
 
@@ -280,14 +275,10 @@ namespace TeachersHandsBooks
                         .Select(pair => pair.Pair.Pair)
                         .ToList();
 
-               
-
                      emptyPairsForDay = allPairs.Except(existingPairs).Union(CancelledPair).ToList();
 
                     // Добавление столбцов в DataGridView
                     AddDataGridViewColumns();
-
-                 
                     //Добавление
                     var changesForCurrentDate = context.ChangesTables
  .Where(change => change.Data == label2.Text)
@@ -320,7 +311,7 @@ namespace TeachersHandsBooks
                 }
                 else
                 {
-                    //   HandleNoDataForDayOfWeek(dayOfWeekRussian);
+                      HandleNoDataForDayOfWeek(dayOfWeekRussian);
                     BtnNext.Enabled = false;
                     BtnPreviev.Enabled = false;
 
@@ -338,6 +329,7 @@ namespace TeachersHandsBooks
                     DataGridViewColumn pairColumn = new DataGridViewTextBoxColumn();
                     pairColumn.HeaderText = "Выходной";
                     GridRaspisanie.Columns.Add(pairColumn);
+                    
                 }
                 else
                 {
@@ -380,7 +372,7 @@ namespace TeachersHandsBooks
                     GridRaspisanie.Columns.Add(pairColumn);
                 }
             }
-
+        //метод перехода добавление пар к текущим, если они есть в таблице
         public void DisplayScheduleForDay(LinkedListNode<(DayOfWeek WeekDay, DateTime Date)> currentNode)
         {
 
@@ -423,11 +415,13 @@ namespace TeachersHandsBooks
                         .Where(pair => pair.Day.Day == label2.Text)
                         .Select(pair => pair.Pair.Pair)
                         .ToList();
+                    //ВЫчитаем 
                     emptyPairsForDay = allPairs.Except(existingPairs).Union(CancelledPair).ToList();
 
                     var changesForCurrentDate = context.ChangesTables
 .Where(change => change.Data == label2.Text)
 .ToList();
+                    // Если есть, то добавляем к существующим парам
                     if (changesForCurrentDate.Count > 0)
                     {
                         var additionalEntries = changesForCurrentDate
@@ -455,27 +449,11 @@ namespace TeachersHandsBooks
                     GridRaspisanie.ResetBindings();
                     GridRaspisanie.Refresh();
 
-                    // Проверяем, если пары уже есть на этот день
-                    //var existingPairs = todayEntries.Select(entry => entry.Pair).ToList();
-                    //// Проверяем наличие отмененных пар для указанной даты
-                    //var cancelledPairs = context.Modifieds
-                    //                        .Where(modified => modified.Data == label2.Text && modified.isAdded == false)
-                    //                        .Select(modified => modified.TimeTable.Pair.Pair)
-                    //                        .ToList();
-                    //// Формируем список доступных пар на этот день (пары, которые не заняты и не отменены)
-                    //emptyPairsForDay = allPairs.Except(existingPairs).Union(cancelledPairs).ToList();
-
-
-                    //if (temporaryEntries != null)
-                    //{
-                    //    todayEntries.AddRange(temporaryEntries);
-
-                    //}
-
+                   
 
 
                     MarkRowsCur();
-                  //  MarkRowsForCurrentDate();
+                 
                 }
                 else
                 {
@@ -532,37 +510,13 @@ namespace TeachersHandsBooks
 
 
 
-            public LinkedList<(DayOfWeek WeekDay, DateTime Date)> GenerateDaysAndDatesPrevious(DateTime currentDate)
-            {
-                DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
-
-                LinkedList<(DayOfWeek, DateTime)> daysAndDatesList = new LinkedList<(DayOfWeek, DateTime)>();
-
-                // Добавляем текущую дату и день недели в список
-                daysAndDatesList.AddLast((currentDayOfWeek, currentDate));
-
-                // Добавляем предыдущие дни относительно текущей даты
-                for (int i = 1; i <= 14; i++)
-                {
-                    currentDate = currentDate.AddDays(-1); // Уменьшаем дату на один день
-                    currentDayOfWeek = currentDate.DayOfWeek;
-
-                    if (currentDayOfWeek != DayOfWeek.Sunday)
-                    {
-                        daysAndDatesList.AddFirst((currentDayOfWeek, currentDate)); // Добавляем день в начало списка
-                    }
-                }
-
-                // Возвращаем список дней
-                return daysAndDatesList;
-            }
         
 
             private void Form1_Load(object sender, EventArgs e)
             {
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-                BtnChangePairs.Enabled = false;
+           
+            BtnChangePairs.Enabled = false;
                 TodayDay();
 
                 TheoryDataGrid.ColumnHeadersDefaultCellStyle = editingForm.SetDataGridViewStyleFromThemes(TheoryDataGrid, ThemSet);

@@ -50,7 +50,7 @@ namespace TeachersHandsBooks
                 guna2CircleProgressBar1.Value = currentProgress;
             }
         }
-
+        //Метод получения именя групп, дисциплин ктп на основе их id
         private void GetNamesFromIds(int groupId, int disciplineId, int ktpId)
         {
             using (var context = new DatabaseContext())
@@ -59,7 +59,7 @@ namespace TeachersHandsBooks
                 var disciplineName = context.Displines.FirstOrDefault(d => d.ID == disciplineId)?.NameDispline;
                 var ktpName = context.kTPs.FirstOrDefault(k => k.ID == ktpId)?.NameKTP;
 
-                // Делайте что-то с полученными именами (например, выводите их в консоль)
+              
 
             }
         }
@@ -201,6 +201,7 @@ namespace TeachersHandsBooks
 
         }
         private string SelectedPath;
+        //Основной метод загрузки ктп, попытки конвертации из Excel 2003 года
         private void label4_Click(object sender, EventArgs e)
         {
             IsKTPLoaded = true;
@@ -461,6 +462,7 @@ namespace TeachersHandsBooks
             else
             {
                 MessageBox.Show("Дисциплина не выбрана", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             }
 
         }

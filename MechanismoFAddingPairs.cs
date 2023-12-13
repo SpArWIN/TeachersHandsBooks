@@ -127,19 +127,7 @@ namespace TeachersHandsBooks
             GridAddPair.ColumnHeadersDefaultCellStyle.SelectionBackColor = eding.GetColorFromTheme(themeSettings);
             LoadSetting();
         }
-        public int GetTimeTableId(string pairName, string disciplineName, string groupName)
-        {
-
-            var timeTableId = context.TimeTables
-                   .Where(tt =>
-                       tt.DisplineWithGroup.Displine.NameDispline == disciplineName &&
-                       tt.DisplineWithGroup.Group.NameGroup == groupName &&
-                       tt.Pair.Pair == pairName)
-                   .Select(tt => tt.ID)
-                   .FirstOrDefault();
-
-            return timeTableId;
-        }
+      
         private void BtnAddPairs_Click(object sender, EventArgs e)
         {
             DialogResult res = MessageBox.Show("Вы действительно хотите добавить пару на " + DataLabel.Text, "Проверка", MessageBoxButtons.YesNo, MessageBoxIcon.Question);

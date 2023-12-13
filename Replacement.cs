@@ -95,18 +95,7 @@ namespace TeachersHandsBooks
             GridTransmitt.ReadOnly = true;
 
         }
-        public int GetTimeTableId(string pairName, string disciplineName, string groupName)
-        {
-
-
-            var timeTableId = (from tt in context.TimeTables
-                               where tt.Pair.Pair == pairName &&
-                                     tt.DisplineWithGroup.Displine.NameDispline == disciplineName &&
-                                     tt.DisplineWithGroup.Group.NameGroup == groupName
-                               select tt.ID).FirstOrDefault();
-
-            return timeTableId;
-        }
+     
         public int GetPairId(string pairName)
         {
             using (var dbContext = new DatabaseContext())
@@ -182,7 +171,6 @@ namespace TeachersHandsBooks
                 int pairId = GetPairId(Pair);
                 int disciplineId = GetDisciplineId(Discipline);
                 int groupId = GetGroupId(Group);
-
 
                 var ChangesID = context.CurrentsShedules
        .Where(Rows => Rows.Data == label1.Text && Rows.TimeTables.Pair.Pair == Pair)
